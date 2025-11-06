@@ -2,16 +2,17 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
-import { Inter, Space_Grotesk as SpaceGrotesk } from 'next/font/google'
+import { Inter, Poppins } from 'next/font/google'
 
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
 })
 
-const spaceGrotesk = SpaceGrotesk({
+const poppins = Poppins({
   subsets: ['latin'],
-  variable: '--font-space-grotesk',
+  variable: '--font-poppins',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900']
 })
 
 export const metadata: Metadata = {
@@ -26,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="sq" className="scroll-smooth">
-      <body className={cn('min-h-screen bg-background font-body antialiased', inter.variable, spaceGrotesk.variable)}>
+      <body className={cn('min-h-screen bg-background font-body antialiased', inter.variable, poppins.variable)}>
         {children}
         <Toaster />
       </body>
