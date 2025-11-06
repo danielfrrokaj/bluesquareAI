@@ -88,7 +88,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
             <DropdownMenuContent>
               {link.sublinks.map(sublink => (
                 <DropdownMenuItem key={sublink.href} asChild>
-                  <Link href={sublink.href}>{sublink.label}</Link>
+                  <Link href={sublink.href + `?lang=${lang}`}>{sublink.label}</Link>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -122,9 +122,6 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
           {renderNavLinks()}
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-4">
-          <Button variant="ghost" className="hidden sm:inline-flex">Login</Button>
-          <Button className="hidden sm:inline-flex bg-gradient-to-r from-primary to-secondary text-primary-foreground">Sign Up</Button>
-          
           <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
@@ -139,10 +136,6 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
                   <span className="text-2xl font-bold font-headline">Blue Square AI</span>
                 </Link>
                 {renderNavLinks(true)}
-                <div className="flex flex-col space-y-2 pt-6">
-                  <Button variant="outline">Login</Button>
-                  <Button className="bg-gradient-to-r from-primary to-secondary text-primary-foreground">Sign Up</Button>
-                </div>
               </div>
             </SheetContent>
           </Sheet>
