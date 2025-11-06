@@ -26,7 +26,7 @@ const translations = {
 export function Footer({ lang }: FooterProps) {
   const t = translations[lang];
   return (
-    <footer id="contact" className="bg-card border-t">
+    <footer id="contact" className="bg-background border-t">
       <div className="container py-8 flex flex-col items-center justify-center text-center">
         <Link href="/" className="flex items-center space-x-2 mb-4">
           <BrainCircuit className="h-8 w-8 text-primary" />
