@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -11,6 +12,9 @@ import { useToast } from '@/hooks/use-toast';
 import { submitContactForm } from '@/app/actions';
 import { Loader2, Mail, Phone } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
+import { useInView } from '@/hooks/use-in-view';
+import { useRef } from 'react';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -44,9 +48,12 @@ export function ContactSection() {
     }
   }
 
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
+
   return (
-    <section id="contact" className="bg-background fade-in-up">
-      <div className="container px-4 md:px-6 lg:px-12">
+    <section id="contact" className="bg-background" ref={ref}>
+      <div className={cn("container px-4 md:px-6 lg:px-12 transition-all duration-1000", isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10")}>
         <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">
                 Contact Us

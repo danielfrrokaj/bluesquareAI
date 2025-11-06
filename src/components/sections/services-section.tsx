@@ -1,6 +1,11 @@
+
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bot, LineChart, Code, Camera, MessageCircle, ShoppingCart, Plane } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useInView } from "@/hooks/use-in-view";
+import { useRef } from "react";
 
 const servicesSq = [
     {
@@ -71,10 +76,12 @@ export function ServicesSection({ lang }: { lang: 'en' | 'sq' }) {
         }
     };
     const currentContent = content[lang];
+    const ref = useRef<HTMLDivElement>(null);
+    const isInView = useInView(ref, { once: true, amount: 0.3 });
 
     return (
-        <section id="services" className="bg-card fade-in-up">
-            <div className="container px-4 md:px-6">
+        <section id="services" className="bg-card" ref={ref}>
+            <div className={cn("container px-4 md:px-6 transition-all duration-1000", isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10")}>
                 <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
                     <div className="space-y-2">
                         <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">
