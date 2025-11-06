@@ -15,8 +15,8 @@ const spaceGrotesk = SpaceGrotesk({
 })
 
 export const metadata: Metadata = {
-  title: 'Sasico - Your Digital Assistant, Always On',
-  description: 'Revolutionize the way you communicate with an AI-powered chatbot that offers multilingual support, seamless integration, and human-like conversations.',
+  title: 'Blue Square AI - Zgjidhje Inteligjente',
+  description: 'Blue Square AI krijon zgjidhje inteligjente për biznese të vogla dhe të mesme, duke kombinuar eksperiencën me fuqinë e Inteligjencës Artificiale.',
 };
 
 export default function RootLayout({
@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="sq" className="scroll-smooth">
       <body className={cn('min-h-screen bg-background font-body antialiased', inter.variable, spaceGrotesk.variable)}>
         {children}
         <Toaster />
