@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { BrainCircuit, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useState, useEffect } from 'react';
@@ -13,6 +13,34 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ChevronDown } from 'lucide-react';
+
+const Logo = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 32" width={130} height={32} {...props}>
+        <g>
+            <path fill="#0d47a1" d="M2.5,2.5v27h27v-27h-27Zm24.5,24.5h-22v-22h22v22Z" />
+            <path fill="#1565c0" d="M4,4V28H28V4H4Zm21.5,21.5h-19v-19h19v19Z" />
+            <path fill="#42a5f5" d="M5.5,5.5v21h21v-21h-21Zm18.5,18.5h-16v-16h16v16Z" />
+            <path fill="#1976d2" d="M7,7V25H25V7H7Zm15.5,15.5h-13v-13h13v13Z" />
+            <path fill="#0d47a1" d="M12,12v8h8v-8h-8Zm5.5,5.5h-3v-3h3v3Z" />
+            <path fill="#1e88e5" d="M29.5,2.5l-4,4h-21l-4-4h-0.5v0.5l4,4v21l-4,4v0.5h0.5l4-4h21l4,4h0.5v-0.5l-4-4v-21l4-4v-0.5h-0.5Z M28,28H4V4H28V28Z" />
+            <path fill="#1e88e5" d="M25,7l-4,4h-9l-4-4h-1v1l4,4v9l-4,4v1h1l4-4h9l4,4h1v-1l-4-4v-9l4-4v-1h-1Z M23,23H9V9H23V23Z" />
+f           <path fill="#90caf9" d="M17,16.5c-0.3,0-0.5,0.2-0.5,0.5v1c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-1c0-0.3-0.2-0.5-0.5-0.5Z" />
+            <path fill="#90caf9" d="M19,17.5c-0.3,0-0.5,0.2-0.5,0.5v1c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-1c0-0.3-0.2-0.5-0.5-0.5Z" />
+            <path fill="#90caf9" d="M14,14.5c-0.6,0-1,0.4-1,1v1c0,0.6,0.4,1,1,1h1c0.6,0,1-0.4,1-1v-1c0-0.6-0.4-1-1-1h-1Zm0.5,2.5h-0.5c-0.3,0-0.5-0.2-0.5-0.5v-1c0-0.3,0.2-0.5,0.5-0.5h1c0.3,0,0.5,0.2,0.5,0.5v1c0,0.3-0.2,0.5-0.5,0.5h-0.5Z" />
+            <path fill="#90caf9" d="M16.5,12c-0.3,0-0.5,0.2-0.5,0.5v1c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-1c0-0.3-0.2-0.5-0.5-0.5Z" />
+            <path fill="#90caf9" d="M19.5,14c-0.3,0-0.5,0.2-0.5,0.5v1c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-1c0-0.3-0.2-0.5-0.5-0.5Z" />
+            <path fill="#90caf9" d="M13.5,12c-0.3,0-0.5,0.2-0.5,0.5v1c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-1c0-0.3-0.2-0.5-0.5-0.5Z" />
+            <path fill="#90caf9" d="M11.5,14c-0.3,0-0.5,0.2-0.5,0.5v1c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-1c0-0.3-0.2-0.5-0.5-0.5Z" />
+            <path fill="#90caf9" d="M13,17.5c-0.3,0-0.5,0.2-0.5,0.5v1c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-1c0-0.3-0.2-0.5-0.5-0.5Z" />
+            <path fill="#90caf9" d="M10,17.5c-0.3,0-0.5,0.2-0.5,0.5v1c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-1c0-0.3-0.2-0.5-0.5-0.5Z" />
+            <path fill="#90caf9" d="M15,19.5c-0.6,0-1,0.4-1,1v1c0,0.6,0.4,1,1,1h1c0.6,0,1-0.4,1-1v-1c0-0.6-0.4-1-1-1h-1Zm0.5,2.5h-0.5c-0.3,0-0.5-0.2-0.5-0.5v-1c0-0.3,0.2-0.5,0.5-0.5h1c0.3,0,0.5,0.2,0.5,0.5v1c0,0.3-0.2,0.5-0.5,0.5h-0.5Z" />
+            <path fill="#90caf9" d="M11,19.5c-0.6,0-1,0.4-1,1v1c0,0.6,0.4,1,1,1h1c0.6,0,1-0.4,1-1v-1c0-0.6-0.4-1-1-1h-1Zm0.5,2.5h-0.5c-0.3,0-0.5-0.2-0.5-0.5v-1c0-0.3,0.2-0.5,0.5-0.5h1c0.3,0,0.5,0.2,0.5,0.5v1c0,0.3-0.2,0.5-0.5,0.5h-0.5Z" />
+        </g>
+        <text x="35" y="22" fill="#1e88e5" style={{ fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold' }}>
+            BlueSquare<tspan fill="#42a5f5">A</tspan><tspan fill="#90caf9">i</tspan>
+        </text>
+    </svg>
+);
 
 const navLinksSq = [
   { href: '#home', label: 'Kryefaqja' },
@@ -115,8 +143,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
     )}>
       <div className="container flex h-20 items-center">
         <Link href="#home" onClick={(e) => handleLinkClick(e, '#home')} className="mr-6 flex items-center space-x-2">
-          <BrainCircuit className="h-8 w-8 text-primary" />
-          <span className="text-2xl font-bold font-headline inline-block">Blue Square AI</span>
+          <Logo className="h-8 w-auto" />
         </Link>
         <nav className="hidden md:flex items-center space-x-6">
           {renderNavLinks()}
@@ -132,8 +159,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
             <SheetContent side="left" className="w-full max-w-xs bg-card">
               <div className="flex flex-col space-y-6 pt-10">
                 <Link href="/" className="flex items-center space-x-2 mb-4" onClick={() => setSheetOpen(false)}>
-                  <BrainCircuit className="h-8 w-8 text-primary" />
-                  <span className="text-2xl font-bold font-headline">Blue Square AI</span>
+                  <Logo className="h-8 w-auto" />
                 </Link>
                 {renderNavLinks(true)}
               </div>
