@@ -10,7 +10,7 @@ export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
       cta: "Mëso Më Shumë",
     },
     en: {
-      headline: "Bring Smart Technology to Your Business",
+      headline: "Bring Smart Business & Technology to Your Business",
       subheadline: "Blue Square AI creates intelligent solutions that automate, monitor, and optimize every aspect of your business.",
       cta: "Learn More"
     }
