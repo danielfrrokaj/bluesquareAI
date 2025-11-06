@@ -5,32 +5,29 @@ import { Mail, Phone } from 'lucide-react';
 
 const Logo = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 32" width={130} height={32} {...props}>
-        <g>
-            <path fill="#0d47a1" d="M2.5,2.5v27h27v-27h-27Zm24.5,24.5h-22v-22h22v22Z" />
-            <path fill="#1565c0" d="M4,4V28H28V4H4Zm21.5,21.5h-19v-19h19v19Z" />
-            <path fill="#42a5f5" d="M5.5,5.5v21h21v-21h-21Zm18.5,18.5h-16v-16h16v16Z" />
-            <path fill="#1976d2" d="M7,7V25H25V7H7Zm15.5,15.5h-13v-13h13v13Z" />
-            <path fill="#0d47a1" d="M12,12v8h8v-8h-8Zm5.5,5.5h-3v-3h3v3Z" />
-            <path fill="#1e88e5" d="M29.5,2.5l-4,4h-21l-4-4h-0.5v0.5l4,4v21l-4,4v0.5h0.5l4-4h21l4,4h0.5v-0.5l-4-4v-21l4-4v-0.5h-0.5Z M28,28H4V4H28V28Z" />
-            <path fill="#1e88e5" d="M25,7l-4,4h-9l-4-4h-1v1l4,4v9l-4,4v1h1l4-4h9l4,4h1v-1l-4-4v-9l4-4v-1h-1Z M23,23H9V9H23V23Z" />
-f           <path fill="#90caf9" d="M17,16.5c-0.3,0-0.5,0.2-0.5,0.5v1c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-1c0-0.3-0.2-0.5-0.5-0.5Z" />
-            <path fill="#90caf9" d="M19,17.5c-0.3,0-0.5,0.2-0.5,0.5v1c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-1c0-0.3-0.2-0.5-0.5-0.5Z" />
-            <path fill="#90caf9" d="M14,14.5c-0.6,0-1,0.4-1,1v1c0,0.6,0.4,1,1,1h1c0.6,0,1-0.4,1-1v-1c0-0.6-0.4-1-1-1h-1Zm0.5,2.5h-0.5c-0.3,0-0.5-0.2-0.5-0.5v-1c0-0.3,0.2-0.5,0.5-0.5h1c0.3,0,0.5,0.2,0.5,0.5v1c0,0.3-0.2,0.5-0.5,0.5h-0.5Z" />
-            <path fill="#90caf9" d="M16.5,12c-0.3,0-0.5,0.2-0.5,0.5v1c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-1c0-0.3-0.2-0.5-0.5-0.5Z" />
-            <path fill="#90caf9" d="M19.5,14c-0.3,0-0.5,0.2-0.5,0.5v1c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-1c0-0.3-0.2-0.5-0.5-0.5Z" />
-            <path fill="#90caf9" d="M13.5,12c-0.3,0-0.5,0.2-0.5,0.5v1c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-1c0-0.3-0.2-0.5-0.5-0.5Z" />
-            <path fill="#90caf9" d="M11.5,14c-0.3,0-0.5,0.2-0.5,0.5v1c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-1c0-0.3-0.2-0.5-0.5-0.5Z" />
-            <path fill="#90caf9" d="M13,17.5c-0.3,0-0.5,0.2-0.5,0.5v1c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-1c0-0.3-0.2-0.5-0.5-0.5Z" />
-            <path fill="#90caf9" d="M10,17.5c-0.3,0-0.5,0.2-0.5,0.5v1c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-1c0-0.3-0.2-0.5-0.5-0.5Z" />
-            <path fill="#90caf9" d="M15,19.5c-0.6,0-1,0.4-1,1v1c0,0.6,0.4,1,1,1h1c0.6,0,1-0.4,1-1v-1c0-0.6-0.4-1-1-1h-1Zm0.5,2.5h-0.5c-0.3,0-0.5-0.2-0.5-0.5v-1c0-0.3,0.2-0.5,0.5-0.5h1c0.3,0,0.5,0.2,0.5,0.5v1c0,0.3-0.2,0.5-0.5,0.5h-0.5Z" />
-            <path fill="#90caf9" d="M11,19.5c-0.6,0-1,0.4-1,1v1c0,0.6,0.4,1,1,1h1c0.6,0,1-0.4,1-1v-1c0-0.6-0.4-1-1-1h-1Zm0.5,2.5h-0.5c-0.3,0-0.5-0.2-0.5-0.5v-1c0-0.3,0.2-0.5,0.5-0.5h1c0.3,0,0.5,0.2,0.5,0.5v1c0,0.3-0.2,0.5-0.5,0.5h-0.5Z" />
-        </g>
-        <text x="35" y="22" fill="#1e88e5" style={{ fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold' }}>
-            BlueSquare<tspan fill="#42a5f5">A</tspan><tspan fill="#90caf9">i</tspan>
+        <defs>
+            <linearGradient id="logo-bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style={{stopColor: '#1e88e5'}} />
+                <stop offset="100%" style={{stopColor: '#0d47a1'}} />
+            </linearGradient>
+            <linearGradient id="logo-text-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style={{stopColor: '#1565c0'}} />
+                <stop offset="50%" style={{stopColor: '#42a5f5'}} />
+                <stop offset="100%" style={{stopColor: '#90caf9'}} />
+            </linearGradient>
+        </defs>
+        <rect width="32" height="32" rx="6" fill="url(#logo-bg-gradient)" />
+        <path fill="none" stroke="#000" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" d="M10 13a3 3 0 01-3-3m-1 8a3 3 0 003-3m10 3a3 3 0 013-3m-12-4a3 3 0 01-3 3m7 5a3 3 0 00-3 3m4-11a3 3 0 013 3M16 8a4 4 0 00-8 0m8 16a4 4 0 01-8 0M8 16a4 4 0 000-8 4 4 0 000 8zm16 0a4 4 0 010-8 4 4 0 010 8z" transform="scale(0.6) translate(10, 10)" />
+        <circle cx="11.5" cy="11.5" r="1" fill="#000" transform="scale(0.6) translate(10, 10)" />
+        <circle cx="20.5" cy="11.5" r="1" fill="#000" transform="scale(0.6) translate(10, 10)" />
+        <circle cx="11.5" cy="20.5" r="1" fill="#000" transform="scale(0.6) translate(10, 10)" />
+        <circle cx="20.5" cy="20.5" r="1" fill="#000" transform="scale(0.6) translate(10, 10)" />
+        <circle cx="16" cy="16" r="1.5" fill="#000" transform="scale(0.6) translate(10, 10)" />
+        <text x="38" y="22" fill="url(#logo-text-gradient)" style={{ fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold' }}>
+            BlueSquareAI
         </text>
     </svg>
 );
-
 
 export function Footer({ lang }: { lang: 'en' | 'sq' }) {
     const content = {
