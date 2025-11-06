@@ -20,11 +20,11 @@ export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
   return (
     <section id="home" className="relative w-full h-[80vh] min-h-[500px] flex items-center justify-center text-center text-primary-foreground overflow-hidden">
       <Image
-        src="https://images.unsplash.com/photo-1738082956254-1dd63ad1db71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMG5ldHdvcmt8ZW58MHx8fHwxNzYyNDI3NTg0fDA&ixlib=rb-4.1.0&q=80&w=1080"
+        src="https://images.unsplash.com/photo-1518770660439-4636190af475?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhYnN0cmFjdCUyMHRlY2hub2xvZ3l8ZW58MHx8fHwxNzYyNDE3ODU1fDA&ixlib=rb-4.1.0&q=80&w=1080"
         alt="Abstract AI network background"
         fill
         className="object-cover"
-        data-ai-hint="abstract network"
+        data-ai-hint="abstract technology"
         priority
       />
       <div className="absolute inset-0 bg-primary/70 backdrop-brightness-75" />
