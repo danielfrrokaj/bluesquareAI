@@ -33,8 +33,7 @@ export async function submitContactForm(formData: { name: string; email: string;
 
   const { name, email, message } = parsed.data;
 
-  // IMPORTANT: It's highly recommended to move the API key to an environment variable.
-  const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
+  const resend = new Resend('re_Mvd9e73R_6b6Sb7qGz8dh1Y4jGCX7mw5Y');
 
   try {
     await resend.emails.send({
