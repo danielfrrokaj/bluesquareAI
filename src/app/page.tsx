@@ -5,7 +5,6 @@ import { ServicesSection } from '@/components/sections/services-section';
 import { ProductsSection } from '@/components/sections/products-section';
 import { VisionSection } from '@/components/sections/vision-section';
 import { Chatbot } from '@/components/chatbot';
-import { ContentGeneratorSection } from '@/components/sections/content-generator-section';
 
 export default function Home() {
   return (
@@ -15,7 +14,6 @@ export default function Home() {
         <HeroSection />
         <ServicesSection />
         <ProductsSection />
-        <ContentGeneratorSection />
         <VisionSection />
       </main>
       <Chatbot />
