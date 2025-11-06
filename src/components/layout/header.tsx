@@ -55,6 +55,7 @@ export function Header({ lang }: HeaderProps) {
   const navLinks = [
     { href: '#products', label: t.products },
     { href: '#vision', label: t.vision },
+    { href: '#contact', label: t.contact },
   ];
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -102,9 +103,11 @@ export function Header({ lang }: HeaderProps) {
           ))}
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-4">
-          <Button className="hidden sm:inline-flex" asChild>
-            <Link href="#contact">{t.contact}</Link>
-          </Button>
+           <div className="hidden sm:flex items-center gap-2 text-sm">
+             <Link href="?lang=sq" className={cn("hover:text-primary transition-colors", lang === 'sq' && 'text-primary font-semibold')}>AL</Link>
+             <span className="text-muted-foreground">/</span>
+             <Link href="?lang=en" className={cn("hover:text-primary transition-colors", lang === 'en' && 'text-primary font-semibold')}>EN</Link>
+           </div>
           <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
@@ -145,9 +148,12 @@ export function Header({ lang }: HeaderProps) {
                     {link.label}
                   </Link>
                 ))}
-                <Button asChild className="mt-4">
-                   <Link href="#contact" onClick={(e) => handleLinkClick(e, '#contact')}>{t.contact}</Link>
-                </Button>
+
+                 <div className="flex items-center gap-2 text-lg font-medium pt-4">
+                  <Link href="?lang=sq" onClick={() => setSheetOpen(false)} className={cn("hover:text-primary transition-colors", lang === 'sq' && 'text-primary font-semibold')}>AL</Link>
+                  <span className="text-muted-foreground">/</span>
+                  <Link href="?lang=en" onClick={() => setSheetOpen(false)} className={cn("hover:text-primary transition-colors", lang === 'en' && 'text-primary font-semibold')}>EN</Link>
+                </div>
               </div>
             </SheetContent>
           </Sheet>
