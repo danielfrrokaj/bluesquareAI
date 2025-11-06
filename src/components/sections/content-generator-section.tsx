@@ -83,90 +83,88 @@ export function ContentGeneratorSection() {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="topic"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Tema</FormLabel>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="topic"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tema</FormLabel>
+                        <FormControl>
+                          <Input placeholder="p.sh. Marketimi dixhital për hotelet" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="type"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tipi i Përmbajtjes</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <Input placeholder="p.sh. Marketimi dixhital për hotelet" {...field} />
+                            <SelectTrigger>
+                              <SelectValue placeholder="Zgjidhni tipin" />
+                            </SelectTrigger>
                           </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="type"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Tipi i Përmbajtjes</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Zgjidhni tipin" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="website description">Përshkrim Faqeje</SelectItem>
-                              <SelectItem value="blog post">Postim Blogu</SelectItem>
-                              <SelectItem value="SEO content">Përmbajtje SEO</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                     <FormField
-                      control={form.control}
-                      name="keywords"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Fjalë Kyçe (opsionale)</FormLabel>
-                          <FormControl>
-                            <Input placeholder="p.sh. turizëm, rezervime, verë" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                     <FormField
-                      control={form.control}
-                      name="tone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Toni (opsional)</FormLabel>
-                          <FormControl>
-                            <Input placeholder="p.sh. Profesional, Miqësor, Argëtues" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit" disabled={isLoading} className="w-full">
-                      {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      {isLoading ? 'Duke Gjeneruar...' : 'Gjenero Përmbajtje'}
-                    </Button>
-                  </form>
+                          <SelectContent>
+                            <SelectItem value="website description">Përshkrim Faqeje</SelectItem>
+                            <SelectItem value="blog post">Postim Blogu</SelectItem>
+                            <SelectItem value="SEO content">Përmbajtje SEO</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                   <FormField
+                    control={form.control}
+                    name="keywords"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Fjalë Kyçe (opsionale)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="p.sh. turizëm, rezervime, verë" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                   <FormField
+                    control={form.control}
+                    name="tone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Toni (opsional)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="p.sh. Profesional, Miqësor, Argëtues" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" disabled={isLoading} className="w-full">
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {isLoading ? 'Duke Gjeneruar...' : 'Gjenero Përmbajtje'}
+                  </Button>
                 </div>
                 <div className="flex flex-col">
-                  <FormItem>
-                    <FormLabel>Përmbajtja e Gjeneruar</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        readOnly
-                        value={generatedContent}
-                        placeholder="Këtu do të shfaqet përmbajtja e gjeneruar nga AI..."
-                        className="flex-grow mt-2 min-h-[250px] resize-none"
-                      />
-                    </FormControl>
-                  </FormItem>
-                </div>
-              </div>
+                    <FormItem className="flex flex-col flex-grow">
+                      <FormLabel>Përmbajtja e Gjeneruar</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          readOnly
+                          value={generatedContent}
+                          placeholder="Këtu do të shfaqet përmbajtja e gjeneruar nga AI..."
+                          className="flex-grow mt-2 min-h-[250px] resize-none"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  </div>
+              </form>
             </Form>
           </CardContent>
         </Card>
