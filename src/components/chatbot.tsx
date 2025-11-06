@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Bot, Send, User, X, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetTrigger } from '@/components/ui/sheet';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { handleChatbotQuery } from '@/app/actions';
@@ -15,17 +15,42 @@ type Message = {
   content: string;
 };
 
-export function Chatbot() {
+type ChatbotProps = {
+  lang: 'en' | 'sq';
+};
+
+const translations = {
+  en: {
+    greeting: "Hello! How can I help you today?",
+    placeholder: "Type your message...",
+    error: "An error occurred.",
+    submit: "Send"
+  },
+  sq: {
+    greeting: 'Përshëndetje! Si mund t\'ju ndihmoj sot?',
+    placeholder: 'Shkruani mesazhin tuaj...',
+    error: 'Ndodhi një gabim.',
+    submit: 'Dërgo'
+  },
+};
+
+export function Chatbot({ lang }: ChatbotProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Përshëndetje! Si mund t\'ju ndihmoj sot?',
+      content: translations[lang].greeting,
     },
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const t = translations[lang];
+
+  useEffect(() => {
+    setMessages([{ role: 'assistant', content: t.greeting }]);
+  }, [lang, t.greeting]);
+
 
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
@@ -56,7 +81,7 @@ export function Chatbot() {
       const assistantMessage: Message = { role: 'assistant', content: result.response };
       setMessages((prev) => [...prev, assistantMessage]);
     } else {
-      const errorMessage: Message = { role: 'assistant', content: result.error || 'Ndodhi një gabim.' };
+      const errorMessage: Message = { role: 'assistant', content: result.error || t.error };
       setMessages((prev) => [...prev, errorMessage]);
     }
     
@@ -137,13 +162,13 @@ export function Chatbot() {
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Shkruani mesazhin tuaj..."
+                placeholder={t.placeholder}
                 autoComplete="off"
                 disabled={isLoading}
               />
               <Button type="submit" size="icon" disabled={isLoading || !input.trim()}>
                 <Send className="h-4 w-4" />
-                <span className="sr-only">Send</span>
+                <span className="sr-only">{t.submit}</span>
               </Button>
             </form>
           </SheetFooter>

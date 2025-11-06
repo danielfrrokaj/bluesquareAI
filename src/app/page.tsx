@@ -6,18 +6,20 @@ import { ProductsSection } from '@/components/sections/products-section';
 import { VisionSection } from '@/components/sections/vision-section';
 import { Chatbot } from '@/components/chatbot';
 
-export default function Home() {
+export default function Home({ searchParams }: { searchParams: { lang?: string } }) {
+  const lang = searchParams.lang === 'sq' ? 'sq' : 'en';
+
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      <Header lang={lang} />
       <main className="flex-1">
-        <HeroSection />
-        <ServicesSection />
-        <ProductsSection />
-        <VisionSection />
+        <HeroSection lang={lang} />
+        <ServicesSection lang={lang} />
+        <ProductsSection lang={lang} />
+        <VisionSection lang={lang} />
       </main>
-      <Chatbot />
-      <Footer />
+      <Chatbot lang={lang} />
+      <Footer lang={lang} />
     </div>
   );
 }

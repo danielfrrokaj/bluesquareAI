@@ -1,7 +1,30 @@
 import Link from 'next/link';
 import { BrainCircuit } from 'lucide-react';
 
-export function Footer() {
+type FooterProps = {
+  lang: 'en' | 'sq';
+};
+
+const translations = {
+  en: {
+    tagline: 'We bring smart technology to every business—fast, beautiful, and affordable.',
+    copyright: `© ${new Date().getFullYear()} Blue Square AI. All rights reserved.`,
+    locations: 'Locations:',
+    albania: 'Albania',
+    international: 'International',
+  },
+  sq: {
+    tagline: 'Ne sjellim teknologjinë e zgjuar në çdo biznes — shpejt, bukur dhe me kosto të ulët.',
+    copyright: `© ${new Date().getFullYear()} Blue Square AI. Të gjitha të drejtat e rezervuara.`,
+    locations: 'Vendndodhjet:',
+    albania: 'Shqipëri',
+    international: 'Ndërkombëtar',
+  },
+};
+
+
+export function Footer({ lang }: FooterProps) {
+  const t = translations[lang];
   return (
     <footer id="contact" className="bg-card border-t">
       <div className="container py-8 flex flex-col items-center justify-center text-center">
@@ -10,10 +33,15 @@ export function Footer() {
           <span className="text-2xl font-bold font-headline">Blue Square AI</span>
         </Link>
         <p className="max-w-md text-muted-foreground mb-4">
-          Ne sjellim teknologjinë e zgjuar në çdo biznes — shpejt, bukur dhe me kosto të ulët.
+          {t.tagline}
         </p>
+        <div className="flex items-center gap-4 mb-4 text-sm text-muted-foreground">
+            <span>{t.locations}</span>
+            <Link href="?lang=sq" className="hover:text-primary transition-colors">{t.albania}</Link>
+            <Link href="?lang=en" className="hover:text-primary transition-colors">{t.international}</Link>
+        </div>
         <p className="text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} Blue Square AI. Të gjitha të drejtat e rezervuara.
+         {t.copyright}
         </p>
       </div>
     </footer>

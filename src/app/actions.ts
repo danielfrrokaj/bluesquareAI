@@ -8,6 +8,6 @@ export async function handleChatbotQuery(history: { role: string; content: strin
     return { success: true, response: result.response };
   } catch (error) {
     console.error(error);
-    return { success: false, error: 'Pati një problem gjatë komunikimit me asistentin. Ju lutem provoni përsëri.' };
+    return { success: false, error: 'There was a problem communicating with the assistant. Please try again.' };
   }
 }
