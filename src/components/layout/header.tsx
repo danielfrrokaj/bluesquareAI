@@ -2,6 +2,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -14,32 +15,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ChevronDown } from 'lucide-react';
-
-const Logo = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 32" width={130} height={32} {...props}>
-        <defs>
-            <linearGradient id="logo-bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style={{stopColor: '#1e88e5'}} />
-                <stop offset="100%" style={{stopColor: '#0d47a1'}} />
-            </linearGradient>
-            <linearGradient id="logo-text-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style={{stopColor: '#1565c0'}} />
-                <stop offset="50%" style={{stopColor: '#42a5f5'}} />
-                <stop offset="100%" style={{stopColor: '#90caf9'}} />
-            </linearGradient>
-        </defs>
-        <rect width="32" height="32" rx="6" fill="url(#logo-bg-gradient)" />
-        <path fill="none" stroke="#000" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" d="M10 13a3 3 0 01-3-3m-1 8a3 3 0 003-3m10 3a3 3 0 013-3m-12-4a3 3 0 01-3 3m7 5a3 3 0 00-3 3m4-11a3 3 0 013 3M16 8a4 4 0 00-8 0m8 16a4 4 0 01-8 0M8 16a4 4 0 000-8 4 4 0 000 8zm16 0a4 4 0 010-8 4 4 0 010 8z" transform="scale(0.6) translate(10, 10)" />
-        <circle cx="11.5" cy="11.5" r="1" fill="#000" transform="scale(0.6) translate(10, 10)" />
-        <circle cx="20.5" cy="11.5" r="1" fill="#000" transform="scale(0.6) translate(10, 10)" />
-        <circle cx="11.5" cy="20.5" r="1" fill="#000" transform="scale(0.6) translate(10, 10)" />
-        <circle cx="20.5" cy="20.5" r="1" fill="#000" transform="scale(0.6) translate(10, 10)" />
-        <circle cx="16" cy="16" r="1.5" fill="#000" transform="scale(0.6) translate(10, 10)" />
-        <text x="38" y="22" fill="url(#logo-text-gradient)" style={{ fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold' }}>
-            BlueSquareAI
-        </text>
-    </svg>
-);
 
 const navLinksSq = [
   { href: '#home', label: 'Kryefaqja' },
@@ -89,7 +64,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
 
   const renderNavLinks = (isMobile = false) => {
     return navLinks.map((link) => {
-      if (link.sublinks) {
+      if (link.label === 'Shërbimet' || link.label === 'Services') {
         return (
           <DropdownMenu key={link.href}>
             <DropdownMenuTrigger asChild>
@@ -99,11 +74,21 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              {link.sublinks.map(sublink => (
-                <DropdownMenuItem key={sublink.href} asChild>
-                  <Link href={sublink.href + `?lang=${lang}`}>{sublink.label}</Link>
+                <DropdownMenuItem asChild>
+                  <Link href={`/services/ai-website-integration?lang=${lang}`}>{lang === 'sq' ? 'Integrim i AI në Website' : 'AI Website Integration'}</Link>
                 </DropdownMenuItem>
-              ))}
+                <DropdownMenuItem asChild>
+                  <Link href={`/services/management-systems?lang=${lang}`}>{lang === 'sq' ? 'Sisteme Menaxhimi & Monitorimi' : 'Management & Monitoring Systems'}</Link>
+                </DropdownMenuItem>
+                 <DropdownMenuItem asChild>
+                  <Link href={`/services/communication-automation?lang=${lang}`}>{lang === 'sq' ? 'Automatizim Komunikimi' : 'Communication Automation'}</Link>
+                </DropdownMenuItem>
+                 <DropdownMenuItem asChild>
+                  <Link href={`/services/local-business-solutions?lang=${lang}`}>{lang === 'sq' ? 'Zgjidhje për Biznese Lokale' : 'Solutions for Local Businesses'}</Link>
+                </DropdownMenuItem>
+                 <DropdownMenuItem asChild>
+                  <Link href={`/services/tourism-ai?lang=${lang}`}>{lang === 'sq' ? 'AI për Turizëm & Shërbime' : 'AI for Tourism & Services'}</Link>
+                </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -128,7 +113,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
     )}>
       <div className="container flex h-20 items-center">
         <Link href="#home" onClick={(e) => handleLinkClick(e, '#home')} className="mr-6 flex items-center space-x-2">
-          <Logo className="h-8 w-auto" />
+           <Image src="/logo.png" alt="Blue Square AI Logo" width={130} height={32} />
         </Link>
         <nav className="hidden md:flex items-center space-x-6">
           {renderNavLinks()}
@@ -144,7 +129,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
             <SheetContent side="left" className="w-full max-w-xs bg-card">
               <div className="flex flex-col space-y-6 pt-10">
                 <Link href="/" className="flex items-center space-x-2 mb-4" onClick={() => setSheetOpen(false)}>
-                  <Logo className="h-8 w-auto" />
+                  <Image src="/logo.png" alt="Blue Square AI Logo" width={130} height={32} />
                 </Link>
                 {renderNavLinks(true)}
               </div>
