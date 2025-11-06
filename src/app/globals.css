@@ -10,19 +10,19 @@
     --card-foreground: 222 50% 90%;
     --popover: 226 25% 14%;
     --popover-foreground: 222 50% 90%;
-    --primary: 260 85% 65%; /* Bright Purple */
+    --primary: 215 85% 55%; /* Bright Blue */
     --primary-foreground: 210 40% 98%;
-    --secondary: 215 65% 55%; /* Bright Blue */
+    --secondary: 220 75% 70%; /* Lighter Blue */
     --secondary-foreground: 210 40% 98%;
     --muted: 226 25% 20%;
     --muted-foreground: 222 50% 60%;
-    --accent: 140 80% 60%; /* Bright Green */
+    --accent: 210 90% 65%; /* Sky Blue */
     --accent-foreground: 226 25% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 226 25% 20%;
     --input: 226 25% 20%;
-    --ring: 260 85% 70%;
+    --ring: 215 85% 60%;
     --radius: 0.8rem;
   }
 }
