@@ -2,10 +2,21 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
+import { Inter, Space_Grotesk as SpaceGrotesk } from 'next/font/google'
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
+
+const spaceGrotesk = SpaceGrotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+})
 
 export const metadata: Metadata = {
-  title: 'Blue Square AI',
-  description: 'Intelligent solutions for small and medium businesses.',
+  title: 'Sasico - Your Digital Assistant, Always On',
+  description: 'Revolutionize the way you communicate with an AI-powered chatbot that offers multilingual support, seamless integration, and human-like conversations.',
 };
 
 export default function RootLayout({
@@ -15,12 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
-      </head>
-      <body className={cn('min-h-screen bg-background font-body antialiased')}>
+      <body className={cn('min-h-screen bg-background font-body antialiased', inter.variable, spaceGrotesk.variable)}>
         {children}
         <Toaster />
       </body>

@@ -1,74 +1,119 @@
+'use client';
+
 import Link from 'next/link';
-import { BrainCircuit, Phone, Mail } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Bot, Send, Loader2 } from 'lucide-react';
 
-type FooterProps = {
-  lang: 'en' | 'sq';
-};
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+import { subscribeToNewsletter } from '@/app/actions';
 
-const translations = {
-  en: {
-    tagline: 'We bring smart technology to every business—fast, beautiful, and affordable.',
-    copyright: `© ${new Date().getFullYear()} Blue Square AI. All rights reserved.`,
-    locations: 'Locations',
-    albania: 'Albania',
-    international: 'International',
-    contact: 'Contact',
-  },
-  sq: {
-    tagline: 'Ne sjellim teknologjinë e zgjuar në çdo biznes — shpejt, bukur dhe me kosto të ulët.',
-    copyright: `© ${new Date().getFullYear()} Blue Square AI. Të gjitha të drejtat e rezervuara.`,
-    locations: 'Vendndodhjet',
-    albania: 'Shqipëri',
-    international: 'Ndërkombëtar',
-    contact: 'Kontakt',
-  },
-};
+const newsletterSchema = z.object({
+  email: z.string().email('Please enter a valid email.'),
+});
 
+export function Footer() {
+  const { toast } = useToast();
+  const form = useForm<z.infer<typeof newsletterSchema>>({
+    resolver: zodResolver(newsletterSchema),
+    defaultValues: { email: '' },
+  });
 
-export function Footer({ lang }: FooterProps) {
-  const t = translations[lang];
+  const { isSubmitting } = form.formState;
+
+  async function onSubmit(values: z.infer<typeof newsletterSchema>) {
+    const result = await subscribeToNewsletter(values);
+    if (result.success) {
+      toast({
+        title: 'Subscribed!',
+        description: "Thanks for joining our newsletter. You'll be the first to know about new features.",
+      });
+      form.reset();
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh!',
+        description: result.error || 'There was a problem with your subscription.',
+      });
+    }
+  }
+
+  const productLinks = [
+    { label: 'Features', href: '#features' },
+    { label: 'Integrations', href: '#features' },
+    { label: 'Download', href: '#' },
+    { label: 'Pricing', href: '#pricing' },
+  ];
+
+  const companyLinks = [
+    { label: 'About Us', href: '#' },
+    { label: 'Latest Blog', href: '#' },
+    { label: 'Our Clients', href: '#testimonials' },
+    { label: 'Careers', href: '#' },
+  ];
+
   return (
-    <footer className="bg-background border-t">
+    <footer className="bg-card border-t border-border/20">
       <div className="container py-12 px-4 md:px-6">
-        <div className="grid gap-8 md:grid-cols-3">
-          <div className="flex flex-col items-start gap-4">
-            <Link href={`/?lang=${lang}`} className="flex items-center space-x-2">
-              <BrainCircuit className="h-8 w-8 text-primary" />
-              <span className="text-2xl font-bold font-headline">Blue Square AI</span>
+        <div className="grid gap-8 md:grid-cols-12">
+          <div className="md:col-span-3 flex flex-col items-start gap-4">
+            <Link href="/" className="flex items-center space-x-2">
+              <Bot className="h-8 w-8 text-primary" />
+              <span className="text-2xl font-bold font-headline">Sasico</span>
             </Link>
-            <p className="max-w-xs text-muted-foreground">
-              {t.tagline}
-            </p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-2">
-              <div>
-                <h3 className="font-semibold mb-2 font-headline">{t.contact}</h3>
-                <div className="space-y-2 text-sm">
-                   <a href="tel:+355123456789" className="flex items-center gap-2 text-muted-foreground hover:text-primary">
-                    <Phone className="h-4 w-4" />
-                    +355 123 456 789
-                  </a>
-                  <a href="mailto:contact@bluesquare.ai" className="flex items-center gap-2 text-muted-foreground hover:text-primary">
-                    <Mail className="h-4 w-4" />
-                    contact@bluesquare.ai
-                  </a>
-                </div>
-              </div>
-               <div>
-                <h3 className="font-semibold mb-2 font-headline">{t.locations}</h3>
-                <div className="space-y-2 text-sm">
-                   <Link href="?lang=sq" className="flex items-center gap-2 text-muted-foreground hover:text-primary">
-                    {t.albania}
+          <div className="md:col-span-2">
+            <h3 className="font-semibold mb-4 font-headline">Product</h3>
+            <ul className="space-y-2">
+              {productLinks.map((link) => (
+                <li key={link.label}>
+                  <Link href={link.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                    {link.label}
                   </Link>
-                   <Link href="?lang=en" className="flex items-center gap-2 text-muted-foreground hover:text-primary">
-                    {t.international}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="md:col-span-2">
+            <h3 className="font-semibold mb-4 font-headline">Company</h3>
+            <ul className="space-y-2">
+              {companyLinks.map((link) => (
+                <li key={link.label}>
+                  <Link href={link.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                    {link.label}
                   </Link>
-                </div>
-              </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="md:col-span-5">
+            <h3 className="font-semibold mb-4 font-headline">Never miss an update — sign up today</h3>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-center gap-2">
+              <Input
+                {...form.register('email')}
+                placeholder="Enter your email"
+                className="flex-1 bg-background"
+                disabled={isSubmitting}
+              />
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? <Loader2 className="animate-spin" /> : <Send />}
+                <span className="sr-only">Subscribe</span>
+              </Button>
+            </form>
+            {form.formState.errors.email && (
+                <p className="text-destructive text-xs mt-2">{form.formState.errors.email.message}</p>
+            )}
           </div>
         </div>
-        <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
-         {t.copyright}
+        <div className="mt-8 border-t border-border/20 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
+          <p>Sasico, {new Date().getFullYear()} ©️ All rights reserved</p>
+          <div className="flex gap-4 mt-4 md:mt-0">
+            <Link href="#" className="hover:text-primary transition-colors">Terms & Conditions</Link>
+            <Link href="#" className="hover:text-primary transition-colors">Privacy Policy</Link>
+          </div>
         </div>
       </div>
     </footer>

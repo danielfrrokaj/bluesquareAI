@@ -4,48 +4,26 @@
 
 @layer base {
   :root {
-    --background: 222 68% 90%;
-    --foreground: 226 45% 15%;
-    --card: 222 68% 95%;
-    --card-foreground: 226 45% 15%;
-    --popover: 222 68% 95%;
-    --popover-foreground: 226 45% 15%;
-    --primary: 226 65% 32%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 222 60% 80%;
-    --secondary-foreground: 226 65% 32%;
-    --muted: 222 60% 85%;
-    --muted-foreground: 226 45% 35%;
-    --accent: 295 65% 28%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 222 60% 80%;
-    --input: 222 60% 85%;
-    --ring: 226 65% 32%;
-    --radius: 0.5rem;
-  }
-
-  .dark {
-    --background: 226 25% 10%;
-    --foreground: 222 50% 90%;
+    --background: 226 25% 10%; /* Dark Blue/Black */
+    --foreground: 222 50% 90%; /* Light Grey */
     --card: 226 25% 14%;
     --card-foreground: 222 50% 90%;
     --popover: 226 25% 14%;
     --popover-foreground: 222 50% 90%;
-    --primary: 222 68% 90%;
-    --primary-foreground: 226 65% 22%;
-    --secondary: 226 25% 20%;
-    --secondary-foreground: 222 50% 90%;
+    --primary: 260 85% 65%; /* Bright Purple */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 215 65% 55%; /* Bright Blue */
+    --secondary-foreground: 210 40% 98%;
     --muted: 226 25% 20%;
     --muted-foreground: 222 50% 60%;
-    --accent: 295 55% 70%;
+    --accent: 140 80% 60%; /* Bright Green */
     --accent-foreground: 226 25% 10%;
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 226 25% 20%;
     --input: 226 25% 20%;
-    --ring: 222 68% 90%;
+    --ring: 260 85% 70%;
+    --radius: 0.8rem;
   }
 }
 
@@ -57,25 +35,21 @@
     @apply bg-background text-foreground;
   }
   section {
-    @apply w-full py-12 md:py-24 lg:py-32;
+    @apply w-full py-16 md:py-24 lg:py-32;
+  }
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
   }
 }
 
 @layer utilities {
-  .fade-in {
-    animation: fadeIn 1s ease-in-out;
-  }
   .fade-in-up {
     animation: fadeInUp 0.8s ease-in-out forwards;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
   }
   @keyframes fadeInUp {
     from {
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(30px);
     }
     to {
       opacity: 1;

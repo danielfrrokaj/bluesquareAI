@@ -1,28 +1,64 @@
 {
   "placeholderImages": [
     {
-      "id": "hero-background",
-      "description": "Abstract AI network background",
-      "imageUrl": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMHRlY2h8ZW58MHx8fHwxNzYyMzQ5NTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "abstract tech"
+      "id": "hero-robot",
+      "description": "An illustration of a friendly AI robot assistant.",
+      "imageUrl": "https://images.unsplash.com/photo-1684369175833-4b445ad6bfb5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxBSSUyMHJvYm90fGVufDB8fHx8MTc2MjM4MTI3OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "AI robot"
     },
     {
-      "id": "product-image-1",
-      "description": "An image representing an AI assistant chat interface.",
-      "imageUrl": "https://images.unsplash.com/photo-1762340277380-04c2c30d0ef8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjaGF0JTIwaW50ZXJmYWNlfGVufDB8fHx8MTc2MjM3MDQ0Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "id": "testimonial-1",
+      "description": "Portrait of Daniel Rivera",
+      "imageUrl": "https://images.unsplash.com/photo-1624395213043-fa2e123b2656?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjI0MTg2MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "testimonial-2",
+      "description": "Portrait of Sean C. White",
+      "imageUrl": "https://images.unsplash.com/photo-1636377985931-898218afd306?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjI0MTg2MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "testimonial-3",
+      "description": "Portrait of Jessica Miller",
+      "imageUrl": "https://images.unsplash.com/photo-1546961329-78bef0414d7c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2MjMzOTU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "live-chat-interface",
+      "description": "An image of a live chat interface on a mobile device.",
+      "imageUrl": "https://images.unsplash.com/photo-1762330465857-07e4c81c0dfa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2hhdCUyMGludGVyZmFjZXxlbnwwfHx8fDE3NjIzNzA0NDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "chat interface"
     },
     {
-      "id": "product-image-2",
-      "description": "An image representing a smart camera monitoring a space.",
-      "imageUrl": "https://images.unsplash.com/photo-1549109926-58f039549485?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZWN1cml0eSUyMGNhbWVyYXxlbnwwfHx8fDE3NjI0MzA5NTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "security camera"
+      "id": "all-in-one-1",
+      "description": "Illustration for AI-Powered Automation.",
+      "imageUrl": "https://images.unsplash.com/photo-1761223956832-a1e341babb92?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMGF1dG9tYXRpb258ZW58MHx8fHwxNzYyNDUwNjk2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract automation"
     },
     {
-      "id": "product-image-3",
-      "description": "An image showing an automated booking system calendar.",
-      "imageUrl": "https://images.unsplash.com/photo-1703300450387-047da16a89c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxib29raW5nJTIwY2FsZW5kYXJ8ZW58MHx8fHwxNzYyNDE3OTMxfDA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "booking calendar"
+      "id": "all-in-one-2",
+      "description": "Illustration for Cutting-edge AI features.",
+      "imageUrl": "https://images.unsplash.com/photo-1562575214-da9fcf59b907?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YWJzdHJhY3QlMjB0ZWNofGVufDB8fHx8MTc2MjM0OTU0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract tech"
+    },
+    {
+      "id": "all-in-one-3",
+      "description": "Illustration for Smart Task Management.",
+      "imageUrl": "https://images.unsplash.com/photo-1667895622480-e0bd421a6fca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGNoZWNrbGlzdHxlbnwwfHx8fDE3NjI0NTA2OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract checklist"
+    },
+    {
+      "id": "all-in-one-4",
+      "description": "Illustration for Customer AI-powered chatbots.",
+      "imageUrl": "https://images.unsplash.com/photo-1673479590411-853c4c035091?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxhYnN0cmFjdCUyMGNoYXRib3R8ZW58MHx8fHwxNzYyNDUwNjk2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract chatbot"
+    },
+    {
+      "id": "all-in-one-5",
+      "description": "Illustration for Auto backup and recovery.",
+      "imageUrl": "https://images.unsplash.com/photo-1723740459534-3eeab86692e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGNsb3VkfGVufDB8fHx8MTc2MjM3MjEwOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract cloud"
     }
   ]
 }
