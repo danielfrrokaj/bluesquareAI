@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bot, LineChart, Code, Camera, MessageCircle, ShoppingCart, Plane } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const servicesSq = [
     {
@@ -72,7 +73,7 @@ export function ServicesSection({ lang }: { lang: 'en' | 'sq' }) {
     const currentContent = content[lang];
 
     return (
-        <section id="services" className="bg-card">
+        <section id="services" className="bg-card fade-in-up">
             <div className="container px-4 md:px-6">
                 <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
                     <div className="space-y-2">
