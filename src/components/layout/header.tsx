@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -20,7 +21,6 @@ import React from 'react';
 
 
 const navLinksSq = [
-  { href: '/#home', label: 'Kryefaqja' },
   { href: '/#products', label: 'Produktet' },
   { href: '/pricing', label: 'Çmimet'},
   { href: '/#vision', label: 'Vizioni' },
@@ -28,7 +28,6 @@ const navLinksSq = [
 ];
 
 const navLinksEn = [
-  { href: '/#home', label: 'Home' },
   { href: '/#products', label: 'Products' },
   { href: '/pricing', label: 'Pricing'},
   { href: '/#vision', label: 'Vision' },
@@ -104,9 +103,11 @@ const servicesSq = [
 export function Header({ lang }: { lang: 'en' | 'sq' }) {
   const [isSheetOpen, setSheetOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const router = useRouter();
+  
+  const homeLink = { href: '/#home', label: lang === 'sq' ? 'Kryefaqja' : 'Home' };
   const navLinks = lang === 'sq' ? navLinksSq : navLinksEn;
   const services = lang === 'sq' ? servicesSq : servicesEn;
-  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -134,15 +135,21 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
   };
 
   const renderNavLinks = (isMobile = false) => {
-    const mobileLinks = [
-      { href: '/#home', label: lang === 'sq' ? 'Kryefaqja' : 'Home' },
-      ...services.map(s => ({ href: `${s.href}?lang=${lang}`, label: s.title})),
-      ...navLinks.slice(1)
+    const allLinks = [
+      homeLink,
+      ...navLinks,
     ];
 
     if (isMobile) {
       return (
         <div className="flex flex-col space-y-4">
+          <Link
+            href={`${homeLink.href.startsWith('/#') ? '' : homeLink.href}?lang=${lang}${homeLink.href.startsWith('/#') ? homeLink.href.substring(1) : ''}`}
+            onClick={(e) => handleLinkClick(e, homeLink.href)}
+            className="text-lg px-4"
+          >
+            {homeLink.label}
+          </Link>
           <p className="font-bold text-lg px-4">{lang === 'sq' ? 'Shërbimet' : 'Services'}</p>
           {services.map((service) => (
             <Link key={service.href} href={`${service.href}?lang=${lang}`} className="text-muted-foreground hover:text-primary pl-8" onClick={() => setSheetOpen(false)}>
@@ -167,6 +174,16 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
     return (
        <NavigationMenu>
         <NavigationMenuList>
+            <NavigationMenuItem>
+               <Link href={`${homeLink.href.startsWith('/#') ? '' : homeLink.href}?lang=${lang}${homeLink.href.startsWith('/#') ? homeLink.href.substring(1) : ''}`} legacyBehavior passHref>
+                  <NavigationMenuLink 
+                    className={navigationMenuTriggerStyle()}
+                    onClick={(e) => handleLinkClick(e, homeLink.href)}
+                  >
+                    {homeLink.label}
+                  </NavigationMenuLink>
+                </Link>
+            </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuTrigger>{lang === 'sq' ? 'Shërbimet' : 'Services'}</NavigationMenuTrigger>
             <NavigationMenuContent>
