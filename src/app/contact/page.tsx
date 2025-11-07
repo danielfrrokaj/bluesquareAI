@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -238,7 +239,7 @@ export default function ContactPage({ searchParams }: { searchParams: { lang?: s
       <Footer lang={lang} />
        <style jsx>{`
         .map-iframe {
-          filter: grayscale(1) invert(0.9) brightness(0.8) hue-rotate(180deg) contrast(1.2);
+          filter: grayscale(1) invert(0.8) sepia(90%) hue-rotate(180deg) saturate(400%) brightness(0.9);
         }
       `}</style>
     </div>
