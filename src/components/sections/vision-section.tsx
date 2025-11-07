@@ -35,11 +35,11 @@ export function VisionSection({ lang }: { lang: 'en' | 'sq' }) {
                     </div>
                      <div className="relative h-64 md:h-96 w-full">
                         <Image
-                            src="https://png.pngtree.com/png-clipart/20240115/original/pngtree-3d-three-dimensional-transparent-blue-and-purple-planet-free-element-png-image_14117251.png"
+                            src="https://png.pngtree.com/png-vector/20240517/ourmid/pngtree-smartphone-technological-and-digital-future-mobile-phone-in-isometric-png-image_12475312.png"
                             alt="Abstract 3D planet"
                             fill
                             className="object-contain"
-                            data-ai-hint="abstract 3d planet"
+                            data-ai-hint="smartphone technology"
                         />
                     </div>
                 </div>
