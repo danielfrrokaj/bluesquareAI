@@ -16,7 +16,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import React from 'react';
 
 
@@ -24,14 +24,14 @@ const navLinksSq = [
   { href: '/#products', label: 'Produktet' },
   { href: '/pricing', label: 'Çmimet'},
   { href: '/#vision', label: 'Vizioni' },
-  { href: '/#contact', label: 'Kontakti' },
+  { href: '/contact', label: 'Kontakti' },
 ];
 
 const navLinksEn = [
   { href: '/#products', label: 'Products' },
   { href: '/pricing', label: 'Pricing'},
   { href: '/#vision', label: 'Vision' },
-  { href: '/#contact', label: 'Contact' },
+  { href: '/contact', label: 'Contact' },
 ];
 
 const servicesEn = [
@@ -104,8 +104,9 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
   const [isSheetOpen, setSheetOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   
-  const homeLink = { href: '/#home', label: lang === 'sq' ? 'Kryefaqja' : 'Home' };
+  const homeLink = { href: '/', label: lang === 'sq' ? 'Kryefaqja' : 'Home' };
   const navLinks = lang === 'sq' ? navLinksSq : navLinksEn;
   const services = lang === 'sq' ? servicesSq : servicesEn;
 
@@ -122,7 +123,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
       e.preventDefault();
       const targetId = href.substring(2);
       
-      if (window.location.pathname === '/') {
+      if (pathname === '/') {
         const targetElement = document.getElementById(targetId);
         if (targetElement) {
           targetElement.scrollIntoView({ behavior: 'smooth' });
@@ -130,21 +131,27 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
       } else {
         router.push(`/?lang=${lang}#${targetId}`);
       }
+    } else if (href.startsWith('/')) {
+        // Normal navigation for internal links
+        // No special handling needed, Link component will handle it
     }
     setSheetOpen(false);
   };
+  
+  const getFullHref = (href: string) => {
+    if (href.startsWith('/#')) {
+        return `/?lang=${lang}${href.substring(1)}`;
+    }
+    return `${href}?lang=${lang}`;
+  };
+
 
   const renderNavLinks = (isMobile = false) => {
-    const allLinks = [
-      homeLink,
-      ...navLinks,
-    ];
-
     if (isMobile) {
       return (
         <div className="flex flex-col space-y-4">
           <Link
-            href={`${homeLink.href.startsWith('/#') ? '' : homeLink.href}?lang=${lang}${homeLink.href.startsWith('/#') ? homeLink.href.substring(1) : ''}`}
+            href={getFullHref(homeLink.href)}
             onClick={(e) => handleLinkClick(e, homeLink.href)}
             className="text-lg px-4"
           >
@@ -152,7 +159,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
           </Link>
           <p className="font-bold text-lg px-4">{lang === 'sq' ? 'Shërbimet' : 'Services'}</p>
           {services.map((service) => (
-            <Link key={service.href} href={`${service.href}?lang=${lang}`} className="text-muted-foreground hover:text-primary pl-8" onClick={() => setSheetOpen(false)}>
+            <Link key={service.href} href={getFullHref(service.href)} className="text-muted-foreground hover:text-primary pl-8" onClick={() => setSheetOpen(false)}>
               {service.title}
             </Link>
           ))}
@@ -160,7 +167,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
           {navLinks.map((link) => (
              <Link
               key={link.href}
-              href={`${link.href.startsWith('/#') ? '' : link.href}?lang=${lang}${link.href.startsWith('/#') ? link.href.substring(1) : ''}`}
+              href={getFullHref(link.href)}
               onClick={(e) => handleLinkClick(e, link.href)}
               className="text-lg px-4"
             >
@@ -175,7 +182,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
        <NavigationMenu>
         <NavigationMenuList>
             <NavigationMenuItem>
-               <Link href={`${homeLink.href.startsWith('/#') ? '' : homeLink.href}?lang=${lang}${homeLink.href.startsWith('/#') ? homeLink.href.substring(1) : ''}`} legacyBehavior passHref>
+               <Link href={getFullHref(homeLink.href)} legacyBehavior passHref>
                   <NavigationMenuLink 
                     className={navigationMenuTriggerStyle()}
                     onClick={(e) => handleLinkClick(e, homeLink.href)}
@@ -192,7 +199,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
                   <ListItem
                     key={service.title}
                     title={service.title}
-                    href={`${service.href}?lang=${lang}`}
+                    href={getFullHref(service.href)}
                     icon={service.icon}
                   >
                     {service.description}
@@ -203,7 +210,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
           </NavigationMenuItem>
           {navLinks.map((link) => (
             <NavigationMenuItem key={link.href}>
-               <Link href={`${link.href.startsWith('/#') ? '' : link.href}?lang=${lang}${link.href.startsWith('/#') ? link.href.substring(1) : ''}`} legacyBehavior passHref>
+               <Link href={getFullHref(link.href)} legacyBehavior passHref>
                   <NavigationMenuLink 
                     className={navigationMenuTriggerStyle()}
                     onClick={(e) => handleLinkClick(e, link.href)}
@@ -224,7 +231,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
       isScrolled ? "border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" : "bg-transparent"
     )}>
       <div className="container flex h-20 items-center">
-        <Link href={`/?lang=${lang}#home`} onClick={(e) => handleLinkClick(e, '/#home')} className="mr-6 flex items-center space-x-2 font-bold text-2xl font-headline">
+        <Link href={getFullHref('/')} onClick={(e) => handleLinkClick(e, '/')} className="mr-6 flex items-center space-x-2 font-bold text-2xl font-headline">
            Blue Square AI
         </Link>
         <nav className="hidden md:flex items-center space-x-1">
@@ -240,7 +247,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
             </SheetTrigger>
             <SheetContent side="left" className="w-full max-w-xs bg-card">
               <div className="flex flex-col space-y-6 pt-10">
-                <Link href="/" className="flex items-center space-x-2 mb-4 font-bold text-2xl font-headline" onClick={() => setSheetOpen(false)}>
+                <Link href={getFullHref('/')} className="flex items-center space-x-2 mb-4 font-bold text-2xl font-headline" onClick={() => setSheetOpen(false)}>
                   Blue Square AI
                 </Link>
                 {renderNavLinks(true)}

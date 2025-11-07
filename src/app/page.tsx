@@ -6,7 +6,6 @@ import { HeroSection } from '@/components/sections/hero-section';
 import { ServicesSection } from '@/components/sections/services-section';
 import { ProductsSection } from '@/components/sections/products-section';
 import { VisionSection } from '@/components/sections/vision-section';
-import { ContactSection } from '@/components/sections/contact-section';
 import { Chatbot } from '@/components/chatbot';
 import { TestimonialsSection } from '@/components/sections/testimonials-section';
 
@@ -22,7 +21,6 @@ export default function Home({ searchParams }: { searchParams: { lang?: string }
         <ProductsSection lang={lang} />
         <TestimonialsSection lang={lang} />
         <VisionSection lang={lang} />
-        <ContactSection />
       </main>
       <Chatbot lang={lang} />
       <Footer lang={lang} />
