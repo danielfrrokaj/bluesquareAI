@@ -33,7 +33,7 @@ export function VisionSection({ lang }: { lang: 'en' | 'sq' }) {
                             {currentContent.text}
                         </p>
                     </div>
-                     <div className="relative h-64 md:h-96 w-full">
+                     <div className="relative h-64 md:h-80 w-full">
                         <Image
                             src="https://png.pngtree.com/png-vector/20240517/ourmid/pngtree-smartphone-technological-and-digital-future-mobile-phone-in-isometric-png-image_12475312.png"
                             alt="Abstract 3D planet"
