@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
@@ -70,7 +69,7 @@ export function TestimonialsSection({ lang }: { lang: 'en' | 'sq' }) {
     const isMobile = useIsMobile();
 
     const autoplayPlugin = useRef(
-        Autoplay({ delay: 3000, stopOnInteraction: true, stopOnMouseEnter: true, stopOnLastSnap: false })
+        Autoplay({ delay: 3000, stopOnInteraction: true, stopOnMouseEnter: true })
     );
 
 
