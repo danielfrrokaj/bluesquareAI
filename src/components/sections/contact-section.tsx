@@ -10,12 +10,13 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { submitContactForm } from '@/app/actions';
-import { Loader2, Mail, Phone, MapPin } from 'lucide-react';
+import { Loader2, Mail, Phone, MapPin, Instagram, Facebook, Linkedin } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
 import { useInView } from '@/hooks/use-in-view';
 import { useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
+import Link from 'next/link';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -103,6 +104,20 @@ export function ContactSection() {
                           </div>
                       </div>
                   </div>
+                </div>
+                 <div>
+                  <h3 className="text-2xl font-bold font-headline mb-4">Follow Us</h3>
+                   <div className="flex gap-4">
+                        <Link href="#" className="bg-primary/10 p-3 rounded-full text-primary hover:bg-primary hover:text-primary-foreground transition-colors">
+                            <Facebook className="h-6 w-6" />
+                        </Link>
+                        <Link href="#" className="bg-primary/10 p-3 rounded-full text-primary hover:bg-primary hover:text-primary-foreground transition-colors">
+                            <Instagram className="h-6 w-6" />
+                        </Link>
+                        <Link href="#" className="bg-primary/10 p-3 rounded-full text-primary hover:bg-primary hover:text-primary-foreground transition-colors">
+                            <Linkedin className="h-6 w-6" />
+                        </Link>
+                   </div>
                 </div>
             </div>
             <Card className="bg-card">
