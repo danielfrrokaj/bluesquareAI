@@ -2,7 +2,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { Mail, Phone } from 'lucide-react';
 
 export function Footer({ lang }: { lang: 'en' | 'sq' }) {
@@ -31,8 +30,8 @@ export function Footer({ lang }: { lang: 'en' | 'sq' }) {
       <div className="container py-12 px-4 md:px-6">
         <div className="grid gap-8 md:grid-cols-3">
             <div className="flex flex-col gap-4">
-                <Link href="/" className="flex items-center space-x-2">
-                    <Image src="/logo.png" alt="Blue Square AI Logo" width={130} height={32} />
+                <Link href="/" className="flex items-center space-x-2 font-bold text-2xl font-headline">
+                    Blue Square AI
                 </Link>
                 <p className="max-w-xs text-muted-foreground text-sm">
                     {currentContent.description}

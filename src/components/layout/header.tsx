@@ -2,8 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
-import { Menu } from 'lucide-react';
+import { Menu, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useState, useEffect } from 'react';
@@ -14,7 +13,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 
@@ -123,8 +121,8 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
       isScrolled ? "border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" : "bg-transparent"
     )}>
       <div className="container flex h-20 items-center">
-        <Link href={`/?lang=${lang}#home`} onClick={(e) => handleLinkClick(e, '/#home')} className="mr-6 flex items-center space-x-2">
-           <Image src="/logo.png" alt="Blue Square AI Logo" width={130} height={32} />
+        <Link href={`/?lang=${lang}#home`} onClick={(e) => handleLinkClick(e, '/#home')} className="mr-6 flex items-center space-x-2 font-bold text-2xl font-headline">
+           Blue Square AI
         </Link>
         <nav className="hidden md:flex items-center space-x-6">
           {renderNavLinks()}
@@ -139,8 +137,8 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
             </SheetTrigger>
             <SheetContent side="left" className="w-full max-w-xs bg-card">
               <div className="flex flex-col space-y-6 pt-10">
-                <Link href="/" className="flex items-center space-x-2 mb-4" onClick={() => setSheetOpen(false)}>
-                  <Image src="/logo.png" alt="Blue Square AI Logo" width={130} height={32} />
+                <Link href="/" className="flex items-center space-x-2 mb-4 font-bold text-2xl font-headline" onClick={() => setSheetOpen(false)}>
+                  Blue Square AI
                 </Link>
                 {renderNavLinks(true)}
               </div>
