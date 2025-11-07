@@ -3,6 +3,13 @@
 import { intelligentChatbotForVisitorInteraction } from '@/ai/flows/intelligent-chatbot-for-visitor-interaction';
 import { Resend } from 'resend';
 import { z } from 'zod';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { firebaseConfig } from '@/firebase/config';
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 const contactFormSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters.'),
@@ -14,15 +21,34 @@ const newsletterSchema = z.object({
   email: z.string().email('Invalid email address.'),
 });
 
-export async function handleChatbotQuery(history: { role: string; content: string }[], query: string) {
+export async function handleChatbotQuery(history: { role: string; content: string }[], query: string, lang: 'en' | 'sq', siteContent: string) {
   try {
-    const result = await intelligentChatbotForVisitorInteraction({ query });
-    return { success: true, response: result.response };
+    const result = await intelligentChatbotForVisitorInteraction({ query, lang, siteContent });
+    return { success: true, response: result.response, requiresPhoneNumber: result.requiresPhoneNumber };
   } catch (error) {
     console.error(error);
     return { success: false, error: 'There was a problem communicating with the assistant. Please try again.' };
   }
 }
+
+export async function savePhoneNumber(phoneNumber: string, interestedServices: string[], lang: 'en' | 'sq') {
+    if (!phoneNumber || phoneNumber.length < 6) {
+        return { success: false, error: "Invalid phone number." };
+    }
+    try {
+        await addDoc(collection(db, "contactFormSubmissions"), {
+            phoneNumber: phoneNumber,
+            interestedServices: interestedServices,
+            submissionDate: new Date().toISOString(),
+            preferredLanguage: lang,
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Error writing document: ", error);
+        return { success: false, error: "Could not save phone number." };
+    }
+}
+
 
 export async function submitContactForm(formData: { name: string; email: string; message: string }) {
   const parsed = contactFormSchema.safeParse(formData);
