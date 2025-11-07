@@ -44,7 +44,7 @@
 
 @layer utilities {
   .fade-in-up {
-    animation: fadeInUp 0.8s ease-in-out forwards;
+    animation: fadeInUp 1.2s ease-in-out forwards;
   }
   @keyframes fadeInUp {
     from {
