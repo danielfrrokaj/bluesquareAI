@@ -15,6 +15,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ChevronDown } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
 
 const navLinksSq = [
   { href: '/#home', label: 'Kryefaqja' },
@@ -44,6 +46,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
   const [isSheetOpen, setSheetOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const navLinks = lang === 'sq' ? navLinksSq : navLinksEn;
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -57,13 +60,14 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
     if (href.startsWith('/#')) {
       e.preventDefault();
       const targetId = href.substring(2);
-      const targetElement = document.getElementById(targetId);
-      if (targetElement) {
-        // Fallback for cases where target is on a different page, navigate first.
-        if (window.location.pathname !== '/') {
-            window.location.href = `/${href}`;
+      
+      if (window.location.pathname === '/') {
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth' });
         }
-        targetElement.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        router.push(`/?lang=${lang}#${targetId}`);
       }
     }
     setSheetOpen(false);
@@ -103,7 +107,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
       return (
         <Link
           key={link.href}
-          href={`${link.href}?lang=${lang}`}
+          href={`${link.href.startsWith('/#') ? '' : link.href}?lang=${lang}${link.href.startsWith('/#') ? link.href.substring(1) : ''}`}
           onClick={(e) => handleLinkClick(e, link.href)}
           className={cn(isMobile ? 'text-lg' : 'text-sm font-medium text-muted-foreground transition-colors hover:text-primary')}
         >
@@ -119,7 +123,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
       isScrolled ? "border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" : "bg-transparent"
     )}>
       <div className="container flex h-20 items-center">
-        <Link href={`/#home?lang=${lang}`} onClick={(e) => handleLinkClick(e, '/#home')} className="mr-6 flex items-center space-x-2">
+        <Link href={`/?lang=${lang}#home`} onClick={(e) => handleLinkClick(e, '/#home')} className="mr-6 flex items-center space-x-2">
            <Image src="/logo.png" alt="Blue Square AI Logo" width={130} height={32} />
         </Link>
         <nav className="hidden md:flex items-center space-x-6">
