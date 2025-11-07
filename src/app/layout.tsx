@@ -1,4 +1,3 @@
-
 import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
@@ -8,12 +7,10 @@ import { FirebaseClientProvider } from '@/firebase';
 
 const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-inter',
 })
 
 const poppins = Poppins({
   subsets: ['latin'],
-  variable: '--font-poppins',
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900']
 })
 
@@ -29,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="sq" className="scroll-smooth" suppressHydrationWarning>
-      <body className={cn('min-h-screen bg-background font-body antialiased', inter.variable, poppins.variable)}>
+      <body className={cn('min-h-screen bg-background font-body antialiased', inter.className, poppins.className)}>
         <FirebaseClientProvider>
           {children}
         </FirebaseClientProvider>
