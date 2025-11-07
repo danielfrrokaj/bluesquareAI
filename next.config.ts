@@ -39,6 +39,12 @@ const nextConfig: NextConfig = {
         hostname: 'png.pngtree.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'nnuptjtmzjdjegjguqbh.supabase.co',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
