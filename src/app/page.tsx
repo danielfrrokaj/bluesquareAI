@@ -8,6 +8,7 @@ import { ProductsSection } from '@/components/sections/products-section';
 import { VisionSection } from '@/components/sections/vision-section';
 import { ContactSection } from '@/components/sections/contact-section';
 import { Chatbot } from '@/components/chatbot';
+import { TestimonialsSection } from '@/components/sections/testimonials-section';
 
 export default function Home({ searchParams }: { searchParams: { lang: string } }) {
   const lang = searchParams.lang === 'sq' ? 'sq' : 'en';
@@ -19,6 +20,7 @@ export default function Home({ searchParams }: { searchParams: { lang: string } 
         <HeroSection lang={lang} />
         <ServicesSection lang={lang} />
         <ProductsSection lang={lang} />
+        <TestimonialsSection lang={lang} />
         <VisionSection lang={lang} />
         <ContactSection />
       </main>
