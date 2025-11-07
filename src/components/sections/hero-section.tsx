@@ -24,7 +24,7 @@ export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
   return (
     <section id="home" className="relative w-full h-[80vh] min-h-[600px] flex items-center justify-center text-center text-primary-foreground overflow-hidden">
       <Image
-        src="/background.png"
+        src="https://i.postimg.cc/TwVmG3dR/background.png"
         alt="Abstract technology globe background"
         fill
         className="object-cover"
