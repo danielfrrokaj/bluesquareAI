@@ -35,11 +35,11 @@ export function VisionSection({ lang }: { lang: 'en' | 'sq' }) {
                     </div>
                      <div className="relative h-64 md:h-80 w-full">
                         <Image
-                            src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/png-transparent-laptop-business-chart-finance-design-elements-modern-3d-sketch.png"
+                            src="https://static.vecteezy.com/system/resources/previews/018/795/227/non_2x/3d-rendering-holographic-liquid-shape-for-decoration-or-mixed-media-transparent-background-free-png.png"
                             alt="Abstract 3D planet"
                             fill
                             className="object-contain"
-                            data-ai-hint="smartphone technology"
+                            data-ai-hint="holographic liquid"
                         />
                     </div>
                 </div>

@@ -45,6 +45,12 @@ const nextConfig: NextConfig = {
         hostname: 'nnuptjtmzjdjegjguqbh.supabase.co',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'static.vecteezy.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
