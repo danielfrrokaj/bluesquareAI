@@ -137,9 +137,9 @@ export default function PricingPage({ searchParams }: { searchParams: { lang: st
         <section className="py-16 md:py-24">
             <div className="container">
                 <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-12">{currentContent.servicesTitle}</h2>
-                <div className="grid lg:grid-cols-3 gap-8 items-stretch">
+                <div className="flex flex-wrap justify-center gap-8 items-stretch">
                     {currentContent.services.map((service, index) => (
-                       <Card key={index} className="flex flex-col">
+                       <Card key={index} className="flex flex-col w-full md:w-[45%] lg:w-[30%]">
                          <CardHeader className="items-center text-center">
                             {service.icon}
                            <CardTitle className="font-headline text-xl mt-4">{service.title}</CardTitle>
