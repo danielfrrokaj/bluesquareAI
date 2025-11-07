@@ -21,6 +21,11 @@ const newsletterSchema = z.object({
   email: z.string().email('Invalid email address.'),
 });
 
+type ChatMessage = {
+  role: 'user' | 'assistant';
+  content: string;
+};
+
 export async function handleChatbotQuery(history: { role: string; content: string }[], query: string, lang: 'en' | 'sq', siteContent: string) {
   try {
     const result = await intelligentChatbotForVisitorInteraction({ query, lang, siteContent });
@@ -31,14 +36,14 @@ export async function handleChatbotQuery(history: { role: string; content: strin
   }
 }
 
-export async function savePhoneNumber(phoneNumber: string, interestedServices: string[], lang: 'en' | 'sq') {
+export async function savePhoneNumber(phoneNumber: string, messages: ChatMessage[], lang: 'en' | 'sq') {
     if (!phoneNumber || phoneNumber.length < 6) {
         return { success: false, error: "Invalid phone number." };
     }
     try {
         await addDoc(collection(db, "contactFormSubmissions"), {
             phoneNumber: phoneNumber,
-            interestedServices: interestedServices,
+            interestedServices: messages, // Now saving the full message objects
             submissionDate: new Date().toISOString(),
             preferredLanguage: lang,
         });

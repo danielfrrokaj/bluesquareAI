@@ -118,9 +118,8 @@ export function Chatbot({ lang }: ChatbotProps) {
       
       setIsLoading(true);
       const phoneNumber = input;
-      const interestedServices = messages.map(m => m.content); // basic context
-      
-      const result = await savePhoneNumber(phoneNumber, interestedServices, lang);
+      // Pass the whole messages array
+      const result = await savePhoneNumber(phoneNumber, messages, lang);
 
       if (result.success) {
           toast({ title: t.phoneSuccess });
