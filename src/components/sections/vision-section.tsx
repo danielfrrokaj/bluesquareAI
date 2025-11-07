@@ -26,7 +26,7 @@ export function VisionSection({ lang }: { lang: 'en' | 'sq' }) {
         <section id="vision" className="bg-card" ref={ref}>
             <div className={cn("container px-4 md:px-6 transition-all duration-1000", isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10")}>
                 <div className="grid md:grid-cols-2 gap-12 items-center">
-                    <div className="text-center md:text-left">
+                    <div className="text-center md:text-left fade-in-up">
                         <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline mb-4">
                            {currentContent.title}
                         </h2>
