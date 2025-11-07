@@ -10,8 +10,8 @@ import { ContactSection } from '@/components/sections/contact-section';
 import { Chatbot } from '@/components/chatbot';
 import { TestimonialsSection } from '@/components/sections/testimonials-section';
 
-export default function Home({ searchParams }: { searchParams: { lang: string } }) {
-  const lang = searchParams.lang === 'sq' ? 'sq' : 'en';
+export default function Home({ searchParams }: { searchParams: { lang?: string } }) {
+  const lang = searchParams?.lang === 'sq' ? 'sq' : 'en';
 
   return (
     <div className="flex flex-col min-h-screen">
