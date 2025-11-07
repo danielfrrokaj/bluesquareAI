@@ -1,8 +1,8 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Star } from 'lucide-react';
-import background from '/public/background.png';
 
 export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
   const content = {
@@ -24,12 +24,11 @@ export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
   return (
     <section id="home" className="relative w-full h-[80vh] min-h-[600px] flex items-center justify-center text-center text-primary-foreground overflow-hidden">
       <Image
-        src={background}
+        src="/background.png"
         alt="Abstract technology globe background"
         fill
         className="object-cover"
         priority
-        placeholder="blur"
       />
       <div className="relative z-10 container px-4 md:px-6">
         <div className="flex flex-col items-center space-y-6 fade-in-up">
