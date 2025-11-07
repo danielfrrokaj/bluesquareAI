@@ -2,7 +2,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Star } from 'lucide-react';
 
 export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
   const content = {
@@ -10,13 +9,11 @@ export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
       headline: "Sillni Teknologjinë e Zgjuar në Biznesin Tuaj",
       subheadline: "Blue Square AI krijon zgjidhje inteligjente që automatizojnë, monitorojnë dhe optimizojnë çdo aspekt të biznesit tuaj.",
       cta: "Mëso Më Shumë",
-      rating: "Vlerësuar 4.9/5 nga klientët tanë"
     },
     en: {
       headline: "Bring Smart Technology to Your Business",
       subheadline: "Blue Square AI creates intelligent solutions that automate, monitor, and optimize every aspect of your business.",
       cta: "Learn More",
-      rating: "Rated 4.9/5 by our clients"
     }
   }
   const currentContent = content[lang];
@@ -27,7 +24,7 @@ export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
         src="https://i.postimg.cc/TwVmG3dR/background.png"
         alt="Abstract technology globe background"
         fill
-        className="object-cover"
+        className="object-cover fade-in"
         priority
       />
       <div className="relative z-10 container px-4 md:px-6">
