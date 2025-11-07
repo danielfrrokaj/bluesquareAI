@@ -1,0 +1,29 @@
+/**
+ * @file Firestore Security Rules for Blue Square AI Contact Form Submissions.
+ * @core_philosophy This ruleset allows unauthenticated users to submit contact forms while restricting read access to prevent unauthorized data access.
+ * @data_structure Contact form submissions are stored in a top-level collection: /contactFormSubmissions/{contactFormSubmissionId}.
+ * @key_security_decisions Unauthenticated create operations are allowed, as submissions are collected from a public-facing form.  Read operations are explicitly denied to all users to protect the collected contact information.  Listing is disallowed to prevent unauthorized data scraping.  The rules do not enforce data validation, focusing solely on access control.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Controls access to contact form submissions.
+     * @path /contactFormSubmissions/{contactFormSubmissionId}
+     * @allow (create) - Any unauthenticated user can submit a contact form.
+     * @deny (get) - No user can read a contact form.
+     * @deny (list) - No user can list contact forms.
+     * @deny (update) - No user can update a contact form.
+     * @deny (delete) - No user can delete a contact form.
+     * @principle Allows unauthenticated creation, denies all other operations.
+     */
+    match /contactFormSubmissions/{contactFormSubmissionId} {
+      allow get: if false;
+      allow list: if false;
+      allow create: if true;
+      allow update: if false;
+      allow delete: if false;
+    }
+  }
+}

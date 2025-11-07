@@ -1,0 +1,70 @@
+{
+  "entities": {
+    "ContactFormSubmission": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ContactFormSubmission",
+      "type": "object",
+      "description": "Represents a contact form submission from the website, capturing user contact information and service interest.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the contact form submission."
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "The phone number provided by the user."
+        },
+        "interestedServices": {
+          "type": "array",
+          "description": "List of AI services the user is interested in.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "submissionDate": {
+          "type": "string",
+          "description": "The date and time the form was submitted.",
+          "format": "date-time"
+        },
+        "preferredLanguage": {
+          "type": "string",
+          "description": "The preferred language of the user (English or Albanian)."
+        }
+      },
+      "required": [
+        "id",
+        "phoneNumber",
+        "interestedServices",
+        "submissionDate",
+        "preferredLanguage"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/contactFormSubmissions/{contactFormSubmissionId}",
+        "definition": {
+          "entityName": "ContactFormSubmission",
+          "schema": {
+            "$ref": "#/backend/entities/ContactFormSubmission"
+          },
+          "description": "Stores contact form submissions from the website. Submissions are publicly writeable (no auth required) but reads are restricted.",
+          "params": [
+            {
+              "name": "contactFormSubmissionId",
+              "description": "The unique identifier for each contact form submission."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to store contact form submissions from the Blue Square AI website. It prioritizes simplicity and security.  Authorization Independence is achieved because access control is based solely on `request.auth.uid` and the structure itself doesn't require cross-document `get()` calls for validation.  Since the application doesn't require user authentication to submit the form, access rules can be configured to allow unauthenticated writes to `/contactFormSubmissions`.  The structure supports QAPs because listing is controlled by security rules applied directly to the `contactFormSubmissions` collection."
+  }
+}
