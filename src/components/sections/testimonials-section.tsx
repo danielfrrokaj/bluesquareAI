@@ -12,6 +12,9 @@ import {
 import { useInView } from '@/hooks/use-in-view';
 import { useRef } from 'react';
 import { cn } from '@/lib/utils';
+import Autoplay from 'embla-carousel-autoplay';
+import { useIsMobile } from '@/hooks/use-mobile';
+
 
 const testimonialsSq = [
   {
@@ -64,6 +67,12 @@ export function TestimonialsSection({ lang }: { lang: 'en' | 'sq' }) {
     const currentContent = content[lang];
     const ref = useRef<HTMLDivElement>(null);
     const isInView = useInView(ref, { once: true, amount: 0.2 });
+    const isMobile = useIsMobile();
+
+    const autoplayPlugin = useRef(
+        Autoplay({ delay: 3000, stopOnInteraction: true, stopOnMouseEnter: true, stopOnLastSnap: false })
+    );
+
 
   return (
     <section id="testimonials" className="bg-card py-16 md:py-24 lg:py-32" ref={ref}>
@@ -78,6 +87,7 @@ export function TestimonialsSection({ lang }: { lang: 'en' | 'sq' }) {
         </div>
         <Carousel
           opts={{ align: 'start', loop: true }}
+          plugins={isMobile ? [] : [autoplayPlugin.current]}
           className="w-full max-w-4xl mx-auto"
         >
           <CarouselContent>
