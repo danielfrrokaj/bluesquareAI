@@ -119,7 +119,7 @@ export default function PricingPage({ searchParams }: { searchParams: { lang: st
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header lang={lang} />
-      <main className="flex-1">
+      <main className="flex-1 fade-in">
         {/* Hero Section */}
         <section className="relative py-20 md:py-32 text-white text-center bg-card">
             <div className="container relative z-10">
@@ -137,9 +137,9 @@ export default function PricingPage({ searchParams }: { searchParams: { lang: st
         <section className="py-16 md:py-24">
             <div className="container">
                 <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-12">{currentContent.servicesTitle}</h2>
-                <div className="flex flex-wrap justify-center gap-8 items-stretch">
+                <div className="flex flex-wrap justify-center gap-8">
                     {currentContent.services.map((service, index) => (
-                       <Card key={index} className="flex flex-col w-full md:w-[45%] lg:w-[30%]">
+                       <Card key={index} className="flex flex-col w-full sm:w-[45%] lg:w-[30%]">
                          <CardHeader className="items-center text-center">
                             {service.icon}
                            <CardTitle className="font-headline text-xl mt-4">{service.title}</CardTitle>

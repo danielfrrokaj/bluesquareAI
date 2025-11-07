@@ -1,3 +1,4 @@
+
 'use client';
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -81,7 +82,7 @@ export default function LocalBusinessSolutionsPage({ searchParams }: { searchPar
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header lang={lang} />
-      <main className="flex-1">
+      <main className="flex-1 fade-in">
         {/* Hero Section */}
         <section className="relative py-20 md:py-32 text-white text-center">
             <Image 
