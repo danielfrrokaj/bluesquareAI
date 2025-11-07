@@ -29,9 +29,10 @@ export default function AdminPage() {
   const auth = useAuth();
 
   const submissionsRef = useMemoFirebase(() => {
-    if (!firestore) return null;
+    // Wait until we have a user and firestore instance
+    if (!firestore || !user) return null;
     return collection(firestore, 'contactFormSubmissions') as CollectionReference<DocumentData>;
-  }, [firestore]);
+  }, [firestore, user]);
 
   const submissionsQuery = useMemoFirebase(() => {
     if (!submissionsRef) return null;
