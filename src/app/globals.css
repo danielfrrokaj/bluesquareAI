@@ -10,14 +10,14 @@
     --card-foreground: 222 50% 90%;
     --popover: 226 25% 14%;
     --popover-foreground: 222 50% 90%;
-    --primary: 215 85% 55%; /* Bright Blue */
+    --primary: 215 85% 55%; /* Bright Blue from #2b7dee */
     --primary-foreground: 210 40% 98%;
-    --secondary: 220 75% 70%; /* Lighter Blue */
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 215 85% 75%; /* Lighter shade of primary */
+    --secondary-foreground: 226 25% 10%;
     --muted: 226 25% 20%;
     --muted-foreground: 222 50% 60%;
-    --accent: 210 90% 65%; /* Sky Blue */
-    --accent-foreground: 226 25% 10%;
+    --accent: 215 85% 65%; /* Accent shade of primary */
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 226 25% 20%;
@@ -38,7 +38,7 @@
     @apply w-full py-16 md:py-24 lg:py-32;
   }
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
   }
 }
 
