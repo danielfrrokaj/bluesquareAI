@@ -103,9 +103,9 @@ export function ProductsSection({ lang }: { lang: 'en' | 'sq' }) {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="flex flex-wrap justify-center gap-6">
                     {products.map((product, index) => (
-                        <Card key={index} className="overflow-hidden transition-shadow hover:shadow-xl">
+                        <Card key={index} className="overflow-hidden transition-shadow hover:shadow-xl w-full md:w-[45%] lg:w-[30%]">
                             <div className="relative h-48 w-full">
                                 <Image
                                     src={product.imageUrl}
