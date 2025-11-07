@@ -32,16 +32,6 @@ export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
       />
       <div className="relative z-10 container px-4 md:px-6">
         <div className="flex flex-col items-center space-y-6 fade-in-up">
-            <div className="flex items-center gap-2 bg-card/50 backdrop-blur-sm p-2 px-4 rounded-full border border-primary/50">
-              <div className="flex text-yellow-400">
-                <Star className="h-5 w-5 fill-current" />
-                <Star className="h-5 w-5 fill-current" />
-                <Star className="h-5 w-5 fill-current" />
-                <Star className="h-5 w-5 fill-current" />
-                <Star className="h-5 w-5 fill-current" />
-              </div>
-               <span className="font-semibold text-lg">4.9/5</span>
-            </div>
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl font-headline">
               {currentContent.headline}
             </h1>
