@@ -93,9 +93,9 @@ export function ServicesSection({ lang }: { lang: 'en' | 'sq' }) {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {services.map((service, index) => (
-                        <Card key={index} className="flex flex-col transition-all duration-300 p-6 items-center text-center bg-background border-2 border-transparent hover:border-primary lg:[&:nth-child(4):nth-last-child(2)]:col-start-auto lg:[&:nth-child(5):nth-last-child(1)]:col-start-2">
+                        <Card key={index} className={cn("flex flex-col transition-all duration-300 p-6 items-center text-center bg-background border-2 border-transparent hover:border-primary", services.length % 2 !== 0 && index === services.length -1 && 'lg:col-start-2')}>
                             <div className="mb-4">
                                 {service.icon}
                             </div>
