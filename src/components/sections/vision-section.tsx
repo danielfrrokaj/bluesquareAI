@@ -23,7 +23,7 @@ export function VisionSection({ lang }: { lang: 'en' | 'sq' }) {
 
 
     return (
-        <section id="vision" className="bg-card" ref={ref}>
+        <section id="vision" className="bg-background" ref={ref}>
             <div className={cn("container px-4 md:px-6 transition-all duration-1000", isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10")}>
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div className="text-center md:text-left fade-in-up">
