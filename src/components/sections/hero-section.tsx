@@ -23,11 +23,10 @@ export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
   return (
     <section id="home" className="relative w-full h-[80vh] min-h-[600px] flex items-center justify-center text-center text-primary-foreground overflow-hidden">
       <Image
-        src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop"
+        src="/background.png"
         alt="Abstract technology globe background"
         fill
         className="object-cover"
-        data-ai-hint="abstract technology globe"
         priority
       />
       <div className="relative z-10 container px-4 md:px-6">
