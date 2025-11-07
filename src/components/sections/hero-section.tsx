@@ -13,7 +13,7 @@ export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
     en: {
       headline: "Bring Smart Technology to Your Business",
       subheadline: "Blue Square AI creates intelligent solutions that automate, monitor, and optimize every aspect of your business.",
-      cta: "Learn More",
+      cta: "See our services",
     }
   }
   const currentContent = content[lang];
