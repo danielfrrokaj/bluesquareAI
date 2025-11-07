@@ -17,25 +17,27 @@ import {
 import { ChevronDown } from 'lucide-react';
 
 const navLinksSq = [
-  { href: '#home', label: 'Kryefaqja' },
+  { href: '/#home', label: 'Kryefaqja' },
   { 
     href: '#services', 
     label: 'Shërbimet',
   },
-  { href: '#products', label: 'Produktet' },
-  { href: '#vision', label: 'Vizioni' },
-  { href: '#contact', label: 'Kontakti' },
+  { href: '/#products', label: 'Produktet' },
+  { href: '/pricing', label: 'Çmimet'},
+  { href: '/#vision', label: 'Vizioni' },
+  { href: '/#contact', label: 'Kontakti' },
 ];
 
 const navLinksEn = [
-  { href: '#home', label: 'Home' },
+  { href: '/#home', label: 'Home' },
   { 
     href: '#services', 
     label: 'Services',
   },
-  { href: '#products', label: 'Products' },
-  { href: '#vision', label: 'Vision' },
-  { href: '#contact', label: 'Contact' },
+  { href: '/#products', label: 'Products' },
+  { href: '/pricing', label: 'Pricing'},
+  { href: '/#vision', label: 'Vision' },
+  { href: '/#contact', label: 'Contact' },
 ];
 
 export function Header({ lang }: { lang: 'en' | 'sq' }) {
@@ -52,10 +54,15 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
   }, []);
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (href.startsWith('#')) {
+    if (href.startsWith('/#')) {
       e.preventDefault();
-      const targetElement = document.querySelector(href);
+      const targetId = href.substring(2);
+      const targetElement = document.getElementById(targetId);
       if (targetElement) {
+        // Fallback for cases where target is on a different page, navigate first.
+        if (window.location.pathname !== '/') {
+            window.location.href = `/${href}`;
+        }
         targetElement.scrollIntoView({ behavior: 'smooth' });
       }
     }
@@ -96,7 +103,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
       return (
         <Link
           key={link.href}
-          href={link.href}
+          href={`${link.href}?lang=${lang}`}
           onClick={(e) => handleLinkClick(e, link.href)}
           className={cn(isMobile ? 'text-lg' : 'text-sm font-medium text-muted-foreground transition-colors hover:text-primary')}
         >
@@ -112,7 +119,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
       isScrolled ? "border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" : "bg-transparent"
     )}>
       <div className="container flex h-20 items-center">
-        <Link href="#home" onClick={(e) => handleLinkClick(e, '#home')} className="mr-6 flex items-center space-x-2">
+        <Link href={`/#home?lang=${lang}`} onClick={(e) => handleLinkClick(e, '/#home')} className="mr-6 flex items-center space-x-2">
            <Image src="/logo.png" alt="Blue Square AI Logo" width={130} height={32} />
         </Link>
         <nav className="hidden md:flex items-center space-x-6">
