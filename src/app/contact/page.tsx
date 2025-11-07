@@ -221,7 +221,7 @@ export default function ContactPage({ searchParams }: { searchParams: { lang?: s
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline text-center mb-8">Our Location</h2>
                 <div className="rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg">
                     <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d95874.69315576853!2d19.743126849479836!3d41.32788321045955!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1350310ba523439d%3A0xda5b341f481a5390!2sTirana%2C%20Albania!5e0!3m2!1sen!2sus!4v1724694432098!5m2!1sen!2sus"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2996.342936279184!2d19.81175197600865!3d41.3245227713028!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1350310e5f48868d%3A0xca47f6a7d33bd6a2!2sBlue%20Square%20Marketing!5e0!3m2!1sen!2sus!4v1724699500000!5m2!1sen!2sus"
                         width="100%"
                         height="450"
                         style={{ border: 0 }}
