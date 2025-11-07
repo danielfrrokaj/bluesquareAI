@@ -42,7 +42,8 @@
   },
   "auth": {
     "providers": [
-      "anonymous"
+      "anonymous",
+      "email"
     ]
   },
   "firestore": {
@@ -54,7 +55,7 @@
           "schema": {
             "$ref": "#/backend/entities/ContactFormSubmission"
           },
-          "description": "Stores contact form submissions from the website. Submissions are publicly writeable (no auth required) but reads are restricted.",
+          "description": "Stores contact form submissions from the website. Submissions are publicly writeable (no auth required) but reads are restricted to authenticated admins.",
           "params": [
             {
               "name": "contactFormSubmissionId",
