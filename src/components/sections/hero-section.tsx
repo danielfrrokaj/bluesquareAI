@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Star } from 'lucide-react';
+import a from 'next/image';
 
 export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
   const content = {
