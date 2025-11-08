@@ -180,7 +180,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
        <NavigationMenu>
         <NavigationMenuList>
             <NavigationMenuItem>
-                <Link href={getFullHref(homeLink.href)} passHref legacyBehavior>
+                <Link href={getFullHref(homeLink.href)} legacyBehavior passHref>
                     <NavigationMenuLink 
                         className={navigationMenuTriggerStyle()}
                         onClick={(e) => handleLinkClick(e, homeLink.href)}
@@ -208,7 +208,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
           </NavigationMenuItem>
           {navLinks.map((link) => (
             <NavigationMenuItem key={link.href}>
-                <Link href={getFullHref(link.href)} passHref legacyBehavior>
+                <Link href={getFullHref(link.href)} legacyBehavior passHref>
                     <NavigationMenuLink 
                         className={navigationMenuTriggerStyle()}
                         onClick={(e) => handleLinkClick(e, link.href)}
@@ -231,7 +231,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
       <div className="container flex h-20 items-center">
         <Link href={getFullHref('/')} onClick={(e) => handleLinkClick(e, '/')} className="mr-6 flex items-center space-x-2">
             <Image 
-                src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo/logo_black.png"
+                src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo/logo_black%20(1).png"
                 alt="Blue Square AI Logo"
                 width={160}
                 height={40}
@@ -254,7 +254,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
               <div className="flex flex-col space-y-6 pt-10">
                 <Link href={getFullHref('/')} className="flex items-center space-x-2 mb-4" onClick={() => setSheetOpen(false)}>
                     <Image 
-                        src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo/logo_black.png"
+                        src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo/logo_black%20(1).png"
                         alt="Blue Square AI Logo"
                         width={160}
                         height={40}

@@ -40,7 +40,7 @@ export function Footer({ lang }: { lang: 'en' | 'sq' }) {
             <div className="flex flex-col gap-4">
                 <Link href={getFullHref('/')} className="flex items-center space-x-2">
                     <Image 
-                        src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo/logo_black.png"
+                        src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo/logo_black%20(1).png"
                         alt="Blue Square AI Logo"
                         width={160}
                         height={40}
