@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/navigation-menu"
 import { useRouter, usePathname } from 'next/navigation';
 import React from 'react';
+import Image from 'next/image';
 
 
 const navLinksSq = [
@@ -131,9 +132,6 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
       } else {
         router.push(`/?lang=${lang}#${targetId}`);
       }
-    } else if (href.startsWith('/')) {
-        // Normal navigation for internal links
-        // No special handling needed, Link component will handle it
     }
     setSheetOpen(false);
   };
@@ -182,13 +180,13 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
        <NavigationMenu>
         <NavigationMenuList>
             <NavigationMenuItem>
-               <Link href={getFullHref(homeLink.href)} legacyBehavior passHref>
-                  <NavigationMenuLink 
-                    className={navigationMenuTriggerStyle()}
-                    onClick={(e) => handleLinkClick(e, homeLink.href)}
-                  >
-                    {homeLink.label}
-                  </NavigationMenuLink>
+                <Link href={getFullHref(homeLink.href)} passHref legacyBehavior>
+                    <NavigationMenuLink 
+                        className={navigationMenuTriggerStyle()}
+                        onClick={(e) => handleLinkClick(e, homeLink.href)}
+                    >
+                        {homeLink.label}
+                    </NavigationMenuLink>
                 </Link>
             </NavigationMenuItem>
           <NavigationMenuItem>
@@ -210,13 +208,13 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
           </NavigationMenuItem>
           {navLinks.map((link) => (
             <NavigationMenuItem key={link.href}>
-               <Link href={getFullHref(link.href)} legacyBehavior passHref>
-                  <NavigationMenuLink 
-                    className={navigationMenuTriggerStyle()}
-                    onClick={(e) => handleLinkClick(e, link.href)}
-                  >
-                    {link.label}
-                  </NavigationMenuLink>
+                <Link href={getFullHref(link.href)} passHref legacyBehavior>
+                    <NavigationMenuLink 
+                        className={navigationMenuTriggerStyle()}
+                        onClick={(e) => handleLinkClick(e, link.href)}
+                    >
+                        {link.label}
+                    </NavigationMenuLink>
                 </Link>
             </NavigationMenuItem>
           ))}
@@ -231,8 +229,15 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
       isScrolled ? "border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" : "bg-transparent"
     )}>
       <div className="container flex h-20 items-center">
-        <Link href={getFullHref('/')} onClick={(e) => handleLinkClick(e, '/')} className="mr-6 flex items-center space-x-2 font-bold text-2xl font-headline">
-           Blue Square AI
+        <Link href={getFullHref('/')} onClick={(e) => handleLinkClick(e, '/')} className="mr-6 flex items-center space-x-2">
+            <Image 
+                src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo/logo_black.png"
+                alt="Blue Square AI Logo"
+                width={160}
+                height={40}
+                className="w-40 h-auto"
+                priority
+            />
         </Link>
         <nav className="hidden md:flex items-center space-x-1">
           {renderNavLinks()}
@@ -247,8 +252,15 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
             </SheetTrigger>
             <SheetContent side="left" className="w-full max-w-xs bg-card">
               <div className="flex flex-col space-y-6 pt-10">
-                <Link href={getFullHref('/')} className="flex items-center space-x-2 mb-4 font-bold text-2xl font-headline" onClick={() => setSheetOpen(false)}>
-                  Blue Square AI
+                <Link href={getFullHref('/')} className="flex items-center space-x-2 mb-4" onClick={() => setSheetOpen(false)}>
+                    <Image 
+                        src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo/logo_black.png"
+                        alt="Blue Square AI Logo"
+                        width={160}
+                        height={40}
+                        className="w-40 h-auto"
+                        priority
+                    />
                 </Link>
                 {renderNavLinks(true)}
               </div>
@@ -289,3 +301,5 @@ const ListItem = React.forwardRef<
   )
 })
 ListItem.displayName = "ListItem"
+
+    

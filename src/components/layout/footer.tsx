@@ -3,6 +3,7 @@
 
 import Link from 'next/link';
 import { Mail, Phone } from 'lucide-react';
+import Image from 'next/image';
 
 export function Footer({ lang }: { lang: 'en' | 'sq' }) {
     const content = {
@@ -37,8 +38,14 @@ export function Footer({ lang }: { lang: 'en' | 'sq' }) {
       <div className="container py-12 px-4 md:px-6">
         <div className="grid gap-8 md:grid-cols-3">
             <div className="flex flex-col gap-4">
-                <Link href={getFullHref('/')} className="flex items-center space-x-2 font-bold text-2xl font-headline">
-                    Blue Square AI
+                <Link href={getFullHref('/')} className="flex items-center space-x-2">
+                    <Image 
+                        src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo/logo_black.png"
+                        alt="Blue Square AI Logo"
+                        width={160}
+                        height={40}
+                        className="w-40 h-auto"
+                    />
                 </Link>
                 <p className="max-w-xs text-muted-foreground text-sm">
                     {currentContent.description}
@@ -76,3 +83,5 @@ export function Footer({ lang }: { lang: 'en' | 'sq' }) {
     </footer>
   );
 }
+
+    
