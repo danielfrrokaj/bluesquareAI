@@ -55,8 +55,8 @@ export function Footer({ lang }: { lang: 'en' | 'sq' }) {
                  <h3 className="font-semibold font-headline">{currentContent.contact}</h3>
                  <div className="flex items-center gap-2">
                     <Phone className="h-4 w-4 text-muted-foreground" />
-                    <a href="tel:+35512345678" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                        +355 123 456 78
+                    <a href="tel:+355693815070" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                        +355 69 381 5070
                     </a>
                 </div>
                 <div className="flex items-center gap-2">

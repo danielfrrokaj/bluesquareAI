@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -24,7 +24,7 @@ const formSchema = z.object({
 });
 
 export default function ContactPage({ searchParams }: { searchParams: { lang?: string } }) {
-  const lang = searchParams?.lang === 'sq' ? 'sq' : 'en';
+  const lang = useMemo(() => searchParams?.lang === 'sq' ? 'sq' : 'en', [searchParams?.lang]);
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -119,8 +119,8 @@ export default function ContactPage({ searchParams }: { searchParams: { lang?: s
                               </div>
                               <div>
                                   <p className="text-lg font-semibold">{currentContent.phone}</p>
-                                  <a href="tel:+35512345678" className="text-muted-foreground hover:text-primary transition-colors">
-                                      +355 123 456 78
+                                  <a href="tel:+355693815070" className="text-muted-foreground hover:text-primary transition-colors">
+                                      +355 69 381 5070
                                   </a>
                               </div>
                           </div>
@@ -239,7 +239,7 @@ export default function ContactPage({ searchParams }: { searchParams: { lang?: s
       <Footer lang={lang} />
        <style jsx>{`
         .map-iframe {
-          filter: grayscale(1) invert(0.8) sepia(90%) hue-rotate(180deg) saturate(400%) brightness(0.9);
+          filter: grayscale(1) invert(0.9) sepia(0.8) hue-rotate(180deg) saturate(300%) brightness(0.9);
         }
       `}</style>
     </div>
