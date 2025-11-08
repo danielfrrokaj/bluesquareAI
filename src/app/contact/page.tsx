@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -67,7 +67,8 @@ export default function ContactPage({ searchParams }: { searchParams: { lang?: s
           contactInfoDescription: "Plotësoni formularin dhe ekipi ynë do t'ju kthehet brenda 24 orëve.",
           phone: "Telefoni",
           address: "Adresa",
-          followUs: "Na ndiqni"
+          followUs: "Na ndiqni",
+          location: "Vendndodhja Jonë"
       },
       en: {
           title: "Get in Touch",
@@ -85,7 +86,8 @@ export default function ContactPage({ searchParams }: { searchParams: { lang?: s
           contactInfoDescription: "Fill out the form and our team will get back to you within 24 hours.",
           phone: "Phone",
           address: "Address",
-          followUs: "Follow Us"
+          followUs: "Follow Us",
+          location: "Our Location"
       }
   }
 
@@ -161,64 +163,66 @@ export default function ContactPage({ searchParams }: { searchParams: { lang?: s
                        </div>
                     </div>
                 </div>
-                <Card className="bg-card">
-                  <CardHeader>
-                    <CardTitle>{currentContent.formTitle}</CardTitle>
-                    <CardDescription>{currentContent.formDescription}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                            <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>{currentContent.nameLabel}</FormLabel>
-                                <FormControl>
-                                    <Input placeholder={currentContent.namePlaceholder} {...field} disabled={isSubmitting} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                            />
-                            <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>{currentContent.emailLabel}</FormLabel>
-                                <FormControl>
-                                    <Input placeholder={currentContent.emailPlaceholder} {...field} disabled={isSubmitting} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                            />
-                            <FormField
-                            control={form.control}
-                            name="message"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>{currentContent.messageLabel}</FormLabel>
-                                <FormControl>
-                                    <Textarea placeholder={currentContent.messagePlaceholder} {...field} disabled={isSubmitting} rows={5} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                            />
-                            <Button type="submit" className="w-full" disabled={isSubmitting}>
-                            {isSubmitting ? <Loader2 className="animate-spin" /> : currentContent.submitButton}
-                            </Button>
-                        </form>
-                    </Form>
-                  </CardContent>
-                </Card>
+                <div className="flex flex-col space-y-8">
+                    <Card className="bg-card">
+                      <CardHeader>
+                        <CardTitle>{currentContent.formTitle}</CardTitle>
+                        <CardDescription>{currentContent.formDescription}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                <FormField
+                                control={form.control}
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>{currentContent.nameLabel}</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder={currentContent.namePlaceholder} {...field} disabled={isSubmitting} />
+                                    </FormControl>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                                />
+                                <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>{currentContent.emailLabel}</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder={currentContent.emailPlaceholder} {...field} disabled={isSubmitting} />
+                                    </FormControl>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                                />
+                                <FormField
+                                control={form.control}
+                                name="message"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>{currentContent.messageLabel}</FormLabel>
+                                    <FormControl>
+                                        <Textarea placeholder={currentContent.messagePlaceholder} {...field} disabled={isSubmitting} rows={5} />
+                                    </FormControl>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                                />
+                                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                                {isSubmitting ? <Loader2 className="animate-spin" /> : currentContent.submitButton}
+                                </Button>
+                            </form>
+                        </Form>
+                      </CardContent>
+                    </Card>
+                </div>
             </div>
             
             <div className="mt-16">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline text-center mb-8">Our Location</h2>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline text-center mb-8">{currentContent.location}</h2>
                 <div className="rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg">
                     <iframe
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2996.342936279184!2d19.81175197600865!3d41.3245227713028!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1350310e5f48868d%3A0xca47f6a7d33bd6a2!2sBlue%20Square%20Marketing!5e0!3m2!1sen!2sus!4v1724699500000!5m2!1sen!2sus"
