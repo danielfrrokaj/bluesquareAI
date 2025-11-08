@@ -1,37 +1,44 @@
 
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Bot, LineChart, Code, Camera, MessageCircle, ShoppingCart, Plane } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Code, Camera, MessageCircle, ShoppingCart, Plane } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useInView } from "@/hooks/use-in-view";
 import { useRef } from "react";
+import Link from 'next/link';
+
 
 const servicesSq = [
     {
         icon: <Code className="h-8 w-8 text-primary" />,
         title: "Integrim i AI në Website",
         description: "Chatbot inteligjent, analizë trafiku, dhe gjenerim përmbajtje SEO me AI.",
+        href: "/services/ai-website-integration"
     },
     {
         icon: <Camera className="h-8 w-8 text-primary" />,
         title: "Sisteme Menaxhimi & Monitorimi",
         description: "Mini-PMS për akomodim, dashboard inteligjent dhe integrim me kamera sigurie.",
+        href: "/services/management-systems"
     },
     {
         icon: <MessageCircle className="h-8 w-8 text-primary" />,
         title: "Automatizim Komunikimi",
         description: "Integrim WhatsApp Business API dhe AI për përgjigje automatike në rrjete sociale.",
+        href: "/services/communication-automation"
     },
     {
         icon: <ShoppingCart className="h-8 w-8 text-primary" />,
         title: "Zgjidhje për Biznese Lokale",
         description: "Sisteme për porosi, pagesa, rezervime online dhe programe besnikërie.",
+        href: "/services/local-business-solutions"
     },
     {
         icon: <Plane className="h-8 w-8 text-primary" />,
         title: "AI për Turizëm & Shërbime",
         description: "Chatbot për hotele/agjenci, sinkronizim rezervimesh dhe analizë komentesh.",
+        href: "/services/tourism-ai"
     },
 ];
 
@@ -40,26 +47,31 @@ const servicesEn = [
         icon: <Code className="h-8 w-8 text-primary" />,
         title: "AI Website Integration",
         description: "Intelligent chatbot, traffic analysis, and AI-powered SEO content generation.",
+        href: "/services/ai-website-integration"
     },
     {
         icon: <Camera className="h-8 w-8 text-primary" />,
         title: "Management & Monitoring Systems",
         description: "Mini-PMS for accommodation, smart dashboards, and security camera integration.",
+        href: "/services/management-systems"
     },
     {
         icon: <MessageCircle className="h-8 w-8 text-primary" />,
         title: "Communication Automation",
         description: "WhatsApp Business API and AI integration for automated social media responses.",
+        href: "/services/communication-automation"
     },
     {
         icon: <ShoppingCart className="h-8 w-8 text-primary" />,
         title: "Solutions for Local Businesses",
         description: "Systems for ordering, payments, online reservations, and loyalty programs.",
+        href: "/services/local-business-solutions"
     },
     {
         icon: <Plane className="h-8 w-8 text-primary" />,
         title: "AI for Tourism & Services",
         description: "Chatbot for hotels/agencies, reservation synchronization, and review analysis.",
+        href: "/services/tourism-ai"
     },
 ]
 
@@ -95,13 +107,15 @@ export function ServicesSection({ lang }: { lang: 'en' | 'sq' }) {
 
                 <div className="flex flex-wrap justify-center gap-6">
                     {services.map((service, index) => (
-                        <Card key={index} className={cn("flex flex-col transition-all duration-300 p-6 items-center text-center bg-background border-2 border-transparent hover:border-primary w-full md:w-[45%] lg:w-[30%]")}>
-                            <div className="mb-4">
-                                {service.icon}
-                            </div>
-                            <h3 className="text-xl font-bold font-headline mb-2">{service.title}</h3>
-                            <p className="text-muted-foreground flex-1">{service.description}</p>
-                        </Card>
+                        <Link key={index} href={`${service.href}?lang=${lang}`} className="w-full md:w-[45%] lg:w-[30%] no-underline">
+                            <Card className={cn("flex flex-col transition-all duration-300 p-6 items-center text-center bg-background border-2 border-transparent hover:border-primary h-full")}>
+                                <div className="mb-4">
+                                    {service.icon}
+                                </div>
+                                <h3 className="text-xl font-bold font-headline mb-2">{service.title}</h3>
+                                <p className="text-muted-foreground flex-1">{service.description}</p>
+                            </Card>
+                        </Link>
                     ))}
                 </div>
             </div>
