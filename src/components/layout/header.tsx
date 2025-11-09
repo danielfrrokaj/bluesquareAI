@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, ChevronDown, Code, Camera, MessageCircle, ShoppingCart, Plane } from 'lucide-react';
+import { Menu, ChevronDown, Code, Camera, MessageCircle, ShoppingCart, Plane, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useState, useEffect } from 'react';
@@ -15,6 +15,12 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import React from 'react';
 import Image from 'next/image';
@@ -150,6 +156,13 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
     currentParams.set('lang', newLang);
     return `${currentPath}?${currentParams.toString()}`;
   };
+  
+  const languageOptions: { code: 'en' | 'sq', label: string, countryCode: 'us' | 'al' }[] = [
+    { code: 'en', label: 'English', countryCode: 'us' },
+    { code: 'sq', label: 'Shqip', countryCode: 'al' },
+  ];
+  
+  const currentLanguage = languageOptions.find(opt => opt.code === lang);
 
 
   const renderNavLinks = (isMobile = false) => {
@@ -181,17 +194,30 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
             </Link>
           ))}
           
-          <div className="flex gap-4 px-4 pt-4">
-            <Link href={createLanguageSwitchHref('en')} onClick={() => setSheetOpen(false)}>
-                <Button variant="outline" size="icon" className={cn(lang === 'en' ? 'border-primary' : 'border-transparent')}>
-                    <FlagIcon countryCode="us" />
+          {/* Mobile Language Switch (Dropdown style for consistency) */}
+          <div className="px-4 pt-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full justify-start">
+                  <Globe className="mr-2 h-4 w-4" />
+                  {currentLanguage?.label}
+                  <ChevronDown className="ml-auto h-4 w-4 opacity-50" />
                 </Button>
-            </Link>
-            <Link href={createLanguageSwitchHref('sq')} onClick={() => setSheetOpen(false)}>
-                <Button variant="outline" size="icon" className={cn(lang === 'sq' ? 'border-primary' : 'border-transparent')}>
-                    <FlagIcon countryCode="al" />
-                </Button>
-            </Link>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-48">
+                {languageOptions.map((option) => (
+                  <Link key={option.code} href={createLanguageSwitchHref(option.code)} passHref legacyBehavior>
+                    <DropdownMenuItem 
+                      className={cn("cursor-pointer", option.code === lang && "bg-accent text-accent-foreground")}
+                      onClick={() => setSheetOpen(false)}
+                    >
+                      <FlagIcon countryCode={option.countryCode} className="mr-2" />
+                      {option.label}
+                    </DropdownMenuItem>
+                  </Link>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       )
@@ -265,18 +291,27 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-4">
           {/* Language Switch for Desktop */}
-          <div className="hidden md:flex gap-2">
-            <Link href={createLanguageSwitchHref('en')}>
-                <Button variant="outline" size="icon" className={cn(lang === 'en' ? 'border-primary' : 'border-transparent')}>
-                    <FlagIcon countryCode="us" />
-                </Button>
-            </Link>
-            <Link href={createLanguageSwitchHref('sq')}>
-                <Button variant="outline" size="icon" className={cn(lang === 'sq' ? 'border-primary' : 'border-transparent')}>
-                    <FlagIcon countryCode="al" />
-                </Button>
-            </Link>
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="hidden md:flex items-center gap-1">
+                <FlagIcon countryCode={currentLanguage?.countryCode || 'us'} />
+                <span className="text-sm font-medium">{lang.toUpperCase()}</span>
+                <ChevronDown className="ml-1 h-4 w-4 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40">
+              {languageOptions.map((option) => (
+                <Link key={option.code} href={createLanguageSwitchHref(option.code)} passHref legacyBehavior>
+                  <DropdownMenuItem 
+                    className={cn("cursor-pointer", option.code === lang && "bg-accent text-accent-foreground")}
+                  >
+                    <FlagIcon countryCode={option.countryCode} className="mr-2" />
+                    {option.label}
+                  </DropdownMenuItem>
+                </Link>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
           
           <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
