@@ -1,4 +1,5 @@
 
+'use client';
 import {
     Accordion,
     AccordionContent,
@@ -97,4 +98,3 @@ export function FaqSection({ lang = 'en' }: FaqProps) {
         </section>
     );
 }
-

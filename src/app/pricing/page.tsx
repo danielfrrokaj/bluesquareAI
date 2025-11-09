@@ -8,9 +8,10 @@ import { ArrowRight, CheckCircle2, Code, Camera, MessageCircle, ShoppingCart, Pl
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { FaqSection } from "@/components/sections/faq-section";
+import { useMemo } from "react";
 
-export default function PricingPage({ searchParams }: { searchParams: { lang: string } }) {
-  const lang = searchParams.lang === 'sq' ? 'sq' : 'en';
+export default function PricingPage({ searchParams }: { searchParams?: { lang?: string } }) {
+  const lang = useMemo(() => searchParams?.lang === 'sq' ? 'sq' : 'en', [searchParams?.lang]);
 
   const content = {
     sq: {
@@ -121,12 +122,20 @@ export default function PricingPage({ searchParams }: { searchParams: { lang: st
       <Header lang={lang} />
       <main className="flex-1 fade-in">
         {/* Hero Section */}
-        <section className="relative py-20 md:py-32 text-white text-center bg-card">
+        <section className="relative py-20 md:py-32 text-white text-center">
+             <Image 
+                src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=2070&auto=format&fit=crop"
+                alt="Pricing background"
+                fill
+                className="object-cover"
+                data-ai-hint="abstract gradient"
+            />
+            <div className="absolute inset-0 bg-primary/80"></div>
             <div className="container relative z-10">
                 <h1 className="text-4xl md:text-6xl font-bold font-headline mb-4">{currentContent.title}</h1>
                 <p className="text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">{currentContent.subtitle}</p>
                  <Button size="lg" asChild className="mt-8">
-                    <Link href={`/#contact`}>
+                    <Link href={`/contact?lang=${lang}`}>
                         {currentContent.cta} <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
                 </Button>
@@ -167,7 +176,7 @@ export default function PricingPage({ searchParams }: { searchParams: { lang: st
             </div>
         </section>
 
-        <FaqSection />
+        <FaqSection lang={lang}/>
 
         {/* Final CTA */}
         <section className="py-20 md:py-32 bg-card">
@@ -175,7 +184,7 @@ export default function PricingPage({ searchParams }: { searchParams: { lang: st
                 <h2 className="text-3xl md:text-4xl font-bold font-headline mb-4">{currentContent.finalCtaTitle}</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto mb-8">{currentContent.finalCtaDescription}</p>
                 <Button size="lg" asChild>
-                    <Link href={`/#contact`}>
+                    <Link href={`/contact?lang=${lang}`}>
                         {currentContent.cta} <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
                 </Button>

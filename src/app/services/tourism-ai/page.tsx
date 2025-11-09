@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight, Plane, Bot, BarChartHorizontal, MessageSquare } from "lucide-react";
 import Image from "next/image";
+import { useMemo } from "react";
 
-export default function TourismAiPage({ searchParams }: { searchParams: { lang: string } }) {
-  const lang = searchParams.lang === 'sq' ? 'sq' : 'en';
+export default function TourismAiPage({ searchParams }: { searchParams?: { lang?: string } }) {
+  const lang = useMemo(() => searchParams?.lang === 'sq' ? 'sq' : 'en', [searchParams?.lang]);
 
   const content = {
     sq: {
@@ -145,7 +146,7 @@ export default function TourismAiPage({ searchParams }: { searchParams: { lang: 
                 <h2 className="text-3xl md:text-4xl font-bold font-headline mb-4">{currentContent.finalCtaTitle}</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto mb-8">{currentContent.finalCtaDescription}</p>
                 <Button size="lg" asChild>
-                    <Link href={`/#contact`}>
+                    <Link href={`/contact?lang=${lang}`}>
                         {currentContent.cta} <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
                 </Button>

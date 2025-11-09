@@ -16,6 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import Link from 'next/link';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import Image from 'next/image';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -23,7 +24,7 @@ const formSchema = z.object({
   message: z.string().min(10, { message: 'Message must be at least 10 characters.' }),
 });
 
-export default function ContactPage({ searchParams }: { searchParams: { lang?: string } }) {
+export default function ContactPage({ searchParams }: { searchParams?: { lang?: string } }) {
   const lang = useMemo(() => searchParams?.lang === 'sq' ? 'sq' : 'en', [searchParams?.lang]);
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -92,6 +93,9 @@ export default function ContactPage({ searchParams }: { searchParams: { lang?: s
   }
 
   const currentContent = content[lang];
+  
+  const mapApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=41.324522775013385,19.81432694199336&zoom=17&size=600x450&markers=color:red%7C41.324522775013385,19.81432694199336&key=${mapApiKey}&style=feature:all|element:all|visibility:on&style=feature:all|element:geometry|color:0x131823&style=feature:all|element:labels.text.fill|color:0x8f98a3&style=feature:all|element:labels.text.stroke|visibility:off&style=feature:administrative|element:geometry|visibility:off&style=feature:administrative.land_parcel|element:labels|visibility:off&style=feature:poi|element:geometry|color:0x131823&style=feature:poi|element:labels.text|visibility:off&style=feature:poi.park|element:geometry.fill|color:0x131823&style=feature:road|element:geometry|color:0x2c3342&style=feature:road|element:labels.icon|visibility:off&style=feature:road.arterial|element:geometry|color:0x2c3342&style=feature:road.highway|element:geometry|color:0x2c3342&style=feature:road.local|element:geometry|color:0x2c3342&style=feature:transit|element:geometry|color:0x131823&style=feature:water|element:geometry|color:0x0e1119`;
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -108,6 +112,7 @@ export default function ContactPage({ searchParams }: { searchParams: { lang?: s
                 </p>
             </div>
             <div className="grid lg:grid-cols-2 gap-12 items-start">
+              <div className="grid grid-cols-1 gap-12">
                 <div className="flex flex-col space-y-8">
                     <div>
                       <h3 className="text-2xl font-bold font-headline mb-4">{currentContent.contactInfoTitle}</h3>
@@ -219,24 +224,23 @@ export default function ContactPage({ searchParams }: { searchParams: { lang?: s
                       </CardContent>
                     </Card>
                 </div>
+              </div>
+              <div className="rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg h-full min-h-[450px] lg:min-h-0">
+                  {mapApiKey ? (
+                    <Image
+                      src={mapUrl}
+                      alt="Our Location"
+                      width={600}
+                      height={450}
+                      className="w-full h-full object-cover map-iframe"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                      <p className="text-muted-foreground">Google Maps API Key is missing.</p>
+                    </div>
+                  )}
+              </div>
             </div>
-            
-            <div className="mt-16">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline text-center mb-8">{currentContent.location}</h2>
-                <div className="rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2996.342936279184!2d19.81175197600865!3d41.3245227713028!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1350310e5f48868d%3A0xca47f6a7d33bd6a2!2sBlue%20Square%20Marketing!5e0!3m2!1sen!2sus!4v1724699500000!5m2!1sen!2sus"
-                        width="100%"
-                        height="450"
-                        style={{ border: 0 }}
-                        allowFullScreen={false}
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                        className="map-iframe"
-                    ></iframe>
-                </div>
-            </div>
-
           </div>
         </section>
       </main>
