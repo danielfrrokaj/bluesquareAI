@@ -6,7 +6,6 @@ import Link from "next/link";
 import { ArrowRight, MessageCircle, Instagram, Facebook, Smartphone } from "lucide-react";
 import Image from "next/image";
 import { useMemo } from "react";
-import type { Metadata, ResolvingMetadata } from 'next';
 
 const pageContent = {
     sq: {
@@ -76,38 +75,6 @@ const pageContent = {
       finalCtaDescription: "Let technology work for you. Contact us for a customized solution.",
     }
   }
-
-type Props = {
-  searchParams: { lang?: string };
-};
-
-export async function generateMetadata(
-  { searchParams }: Props,
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
-  const lang = searchParams?.lang === 'sq' ? 'sq' : 'en';
-  const content = pageContent[lang];
-  
-  const title = content.title;
-  const description = content.subtitle;
-  const locale = lang === 'sq' ? 'sq_AL' : 'en_US';
-
-  return {
-    title: title,
-    description: description,
-    openGraph: {
-      title: title,
-      description: description,
-      locale: locale,
-      images: ['/logo.png'],
-    },
-    twitter: {
-      title: title,
-      description: description,
-      images: ['/logo.png'],
-    },
-  };
-}
 
 export default function CommunicationAutomationPage({ searchParams }: { searchParams?: { lang?: string } }) {
   const lang = useMemo(() => searchParams?.lang === 'sq' ? 'sq' : 'en', [searchParams?.lang]);

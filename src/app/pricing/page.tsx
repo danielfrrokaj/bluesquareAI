@@ -8,7 +8,6 @@ import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { FaqSection } from "@/components/sections/faq-section";
 import { useMemo } from "react";
-import type { Metadata, ResolvingMetadata } from 'next';
 
 const pageContent = {
     sq: {
@@ -112,38 +111,6 @@ const pageContent = {
       finalCtaDescription: "Our team is ready to help you find the perfect solution. Contact us for a free consultation and a personalized quote.",
     }
   }
-
-type Props = {
-  searchParams: { lang?: string };
-};
-
-export async function generateMetadata(
-  { searchParams }: Props,
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
-  const lang = searchParams?.lang === 'sq' ? 'sq' : 'en';
-  const content = pageContent[lang];
-  
-  const title = content.title;
-  const description = content.subtitle;
-  const locale = lang === 'sq' ? 'sq_AL' : 'en_US';
-
-  return {
-    title: title,
-    description: description,
-    openGraph: {
-      title: title,
-      description: description,
-      locale: locale,
-      images: ['/logo.png'],
-    },
-    twitter: {
-      title: title,
-      description: description,
-      images: ['/logo.png'],
-    },
-  };
-}
 
 export default function PricingPage({ searchParams }: { searchParams?: { lang?: string } }) {
   const lang = useMemo(() => searchParams?.lang === 'sq' ? 'sq' : 'en', [searchParams?.lang]);

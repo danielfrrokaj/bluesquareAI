@@ -6,7 +6,6 @@ import Link from "next/link";
 import { ArrowRight, Building, LayoutDashboard, Video, UserCheck } from "lucide-react";
 import Image from "next/image";
 import { useMemo } from "react";
-import type { Metadata, ResolvingMetadata } from 'next';
 
 const pageContent = {
     sq: {
@@ -76,38 +75,6 @@ const pageContent = {
       finalCtaDescription: "Discover how our intelligent systems can give you clarity and total control. Contact us for a tailored solution.",
     }
   }
-
-type Props = {
-  searchParams: { lang?: string };
-};
-
-export async function generateMetadata(
-  { searchParams }: Props,
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
-  const lang = searchParams?.lang === 'sq' ? 'sq' : 'en';
-  const content = pageContent[lang];
-  
-  const title = content.title;
-  const description = content.subtitle;
-  const locale = lang === 'sq' ? 'sq_AL' : 'en_US';
-
-  return {
-    title: title,
-    description: description,
-    openGraph: {
-      title: title,
-      description: description,
-      locale: locale,
-      images: ['/logo.png'],
-    },
-    twitter: {
-      title: title,
-      description: description,
-      images: ['/logo.png'],
-    },
-  };
-}
 
 export default function ManagementSystemsPage({ searchParams }: { searchParams?: { lang?: string } }) {
   const lang = useMemo(() => searchParams?.lang === 'sq' ? 'sq' : 'en', [searchParams?.lang]);
