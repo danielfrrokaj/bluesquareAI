@@ -65,11 +65,14 @@ export async function submitContactForm(formData: { name: string; email: string;
   const { name, email, message } = parsed.data;
 
   const resend = new Resend('re_Mvd9e73R_6b6Sb7qGz8dh1Y4jGCX7mw5Y');
+  const ownerEmail = 'danielyoutub100@gmail.com';
+  const fromEmail = 'onboarding@resend.dev';
 
   try {
+    // 1. Send email to the owner
     await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: 'danielyoutub100@gmail.com',
+      from: fromEmail,
+      to: ownerEmail,
       subject: `New message from ${name} on Your Website`,
       html: `<p>You received a new message from your website contact form.</p>
              <p><strong>Name:</strong> ${name}</p>
@@ -77,6 +80,22 @@ export async function submitContactForm(formData: { name: string; email: string;
              <p><strong>Message:</strong></p>
              <p>${message}</p>`,
     });
+    
+    // 2. Send confirmation email to the sender
+    await resend.emails.send({
+      from: fromEmail,
+      to: email,
+      subject: `Confirmation: We received your message, ${name}!`,
+      html: `<p>Hi ${name},</p>
+             <p>Thank you for reaching out to Blue Square AI. We have successfully received your message and will get back to you within 24 hours.</p>
+             <p>Here is a copy of the message you sent:</p>
+             <hr style="border: 1px solid #eee; margin: 10px 0;">
+             <p style="white-space: pre-wrap; background-color: #f9f9f9; padding: 10px; border-radius: 5px;">${message}</p>
+             <hr style="border: 1px solid #eee; margin: 10px 0;">
+             <p>Best regards,</p>
+             <p>The Blue Square AI Team</p>`,
+    });
+
     return { success: true };
   } catch (error) {
     console.error('Email sending error:', error);
