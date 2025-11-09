@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from 'next/image';
@@ -11,7 +10,7 @@ const productsSq = [
     {
         title: 'AI Assistant Web Chat',
         description: 'Chat inteligjent që përgjigjet dhe mbledh të dhëna të klientëve.',
-        imageUrl: "https://images.unsplash.com/photo-1762340277380-04c2c30d0ef8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjaGF0JTIwaW50ZXJmYWNlfGVufDB8fHx8MTc2MjM3MDQ0Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+        imageUrl: "/images/aiAssistantWebChat.png",
         imageHint: "chat interface"
     },
     {
@@ -23,7 +22,7 @@ const productsSq = [
     {
         title: 'AutoBooking AI',
         description: 'Sistemi i rezervimeve me kontroll kundër overbooking-ut dhe faturim automatik.',
-        imageUrl: "https://images.unsplash.com/photo-1703300450387-047da16a89c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxib29raW5nJTIwY2FsZW5kYXJ8ZW58MHx8fHwxNzYyNDE3OTMxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+        imageUrl: "/images/autobookai.png",
         imageHint: "booking calendar"
     },
     {
@@ -44,7 +43,7 @@ const productsEn = [
     {
         title: 'AI Assistant Web Chat',
         description: 'An intelligent chat that responds and collects customer data.',
-        imageUrl: "https://images.unsplash.com/photo-1762340277380-04c2c30d0ef8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjaGF0JTIwaW50ZXJmYWNlfGVufDB8fHx8MTc2MjM3MDQ0Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+        imageUrl: "/images/aiAssistantWebChat.png",
         imageHint: "chat interface"
     },
     {
@@ -56,13 +55,13 @@ const productsEn = [
     {
         title: 'AutoBooking AI',
         description: 'A reservation system with overbooking control and automatic invoicing.',
-        imageUrl: "https://images.unsplash.com/photo-1703300450387-047da16a89c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxib29raW5nJTIwY2FsZW5kYXJ8ZW58MHx8fHwxNzYyNDE3OTMxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+        imageUrl: "/images/autobookai.png",
         imageHint: "booking calendar"
     },
     {
         title: 'BlueDesk',
         description: 'A management platform for sales, payments, staff, and notifications on a single screen.',
-        imageUrl: "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3MlMjBzeXN0ZW18ZW58MHx8fHwxNzYyNDMxMDI3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+        imageUrl: "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHxwb3MlMjBzeXN0ZW18ZW58MHx8fHwxNzYyNDMxMDI3fDA&ixlib=rb-4.1.0&q=80&w=1080",
         imageHint: "pos system"
     },
     {
