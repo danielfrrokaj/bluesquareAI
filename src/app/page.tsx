@@ -24,9 +24,10 @@ export async function generateMetadata(
   const titleSq = 'Blue Square AI | Zgjidhje Inteligjente & Automatizim për Biznesin';
   const descriptionSq = 'Blue Square AI krijon zgjidhje inteligjente për biznese të vogla dhe të mesme, duke kombinuar eksperiencën me fuqinë e Inteligjencës Artificiale për të automatizuar proceset dhe ulur kostot.';
 
-  const title = lang === 'sq' ? titleSq : titleEn;
-  const description = lang === 'sq' ? descriptionSq : descriptionEn;
+  const title = titleSq;
+  const description = descriptionSq;
   const locale = lang === 'sq' ? 'sq_AL' : 'en_US';
+  const featuredImage = '/background/homepage_background.avif';
 
   return {
     title: title,
@@ -35,12 +36,20 @@ export async function generateMetadata(
       title: title,
       description: description,
       locale: locale,
-      images: ['/logo.png'],
+      images: [
+        {
+          url: featuredImage,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
     },
     twitter: {
+      card: 'summary_large_image',
       title: title,
       description: description,
-      images: ['/logo.png'],
+      images: [featuredImage],
     },
   };
 }

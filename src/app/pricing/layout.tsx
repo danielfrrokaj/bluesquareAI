@@ -26,6 +26,7 @@ export async function generateMetadata(
   const title = content.title;
   const description = content.subtitle;
   const locale = lang === 'sq' ? 'sq_AL' : 'en_US';
+  const featuredImage = 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=2070&auto=format&fit=crop'; // Pricing background
 
   return {
     title: title,
@@ -34,12 +35,20 @@ export async function generateMetadata(
       title: title,
       description: description,
       locale: locale,
-      images: ['/logo.png'],
+      images: [
+        {
+          url: featuredImage,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
     },
     twitter: {
+      card: 'summary_large_image',
       title: title,
       description: description,
-      images: ['/logo.png'],
+      images: [featuredImage],
     },
   };
 }
