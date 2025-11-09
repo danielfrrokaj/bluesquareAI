@@ -1,4 +1,3 @@
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -21,7 +20,7 @@ export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
   return (
     <section id="home" className="relative w-full h-[80vh] min-h-[600px] flex items-center justify-center text-center text-primary-foreground overflow-hidden">
       <Image
-        src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/background/Gemini_Generated_Image_k61dx7k61dx7k61d.png"
+        src="/background/homepage_background.avif"
         alt="Abstract technology globe background"
         fill
         className="object-cover fade-in"
