@@ -66,41 +66,47 @@ export async function submitContactForm(formData: { name: string; email: string;
 
   const resend = new Resend('re_Mvd9e73R_6b6Sb7qGz8dh1Y4jGCX7mw5Y');
   const ownerEmail = 'danielyoutub100@gmail.com';
-  // Use a display name in the 'from' field for better deliverability
   const fromEmailWithDisplayName = 'Blue Square AI <onboarding@resend.dev>';
 
+  // 1. Email to the owner
+  const ownerEmailPayload = {
+    from: fromEmailWithDisplayName,
+    to: [ownerEmail],
+    subject: `New message from ${name} on Your Website`,
+    html: `<p>You received a new message from your website contact form.</p>
+           <p><strong>Name:</strong> ${name}</p>
+           <p><strong>Email:</strong> ${email}</p>
+           <p><strong>Message:</strong></p>
+           <p>${message}</p>`,
+  };
+
+  // 2. Confirmation email to the sender
+  const senderEmailPayload = {
+    from: fromEmailWithDisplayName,
+    to: [email],
+    subject: `Confirmation: We received your message, ${name}!`,
+    html: `<p>Hi ${name},</p>
+           <p>Thank you for reaching out to Blue Square AI. We have successfully received your message and will get back to you within 24 hours.</p>
+           <p>Here is a copy of the message you sent:</p>
+           <hr style="border: 1px solid #eee; margin: 10px 0;">
+           <p style="white-space: pre-wrap; background-color: #f9f9f9; padding: 10px; border-radius: 5px;">${message}</p>
+           <hr style="border: 1px solid #eee; margin: 10px 0;">
+           <p>Best regards,</p>
+           <p>The Blue Square AI Team</p>`,
+  };
+
   try {
-    // 1. Send email to the owner
-    await resend.emails.send({
-      from: fromEmailWithDisplayName,
-      to: ownerEmail,
-      subject: `New message from ${name} on Your Website`,
-      html: `<p>You received a new message from your website contact form.</p>
-             <p><strong>Name:</strong> ${name}</p>
-             <p><strong>Email:</strong> ${email}</p>
-             <p><strong>Message:</strong></p>
-             <p>${message}</p>`,
-    });
-    
-    // 2. Send confirmation email to the sender
-    await resend.emails.send({
-      from: fromEmailWithDisplayName,
-      to: email,
-      subject: `Confirmation: We received your message, ${name}!`,
-      html: `<p>Hi ${name},</p>
-             <p>Thank you for reaching out to Blue Square AI. We have successfully received your message and will get back to you within 24 hours.</p>
-             <p>Here is a copy of the message you sent:</p>
-             <hr style="border: 1px solid #eee; margin: 10px 0;">
-             <p style="white-space: pre-wrap; background-color: #f9f9f9; padding: 10px; border-radius: 5px;">${message}</p>
-             <hr style="border: 1px solid #eee; margin: 10px 0;">
-             <p>Best regards,</p>
-             <p>The Blue Square AI Team</p>`,
-    });
+    const { error } = await resend.batch.send([ownerEmailPayload, senderEmailPayload]);
+
+    if (error) {
+      console.error('Resend batch sending error:', error);
+      return { success: false, error: error.message || 'There was a problem sending your message.' };
+    }
 
     return { success: true };
   } catch (error) {
     console.error('Email sending error:', error);
-    return { success: false, error: 'There was a problem sending your message. Please try again later.' };
+    return { success: false, error: 'An unexpected error occurred while sending the emails.' };
   }
 }
 
