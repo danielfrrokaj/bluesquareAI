@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Blue Square AI - Zgjidhje Inteligjente për Biznesin',
-    description: 'Blue Square AI krijon zgjidhje inteligjente për biznese të vogla dhe të mesme,
+    description: 'Blue Square AI krijon zgjidhje inteligjente për biznese të vogla dhe të mesme, duke kombinuar eksperiencën me fuqinë e Inteligjencës Artificiale.',
     images: ['/logo.png'],
   },
 };
