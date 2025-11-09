@@ -20,9 +20,7 @@ export const metadata: Metadata = {
     template: '%s | Blue Square AI',
   },
   description: 'Blue Square AI krijon zgjidhje inteligjente për biznese të vogla dhe të mesme, duke kombinuar eksperiencën me fuqinë e Inteligjencës Artificiale.',
-  icons: {
-    icon: '/favicon.ico', // Explicitly setting the icon path
-  },
+  // Removed 'icons' property to rely on the explicit link tag below
   openGraph: {
     title: 'Blue Square AI - Zgjidhje Inteligjente për Biznesin',
     description: 'Blue Square AI krijon zgjidhje inteligjente për biznese të vogla dhe të mesme, duke kombinuar eksperiencën me fuqinë e Inteligjencës Artificiale.',
@@ -54,6 +52,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="sq" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        {/* Explicitly link the favicon to bypass caching/environment overrides */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
       <body className={cn('min-h-screen bg-background font-body antialiased', inter.className, poppins.className)}>
         <FirebaseClientProvider>
           {children}
