@@ -1,6 +1,5 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Globe } from 'lucide-react';
 
 interface FlagIconProps {
   countryCode: 'us' | 'al';
@@ -8,20 +7,20 @@ interface FlagIconProps {
 }
 
 const FlagIcon: React.FC<FlagIconProps> = ({ countryCode, className }) => {
-  const baseClasses = "h-5 w-5 rounded-full border border-border shadow-sm";
+  // Increased size slightly for better visibility of text
+  const baseClasses = "h-6 w-6 rounded-full border border-border shadow-sm text-xs font-bold flex items-center justify-center";
 
-  // Note: Since Lucide-React does not provide flag icons, we use a combination of
-  // Tailwind background colors and a generic icon (Globe) for a placeholder/visual cue.
-  // For a real application, you would use a dedicated flag icon library or SVG assets.
-  
+  // Using colors to represent the flags, and white text for contrast
   const flagStyles = {
-    us: 'bg-blue-600 text-white flex items-center justify-center', // Represents US flag colors
-    al: 'bg-red-600 text-black flex items-center justify-center', // Represents Albanian flag colors
+    us: 'bg-blue-600 text-white', // US colors (Blue/White)
+    al: 'bg-red-600 text-white', // Albanian colors (Red/White text for visibility)
   };
+  
+  const text = countryCode === 'us' ? 'EN' : 'SQ';
 
   return (
     <div className={cn(baseClasses, flagStyles[countryCode], className)}>
-      <Globe className="h-3 w-3" />
+      {text}
     </div>
   );
 };
