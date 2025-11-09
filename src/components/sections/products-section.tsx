@@ -34,7 +34,7 @@ const productsSq = [
     {
         title: 'WhatsAI Connect',
         description: 'Integrim i WhatsApp API me inteligjencë që menaxhon automatikisht komunikimin.',
-        imageUrl: "/images/whatsAiconnect.png",
+        imageUrl: "/images/aiAssistantWebChat.png", // Changed to existing image
         imageHint: "whatsapp api"
     },
 ];
@@ -67,7 +67,7 @@ const productsEn = [
     {
         title: 'WhatsAI Connect',
         description: 'WhatsApp API integration with intelligence that automatically manages communication.',
-        imageUrl: "/images/whatsAiconnect.png",
+        imageUrl: "/images/aiAssistantWebChat.png", // Changed to existing image
         imageHint: "whatsapp api"
     },
 ];
