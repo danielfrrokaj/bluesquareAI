@@ -15,7 +15,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import Link from 'next/link';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import Image from 'next/image';
+import dynamic from 'next/dynamic';
+
+// Dynamically import LeafletMap to ensure it only renders on the client side
+const LeafletMap = dynamic(() => import('@/components/leaflet-map').then(mod => mod.LeafletMap), {
+    ssr: false,
+    loading: () => <div className="w-full h-full bg-muted flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>,
+});
+
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -41,7 +48,8 @@ const pageContent = {
         phone: "Telefoni",
         address: "Adresa",
         followUs: "Na ndiqni",
-        location: "Vendndodhja Jonë"
+        location: "Vendndodhja Jonë",
+        mapPopup: "Zyra Qendrore Blue Square AI"
     },
     en: {
         title: "Get in Touch",
@@ -60,7 +68,8 @@ const pageContent = {
         phone: "Phone",
         address: "Address",
         followUs: "Follow Us",
-        location: "Our Location"
+        location: "Our Location",
+        mapPopup: "Blue Square AI Headquarters"
     }
 }
 
@@ -93,8 +102,12 @@ export default function ContactPage({ searchParams }: { searchParams?: { lang?: 
 
   const currentContent = pageContent[lang];
   
-  const mapApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=41.324522775013385,19.81432694199336&zoom=17&size=600x450&markers=color:red%7C41.324522775013385,19.81432694199336&key=${mapApiKey}&style=feature:all|element:all|visibility:on&style=feature:all|element:geometry|color:0x131823&style=feature:all|element:labels.text.fill|color:0x8f98a3&style=feature:all|element:labels.text.stroke|visibility:off&style=feature:administrative|element:geometry|visibility:off&style=feature:administrative.land_parcel|element:labels|visibility:off&style=feature:poi|element:geometry|color:0x131823&style=feature:poi|element:labels.text|visibility:off&style=feature:poi.park|element:geometry.fill|color:0x131823&style=feature:road|element:geometry|color:0x2c3342&style=feature:road|element:labels.icon|visibility:off&style=feature:road.arterial|element:geometry|color:0x2c3342&style=feature:road.highway|element:geometry|color:0x2c3342&style=feature:road.local|element:geometry|color:0x2c3342&style=feature:transit|element:geometry|color:0x131823&style=feature:water|element:geometry|color:0x0e1119`;
+  // Coordinates for Tirana, Albania (used previously for Google Maps)
+  const mapCoords = {
+    lat: 41.324522775013385,
+    lng: 19.81432694199336,
+    zoom: 17,
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -224,31 +237,19 @@ export default function ContactPage({ searchParams }: { searchParams?: { lang?: 
                     </Card>
                 </div>
               </div>
-              <div className="rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg h-full min-h-[450px] lg:min-h-0">
-                  {mapApiKey ? (
-                    <Image
-                      src={mapUrl}
-                      alt="Our Location"
-                      width={600}
-                      height={450}
-                      className="w-full h-full object-cover map-iframe"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-muted flex items-center justify-center">
-                      <p className="text-muted-foreground">Google Maps API Key is missing.</p>
-                    </div>
-                  )}
+              <div className="rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg h-[450px] lg:h-full">
+                  <LeafletMap 
+                    latitude={mapCoords.lat}
+                    longitude={mapCoords.lng}
+                    zoom={mapCoords.zoom}
+                    popupText={currentContent.mapPopup}
+                  />
               </div>
             </div>
           </div>
         </section>
       </main>
       <Footer lang={lang} />
-       <style jsx>{`
-        .map-iframe {
-          filter: grayscale(1) invert(0.9) sepia(0.8) hue-rotate(180deg) saturate(300%) brightness(0.9);
-        }
-      `}</style>
     </div>
   );
 }
