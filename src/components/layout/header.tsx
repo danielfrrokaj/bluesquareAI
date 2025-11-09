@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -16,21 +15,22 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import React from 'react';
 import Image from 'next/image';
+import FlagIcon from '@/components/flag-icon';
 
 
 const navLinksSq = [
   { href: '/#products', label: 'Produktet' },
-  { href: '/pricing', label: 'Çmimet'},
+  { href: '/pricing', label: 'Çmimet' },
   { href: '/#vision', label: 'Vizioni' },
   { href: '/contact', label: 'Kontakti' },
 ];
 
 const navLinksEn = [
   { href: '/#products', label: 'Products' },
-  { href: '/pricing', label: 'Pricing'},
+  { href: '/pricing', label: 'Pricing' },
   { href: '/#vision', label: 'Vision' },
   { href: '/contact', label: 'Contact' },
 ];
@@ -106,6 +106,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   
   const homeLink = { href: '/', label: lang === 'sq' ? 'Kryefaqja' : 'Home' };
   const navLinks = lang === 'sq' ? navLinksSq : navLinksEn;
@@ -142,6 +143,13 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
     }
     return `${href}?lang=${lang}`;
   };
+  
+  const createLanguageSwitchHref = (newLang: 'en' | 'sq') => {
+    const currentPath = pathname;
+    const currentParams = new URLSearchParams(searchParams.toString());
+    currentParams.set('lang', newLang);
+    return `${currentPath}?${currentParams.toString()}`;
+  };
 
 
   const renderNavLinks = (isMobile = false) => {
@@ -172,6 +180,19 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
               {link.label}
             </Link>
           ))}
+          
+          <div className="flex gap-4 px-4 pt-4">
+            <Link href={createLanguageSwitchHref('en')} onClick={() => setSheetOpen(false)}>
+                <Button variant="outline" size="icon" className={cn(lang === 'en' ? 'border-primary' : 'border-transparent')}>
+                    <FlagIcon countryCode="us" />
+                </Button>
+            </Link>
+            <Link href={createLanguageSwitchHref('sq')} onClick={() => setSheetOpen(false)}>
+                <Button variant="outline" size="icon" className={cn(lang === 'sq' ? 'border-primary' : 'border-transparent')}>
+                    <FlagIcon countryCode="al" />
+                </Button>
+            </Link>
+          </div>
         </div>
       )
     }
@@ -243,6 +264,20 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
           {renderNavLinks()}
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-4">
+          {/* Language Switch for Desktop */}
+          <div className="hidden md:flex gap-2">
+            <Link href={createLanguageSwitchHref('en')}>
+                <Button variant="outline" size="icon" className={cn(lang === 'en' ? 'border-primary' : 'border-transparent')}>
+                    <FlagIcon countryCode="us" />
+                </Button>
+            </Link>
+            <Link href={createLanguageSwitchHref('sq')}>
+                <Button variant="outline" size="icon" className={cn(lang === 'sq' ? 'border-primary' : 'border-transparent')}>
+                    <FlagIcon countryCode="al" />
+                </Button>
+            </Link>
+          </div>
+          
           <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
@@ -301,5 +336,3 @@ const ListItem = React.forwardRef<
   )
 })
 ListItem.displayName = "ListItem"
-
-    
