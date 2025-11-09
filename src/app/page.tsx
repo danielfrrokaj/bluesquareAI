@@ -1,5 +1,3 @@
-
-
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { HeroSection } from '@/components/sections/hero-section';
@@ -8,6 +6,44 @@ import { ProductsSection } from '@/components/sections/products-section';
 import { VisionSection } from '@/components/sections/vision-section';
 import { Chatbot } from '@/components/chatbot';
 import { TestimonialsSection } from '@/components/sections/testimonials-section';
+import type { Metadata, ResolvingMetadata } from 'next';
+
+type Props = {
+  searchParams: { lang?: string };
+};
+
+export async function generateMetadata(
+  { searchParams }: Props,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
+  const lang = searchParams?.lang === 'sq' ? 'sq' : 'en';
+  
+  const titleEn = 'Blue Square AI | Smart Automation & AI Solutions for Business';
+  const descriptionEn = 'Blue Square AI provides intelligent solutions for small and medium businesses, combining expertise with the power of Artificial Intelligence to automate processes and reduce costs.';
+  
+  const titleSq = 'Blue Square AI | Zgjidhje Inteligjente & Automatizim për Biznesin';
+  const descriptionSq = 'Blue Square AI krijon zgjidhje inteligjente për biznese të vogla dhe të mesme, duke kombinuar eksperiencën me fuqinë e Inteligjencës Artificiale për të automatizuar proceset dhe ulur kostot.';
+
+  const title = lang === 'sq' ? titleSq : titleEn;
+  const description = lang === 'sq' ? descriptionSq : descriptionEn;
+  const locale = lang === 'sq' ? 'sq_AL' : 'en_US';
+
+  return {
+    title: title,
+    description: description,
+    openGraph: {
+      title: title,
+      description: description,
+      locale: locale,
+      images: ['/logo.png'],
+    },
+    twitter: {
+      title: title,
+      description: description,
+      images: ['/logo.png'],
+    },
+  };
+}
 
 export default function Home({ searchParams }: { searchParams: { lang?: string } }) {
   const lang = searchParams?.lang === 'sq' ? 'sq' : 'en';

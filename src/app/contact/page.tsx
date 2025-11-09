@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useMemo } from 'react';
@@ -17,12 +16,86 @@ import Link from 'next/link';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import Image from 'next/image';
+import type { Metadata, ResolvingMetadata } from 'next';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
   email: z.string().email({ message: 'Please enter a valid email.' }),
   message: z.string().min(10, { message: 'Message must be at least 10 characters.' }),
 });
+
+const pageContent = {
+    sq: {
+        title: "Na Kontaktoni",
+        subtitle: "Keni një pyetje apo dëshironi të punojmë së bashku? Na shkruani.",
+        formTitle: "Na dërgoni një mesazh",
+        formDescription: "Ne jemi këtu për t'ju ndihmuar.",
+        nameLabel: "Emri",
+        namePlaceholder: "Emri juaj",
+        emailLabel: "Email",
+        emailPlaceholder: "email@shembull.com",
+        messageLabel: "Mesazhi",
+        messagePlaceholder: "Si mund t'ju ndihmojmë?",
+        submitButton: "Dërgo Mesazhin",
+        contactInfoTitle: "Informacioni i Kontaktit",
+        contactInfoDescription: "Plotësoni formularin dhe ekipi ynë do t'ju kthehet brenda 24 orëve.",
+        phone: "Telefoni",
+        address: "Adresa",
+        followUs: "Na ndiqni",
+        location: "Vendndodhja Jonë"
+    },
+    en: {
+        title: "Get in Touch",
+        subtitle: "Have a question or want to work together? We'd love to hear from you.",
+        formTitle: "Send us a Message",
+        formDescription: "We are here to help you.",
+        nameLabel: "Name",
+        namePlaceholder: "Your Name",
+        emailLabel: "Email",
+        emailPlaceholder: "your.email@example.com",
+        messageLabel: "Message",
+        messagePlaceholder: "How can we help you?",
+        submitButton: "Send Message",
+        contactInfoTitle: "Contact Information",
+        contactInfoDescription: "Fill out the form and our team will get back to you within 24 hours.",
+        phone: "Phone",
+        address: "Address",
+        followUs: "Follow Us",
+        location: "Our Location"
+    }
+}
+
+type Props = {
+  searchParams: { lang?: string };
+};
+
+export async function generateMetadata(
+  { searchParams }: Props,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
+  const lang = searchParams?.lang === 'sq' ? 'sq' : 'en';
+  const content = pageContent[lang];
+  
+  const title = content.title;
+  const description = content.subtitle;
+  const locale = lang === 'sq' ? 'sq_AL' : 'en_US';
+
+  return {
+    title: title,
+    description: description,
+    openGraph: {
+      title: title,
+      description: description,
+      locale: locale,
+      images: ['/logo.png'],
+    },
+    twitter: {
+      title: title,
+      description: description,
+      images: ['/logo.png'],
+    },
+  };
+}
 
 export default function ContactPage({ searchParams }: { searchParams?: { lang?: string } }) {
   const lang = useMemo(() => searchParams?.lang === 'sq' ? 'sq' : 'en', [searchParams?.lang]);
@@ -51,48 +124,7 @@ export default function ContactPage({ searchParams }: { searchParams?: { lang?: 
     }
   }
 
-  const content = {
-      sq: {
-          title: "Na Kontaktoni",
-          subtitle: "Keni një pyetje apo dëshironi të punojmë së bashku? Na shkruani.",
-          formTitle: "Na dërgoni një mesazh",
-          formDescription: "Ne jemi këtu për t'ju ndihmuar.",
-          nameLabel: "Emri",
-          namePlaceholder: "Emri juaj",
-          emailLabel: "Email",
-          emailPlaceholder: "email@shembull.com",
-          messageLabel: "Mesazhi",
-          messagePlaceholder: "Si mund t'ju ndihmojmë?",
-          submitButton: "Dërgo Mesazhin",
-          contactInfoTitle: "Informacioni i Kontaktit",
-          contactInfoDescription: "Plotësoni formularin dhe ekipi ynë do t'ju kthehet brenda 24 orëve.",
-          phone: "Telefoni",
-          address: "Adresa",
-          followUs: "Na ndiqni",
-          location: "Vendndodhja Jonë"
-      },
-      en: {
-          title: "Get in Touch",
-          subtitle: "Have a question or want to work together? We'd love to hear from you.",
-          formTitle: "Send us a Message",
-          formDescription: "We are here to help you.",
-          nameLabel: "Name",
-          namePlaceholder: "Your Name",
-          emailLabel: "Email",
-          emailPlaceholder: "your.email@example.com",
-          messageLabel: "Message",
-          messagePlaceholder: "How can we help you?",
-          submitButton: "Send Message",
-          contactInfoTitle: "Contact Information",
-          contactInfoDescription: "Fill out the form and our team will get back to you within 24 hours.",
-          phone: "Phone",
-          address: "Address",
-          followUs: "Follow Us",
-          location: "Our Location"
-      }
-  }
-
-  const currentContent = content[lang];
+  const currentContent = pageContent[lang];
   
   const mapApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=41.324522775013385,19.81432694199336&zoom=17&size=600x450&markers=color:red%7C41.324522775013385,19.81432694199336&key=${mapApiKey}&style=feature:all|element:all|visibility:on&style=feature:all|element:geometry|color:0x131823&style=feature:all|element:labels.text.fill|color:0x8f98a3&style=feature:all|element:labels.text.stroke|visibility:off&style=feature:administrative|element:geometry|visibility:off&style=feature:administrative.land_parcel|element:labels|visibility:off&style=feature:poi|element:geometry|color:0x131823&style=feature:poi|element:labels.text|visibility:off&style=feature:poi.park|element:geometry.fill|color:0x131823&style=feature:road|element:geometry|color:0x2c3342&style=feature:road|element:labels.icon|visibility:off&style=feature:road.arterial|element:geometry|color:0x2c3342&style=feature:road.highway|element:geometry|color:0x2c3342&style=feature:road.local|element:geometry|color:0x2c3342&style=feature:transit|element:geometry|color:0x131823&style=feature:water|element:geometry|color:0x0e1119`;

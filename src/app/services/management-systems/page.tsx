@@ -1,4 +1,3 @@
-
 'use client';
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -7,11 +6,9 @@ import Link from "next/link";
 import { ArrowRight, Building, LayoutDashboard, Video, UserCheck } from "lucide-react";
 import Image from "next/image";
 import { useMemo } from "react";
+import type { Metadata, ResolvingMetadata } from 'next';
 
-export default function ManagementSystemsPage({ searchParams }: { searchParams?: { lang?: string } }) {
-  const lang = useMemo(() => searchParams?.lang === 'sq' ? 'sq' : 'en', [searchParams?.lang]);
-
-  const content = {
+const pageContent = {
     sq: {
       title: "Sisteme Menaxhimi & Monitorimi",
       subtitle: "Kontroll i plotë dhe vizibilitet në kohë reale mbi operacionet tuaja.",
@@ -79,7 +76,42 @@ export default function ManagementSystemsPage({ searchParams }: { searchParams?:
       finalCtaDescription: "Discover how our intelligent systems can give you clarity and total control. Contact us for a tailored solution.",
     }
   }
-  const currentContent = content[lang];
+
+type Props = {
+  searchParams: { lang?: string };
+};
+
+export async function generateMetadata(
+  { searchParams }: Props,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
+  const lang = searchParams?.lang === 'sq' ? 'sq' : 'en';
+  const content = pageContent[lang];
+  
+  const title = content.title;
+  const description = content.subtitle;
+  const locale = lang === 'sq' ? 'sq_AL' : 'en_US';
+
+  return {
+    title: title,
+    description: description,
+    openGraph: {
+      title: title,
+      description: description,
+      locale: locale,
+      images: ['/logo.png'],
+    },
+    twitter: {
+      title: title,
+      description: description,
+      images: ['/logo.png'],
+    },
+  };
+}
+
+export default function ManagementSystemsPage({ searchParams }: { searchParams?: { lang?: string } }) {
+  const lang = useMemo(() => searchParams?.lang === 'sq' ? 'sq' : 'en', [searchParams?.lang]);
+  const currentContent = pageContent[lang];
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header lang={lang} />

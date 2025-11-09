@@ -15,10 +15,35 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
-  title: 'Blue Square AI - Zgjidhje Inteligjente',
+  title: {
+    default: 'Blue Square AI - Zgjidhje Inteligjente për Biznesin',
+    template: '%s | Blue Square AI',
+  },
   description: 'Blue Square AI krijon zgjidhje inteligjente për biznese të vogla dhe të mesme, duke kombinuar eksperiencën me fuqinë e Inteligjencës Artificiale.',
   icons: {
     icon: '/favicon.ico',
+  },
+  openGraph: {
+    title: 'Blue Square AI - Zgjidhje Inteligjente për Biznesin',
+    description: 'Blue Square AI krijon zgjidhje inteligjente për biznese të vogla dhe të mesme, duke kombinuar eksperiencën me fuqinë e Inteligjencës Artificiale.',
+    url: 'https://bluesquare.ai',
+    siteName: 'Blue Square AI',
+    images: [
+      {
+        url: '/logo.png',
+        width: 200,
+        height: 200,
+        alt: 'Blue Square AI Logo',
+      },
+    ],
+    locale: 'sq_AL',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Blue Square AI - Zgjidhje Inteligjente për Biznesin',
+    description: 'Blue Square AI krijon zgjidhje inteligjente për biznese të vogla dhe të mesme, duke kombinuar eksperiencën me fuqinë e Inteligjencës Artificiale.',
+    images: ['/logo.png'],
   },
 };
 
