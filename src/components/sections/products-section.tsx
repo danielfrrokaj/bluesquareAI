@@ -16,7 +16,7 @@ const productsSq = [
     {
         title: 'Smart Cam Monitor',
         description: 'Aplikacion që njeh fytyra ose llogarit fluksin e njerëzve në lokale apo zyra.',
-        imageUrl: "https://images.unsplash.com/photo-1549109926-58f039549485?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZWN1cml0eSUyMGNhbWVyYXxlbnwwfHx8fDE3NjI0MzA5NTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+        imageUrl: "/images/smartcammonitor.png",
         imageHint: "security camera"
     },
     {
@@ -28,13 +28,13 @@ const productsSq = [
     {
         title: 'BlueDesk',
         description: 'Platformë menaxhimi për shitje, pagesa, staf dhe njoftime në një ekran të vetëm.',
-        imageUrl: "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3MlMjBzeXN0ZW18ZW58MHx8fHwxNzYyNDMxMDI3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+        imageUrl: "/images/bluedesk.png",
         imageHint: "pos system"
     },
     {
         title: 'WhatsAI Connect',
         description: 'Integrim i WhatsApp API me inteligjencë që menaxhon automatikisht komunikimin.',
-        imageUrl: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3aGF0c2FwcCUyMGFwaXxlbnwwfHx8fDE3NjI0MzEwNTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+        imageUrl: "/images/whatsAiconnect.png",
         imageHint: "whatsapp api"
     },
 ];
@@ -49,7 +49,7 @@ const productsEn = [
     {
         title: 'Smart Cam Monitor',
         description: 'An application that recognizes faces or calculates people flow in stores or offices.',
-        imageUrl: "https://images.unsplash.com/photo-1549109926-58f039549485?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZWN1cml0eSUyMGNhbWVyYXxlbnwwfHx8fDE3NjI0MzA5NTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+        imageUrl: "/images/smartcammonitor.png",
         imageHint: "security camera"
     },
     {
@@ -61,13 +61,13 @@ const productsEn = [
     {
         title: 'BlueDesk',
         description: 'A management platform for sales, payments, staff, and notifications on a single screen.',
-        imageUrl: "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHxwb3MlMjBzeXN0ZW18ZW58MHx8fHwxNzYyNDMxMDI3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+        imageUrl: "/images/bluedesk.png",
         imageHint: "pos system"
     },
     {
         title: 'WhatsAI Connect',
         description: 'WhatsApp API integration with intelligence that automatically manages communication.',
-        imageUrl: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3aGF0c2FwcCUyMGFwaXxlbnwwfHx8fDE3NjI0MzEwNTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+        imageUrl: "/images/whatsAiconnect.png",
         imageHint: "whatsapp api"
     },
 ];
