@@ -237,7 +237,7 @@ export default function ContactPage({ searchParams }: { searchParams?: { lang?: 
                     </Card>
                 </div>
               </div>
-              <div className="rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg h-[450px] lg:h-full">
+              <div className="rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg h-[300px] lg:h-[400px]">
                   <LeafletMap 
                     latitude={mapCoords.lat}
                     longitude={mapCoords.lng}
