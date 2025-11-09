@@ -66,12 +66,13 @@ export async function submitContactForm(formData: { name: string; email: string;
 
   const resend = new Resend('re_Mvd9e73R_6b6Sb7qGz8dh1Y4jGCX7mw5Y');
   const ownerEmail = 'danielyoutub100@gmail.com';
-  const fromEmail = 'onboarding@resend.dev';
+  // Use a display name in the 'from' field for better deliverability
+  const fromEmailWithDisplayName = 'Blue Square AI <onboarding@resend.dev>';
 
   try {
     // 1. Send email to the owner
     await resend.emails.send({
-      from: fromEmail,
+      from: fromEmailWithDisplayName,
       to: ownerEmail,
       subject: `New message from ${name} on Your Website`,
       html: `<p>You received a new message from your website contact form.</p>
@@ -83,7 +84,7 @@ export async function submitContactForm(formData: { name: string; email: string;
     
     // 2. Send confirmation email to the sender
     await resend.emails.send({
-      from: fromEmail,
+      from: fromEmailWithDisplayName,
       to: email,
       subject: `Confirmation: We received your message, ${name}!`,
       html: `<p>Hi ${name},</p>
