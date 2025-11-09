@@ -1,4 +1,3 @@
-
 'use client';
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -57,7 +56,7 @@ export default function PricingPage({ searchParams }: { searchParams?: { lang?: 
           title: "AI për Turizëm & Shërbime",
           price: "Sipas kërkesës",
           priceDescription: "Çmim i personalizuar",
-          features: ["Chatbot Turistik i Personalizuar", "Sinkronizim i Platformave", "Analizë e Komenteve me AI"],
+          features: ["Personalized Tourism Chatbot", "Sinkronizim i Platformave", "Analizë e Komenteve me AI"],
           href: "/services/tourism-ai"
         }
       ],
@@ -133,7 +132,7 @@ export default function PricingPage({ searchParams }: { searchParams?: { lang?: 
             <div className="absolute inset-0 bg-primary/80"></div>
             <div className="container relative z-10">
                 <h1 className="text-4xl md:text-6xl font-bold font-headline mb-4">{currentContent.title}</h1>
-                <p className="text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">{currentContent.subtitle}</p>
+                <p className="text-lg md:text-xl max-w-3xl mx-auto text-white">{currentContent.subtitle}</p>
                  <Button size="lg" asChild className="mt-8">
                     <Link href={`/contact?lang=${lang}`}>
                         {currentContent.cta} <ArrowRight className="ml-2 h-5 w-5" />
