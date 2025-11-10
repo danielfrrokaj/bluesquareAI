@@ -306,8 +306,8 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
           {renderNavLinks()}
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-4">
-          {/* Desktop CTA Button */}
-          <Button asChild size="sm" className="hidden lg:inline-flex">
+          {/* Desktop CTA Button - Visible from md screen size */}
+          <Button asChild size="sm" className="hidden md:inline-flex">
             <Link href={getFullHref(currentCta.href)}>
                 {currentCta.label}
             </Link>
