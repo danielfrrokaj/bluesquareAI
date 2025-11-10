@@ -25,6 +25,7 @@ import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import React from 'react';
 import Image from 'next/image';
 import FlagIcon from '@/components/flag-icon';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 
 const navLinksSq = [
@@ -320,19 +321,25 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
                 <span className="sr-only">Toggle Menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-full max-w-xs bg-card">
-              <div className="flex flex-col space-y-6 pt-10">
-                <Link href={getFullHref('/')} className="flex items-center space-x-2 mb-4" onClick={() => setSheetOpen(false)}>
-                    <Image 
-                        src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo/logo_black%20(1).png"
-                        alt="Blue Square AI Logo"
-                        width={160}
-                        height={40}
-                        className="w-40 h-auto"
-                        priority
-                    />
-                </Link>
-                {renderNavLinks(true)}
+            <SheetContent side="right" className="w-full max-w-xs bg-card p-0">
+              <div className="flex flex-col h-full">
+                <div className="p-6 border-b">
+                    <Link href={getFullHref('/')} className="flex items-center space-x-2" onClick={() => setSheetOpen(false)}>
+                        <Image 
+                            src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo/logo_black%20(1).png"
+                            alt="Blue Square AI Logo"
+                            width={160}
+                            height={40}
+                            className="w-40 h-auto"
+                            priority
+                        />
+                    </Link>
+                </div>
+                <ScrollArea className="flex-1">
+                    <div className="flex flex-col space-y-6 pt-4 pb-8">
+                        {renderNavLinks(true)}
+                    </div>
+                </ScrollArea>
               </div>
             </SheetContent>
           </Sheet>
