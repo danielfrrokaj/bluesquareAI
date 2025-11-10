@@ -320,7 +320,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
                 <span className="sr-only">Toggle Menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-full max-w-xs bg-card">
+            <SheetContent side="right" className="w-full max-w-xs bg-card">
               <div className="flex flex-col space-y-6 pt-10">
                 <Link href={getFullHref('/')} className="flex items-center space-x-2 mb-4" onClick={() => setSheetOpen(false)}>
                     <Image 
