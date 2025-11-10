@@ -118,6 +118,12 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
   const homeLink = { href: '/', label: lang === 'sq' ? 'Kryefaqja' : 'Home' };
   const navLinks = lang === 'sq' ? navLinksSq : navLinksEn;
   const services = lang === 'sq' ? servicesSq : servicesEn;
+  
+  const ctaContent = {
+      en: { label: "Get a free consultation", href: "/contact" },
+      sq: { label: "Merr një konsultim falas", href: "/contact" },
+  };
+  const currentCta = ctaContent[lang];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -194,6 +200,15 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
               {link.label}
             </Link>
           ))}
+          
+          {/* Mobile CTA Button */}
+          <div className="px-4 pt-4">
+            <Button asChild className="w-full">
+                <Link href={getFullHref(currentCta.href)} onClick={() => setSheetOpen(false)}>
+                    {currentCta.label}
+                </Link>
+            </Button>
+          </div>
           
           {/* Mobile Language Switch (Dropdown style for consistency) */}
           <div className="px-4 pt-4">
@@ -291,6 +306,13 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
           {renderNavLinks()}
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-4">
+          {/* Desktop CTA Button */}
+          <Button asChild size="sm" className="hidden lg:inline-flex">
+            <Link href={getFullHref(currentCta.href)}>
+                {currentCta.label}
+            </Link>
+          </Button>
+          
           {/* Language Switch for Desktop */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
