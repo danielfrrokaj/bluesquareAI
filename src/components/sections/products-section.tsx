@@ -27,7 +27,7 @@ const productsSq = [
         description: 'Automatizime n8n për hyrje të të dhënave, mesazhe WhatsApp dhe menaxhim operativ.',
         imageUrl: "/images/discoveralbania.png",
         imageHint: "operations dashboard",
-        href: null
+        href: "/products/discover-albania-ops-central"
     },
     {
         title: 'NordFix CRM',
@@ -86,7 +86,7 @@ const productsEn = [
         description: 'n8n automations for data entry, WhatsApp messages, and operational management.',
         imageUrl: "/images/discoveralbania.png",
         imageHint: "operations dashboard",
-        href: null
+        href: "/products/discover-albania-ops-central"
     },
     {
         title: 'NordFix CRM',
