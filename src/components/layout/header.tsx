@@ -125,11 +125,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
   };
   const currentCta = ctaContent[lang];
   
-  const taglineContent = {
-      en: "Using AI to power development of apps, getting them to your doorstep.",
-      sq: "Përdorimi i AI për të fuqizuar zhvillimin e aplikacioneve, duke i sjellë ato deri në derën tuaj."
-  }
-  const currentTagline = taglineContent[lang];
+  // Removed tagline content
 
   useEffect(() => {
     const handleScroll = () => {
@@ -307,9 +303,6 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
                 className="w-40 h-auto"
                 priority
             />
-            <p className="text-xs text-muted-foreground/80 font-medium -mt-1 hidden sm:block">
-                {currentTagline}
-            </p>
         </Link>
         <nav className="hidden md:flex items-center space-x-1">
           {renderNavLinks()}

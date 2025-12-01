@@ -5,13 +5,13 @@ import { Button } from '@/components/ui/button';
 export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
   const content = {
     sq: {
-      headline: "Sillni Teknologjinë e Zgjuar në Biznesin Tuaj",
-      subheadline: "Blue Square AI krijon zgjidhje inteligjente që automatizojnë, monitorojnë dhe optimizojnë çdo aspekt të biznesit tuaj.",
+      headline: "Zhvillim Aplikacionesh me AI: Më Lehtë, Më Shpejt, Deri në Derën Tuaj",
+      subheadline: "Ne përdorim Inteligjencën Artificiale për të fuqizuar zhvillimin e aplikacioneve, duke i sjellë ato deri në derën tuaj me lehtësi dhe shpejtësi të pashembullt.",
       cta: "Mëso Më Shumë",
     },
     en: {
-      headline: "Bring Smart Technology to Your Business",
-      subheadline: "Blue Square AI creates intelligent solutions that automate, monitor, and optimize every aspect of your business.",
+      headline: "AI-Powered App Development: Easier, Faster, Delivered to Your Doorstep",
+      subheadline: "We use Artificial Intelligence to power app development, delivering solutions to your doorstep with unparalleled ease and speed.",
       cta: "See our services",
     }
   }
