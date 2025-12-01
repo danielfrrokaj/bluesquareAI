@@ -70,7 +70,7 @@ const servicesEn = [
     {
         title: "AI for Tourism & Services",
         href: "/services/tourism-ai",
-        description: "Chatbot for hotels/agencies, reservation synchronization, and review analysis.",
+        description: "Chatbot for hotels/agjencies, reservation synchronization, and review analysis.",
         icon: <Plane className="h-5 w-5" />
     },
 ];
@@ -124,6 +124,12 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
       sq: { label: "Merr një konsultim falas", href: "/contact" },
   };
   const currentCta = ctaContent[lang];
+  
+  const taglineContent = {
+      en: "Using AI to power development of apps, getting them to your doorstep.",
+      sq: "Përdorimi i AI për të fuqizuar zhvillimin e aplikacioneve, duke i sjellë ato deri në derën tuaj."
+  }
+  const currentTagline = taglineContent[lang];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -292,7 +298,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
       isScrolled ? "border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" : "bg-transparent"
     )}>
       <div className="container flex h-20 items-center">
-        <Link href={getFullHref('/')} onClick={(e) => handleLinkClick(e, '/')} className="mr-6 flex items-center space-x-2">
+        <Link href={getFullHref('/')} onClick={(e) => handleLinkClick(e, '/')} className="mr-6 flex flex-col items-start space-y-0.5">
             <Image 
                 src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo/logo_black%20(1).png"
                 alt="Blue Square AI Logo"
@@ -301,6 +307,9 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
                 className="w-40 h-auto"
                 priority
             />
+            <p className="text-xs text-muted-foreground/80 font-medium -mt-1 hidden sm:block">
+                {currentTagline}
+            </p>
         </Link>
         <nav className="hidden md:flex items-center space-x-1">
           {renderNavLinks()}
