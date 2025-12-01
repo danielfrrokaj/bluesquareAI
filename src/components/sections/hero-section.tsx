@@ -5,13 +5,13 @@ import { Button } from '@/components/ui/button';
 export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
   const content = {
     sq: {
-      headline: "Zhvillim Aplikacionesh me AI: Më Lehtë, Më Shpejt, Deri në Derën Tuaj",
-      subheadline: "Ne përdorim Inteligjencën Artificiale për të fuqizuar zhvillimin e aplikacioneve, duke i sjellë ato deri në derën tuaj me lehtësi dhe shpejtësi të pashembullt.",
+      headline: "Zhvillim Aplikacionesh me AI: Më Lehtë, Më Shpejt, Të Gatshme për të Ardhmen.",
+      subheadline: "Ne përdorim Inteligjencën Artificiale për të fuqizuar zhvillimin e aplikacioneve, duke ofruar zgjidhje me lehtësi, shpejtësi të pashembullt dhe integrim të qetë në biznesin tuaj.",
       cta: "Mëso Më Shumë",
     },
     en: {
-      headline: "AI-Powered App Development: Easier, Faster, Delivered to Your Doorstep",
-      subheadline: "We use Artificial Intelligence to power app development, delivering solutions to your doorstep with unparalleled ease and speed.",
+      headline: "AI-Powered App Development: Easier, Faster, Future-Proof.",
+      subheadline: "We use Artificial Intelligence to power app development, delivering solutions with unparalleled ease, speed, and seamless integration into your business.",
       cta: "See our services",
     }
   }
