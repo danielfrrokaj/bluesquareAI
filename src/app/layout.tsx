@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   },
   description: 'Blue Square AI krijon zgjidhje inteligjente për biznese të vogla dhe të mesme, duke kombinuar eksperiencën me fuqinë e Inteligjencës Artificiale.',
   icons: {
-    icon: '/favicon.ico', // Explicitly setting the icon path via metadata
+    icon: 'https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo_bluesquare.jpg', // Updated favicon URL
   },
   openGraph: {
     title: 'Blue Square AI - Zgjidhje Inteligjente për Biznesin',
