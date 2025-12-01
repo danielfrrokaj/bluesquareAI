@@ -14,6 +14,24 @@ const productsSq = [
         imageHint: "chat interface"
     },
     {
+        title: 'MenuMaster AI',
+        description: 'Produkt SaaS me integrim AI për menaxhim dhe optimizim të menusë.',
+        imageUrl: "/images/menumaster.png",
+        imageHint: "menu management interface"
+    },
+    {
+        title: 'Discover Albania Ops Central',
+        description: 'Automatizime n8n për hyrje të të dhënave, mesazhe WhatsApp dhe menaxhim operativ.',
+        imageUrl: "/images/discoveralbania.png",
+        imageHint: "operations dashboard"
+    },
+    {
+        title: 'NordFix CRM',
+        description: 'Sistem CRM me integrim Outlook dhe AI për menaxhimin e marrëdhënieve me klientët.',
+        imageUrl: "/images/crm.png",
+        imageHint: "crm dashboard"
+    },
+    {
         title: 'Smart Cam Monitor',
         description: 'Aplikacion që njeh fytyra ose llogarit fluksin e njerëzve në lokale apo zyra.',
         imageUrl: "/images/smartcammonitor.png",
@@ -45,6 +63,24 @@ const productsEn = [
         description: 'An intelligent chat that responds and collects customer data.',
         imageUrl: "/images/aiAssistantWebChat.png",
         imageHint: "chat interface"
+    },
+    {
+        title: 'MenuMaster AI',
+        description: 'SaaS product with AI integration for menu management and optimization.',
+        imageUrl: "/images/menumaster.png",
+        imageHint: "menu management interface"
+    },
+    {
+        title: 'Discover Albania Ops Central',
+        description: 'n8n automations for data entry, WhatsApp messages, and operational management.',
+        imageUrl: "/images/discoveralbania.png",
+        imageHint: "operations dashboard"
+    },
+    {
+        title: 'NordFix CRM',
+        description: 'CRM system with Outlook and AI integration for customer relationship management.',
+        imageUrl: "/images/crm.png",
+        imageHint: "crm dashboard"
     },
     {
         title: 'Smart Cam Monitor',
