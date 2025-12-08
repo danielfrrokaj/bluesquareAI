@@ -64,6 +64,13 @@ const productsSq = [
         imageHint: "whatsapp api",
         href: "/services/communication-automation"
     },
+    {
+        title: 'Tirana Escape Room Website',
+        description: 'Një faqe interneti e bukur dhe funksionale për rezervime dhe prezantim të dhomave.',
+        imageUrl: "/images/tirana-escape-room.png",
+        imageHint: "escape room website interface",
+        href: "/products/tirana-escape-room"
+    },
 ];
 
 const productsEn = [
@@ -122,6 +129,13 @@ const productsEn = [
         imageUrl: "/images/aiAssistantWebChat.png", // Changed to existing image
         imageHint: "whatsapp api",
         href: "/services/communication-automation"
+    },
+    {
+        title: 'Tirana Escape Room Website',
+        description: 'A beautiful and functional website for booking and room presentation.',
+        imageUrl: "/images/tirana-escape-room.png",
+        imageHint: "escape room website interface",
+        href: "/products/tirana-escape-room"
     },
 ];
 
