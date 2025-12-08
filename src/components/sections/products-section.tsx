@@ -67,7 +67,7 @@ const productsSq = [
     {
         title: 'Tirana Escape Room Website',
         description: 'Një faqe interneti e bukur dhe funksionale për rezervime dhe prezantim të dhomave.',
-        imageUrl: "/images/tirana-escape-room.png",
+        imageUrl: "https://i.postimg.cc/597FvF4H/image.png",
         imageHint: "escape room website interface",
         href: "/products/tirana-escape-room"
     },
@@ -133,7 +133,7 @@ const productsEn = [
     {
         title: 'Tirana Escape Room Website',
         description: 'A beautiful and functional website for booking and room presentation.',
-        imageUrl: "/images/tirana-escape-room.png",
+        imageUrl: "https://i.postimg.cc/597FvF4H/image.png",
         imageHint: "escape room website interface",
         href: "/products/tirana-escape-room"
     },

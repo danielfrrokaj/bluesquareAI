@@ -114,7 +114,7 @@ export default function TiranaEscapeRoomPage({ searchParams }: { searchParams?: 
         {/* Hero Section */}
         <section className="relative py-20 md:py-32 text-white text-center">
             <Image 
-                src="/images/tirana-escape-room.png"
+                src="https://i.postimg.cc/597FvF4H/image.png"
                 alt="Tirana Escape Room Website Screenshot"
                 fill
                 className="object-cover"

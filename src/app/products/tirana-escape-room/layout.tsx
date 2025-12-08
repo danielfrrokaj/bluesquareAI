@@ -26,7 +26,7 @@ export async function generateMetadata(
   const title = content.title;
   const description = content.subtitle;
   const locale = lang === 'sq' ? 'sq_AL' : 'en_US';
-  const featuredImage = '/images/tirana-escape-room.png';
+  const featuredImage = 'https://i.postimg.cc/597FvF4H/image.png';
 
   return {
     title: title,
