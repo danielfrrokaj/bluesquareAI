@@ -3,111 +3,108 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight, Code, Zap, DollarSign, RefreshCw, Lightbulb, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Code, Zap, DollarSign, RefreshCw, Lightbulb, CheckCircle2, UtensilsCrossed } from "lucide-react";
 import Image from "next/image";
 import { useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FinalCtaSection } from "@/components/sections/final-cta-section";
+import { cn } from "@/lib/utils";
 
 const pageContent = {
     sq: {
-      title: "MenuMaster AI: E Ardhmja e Menaxhimit të Menusë",
-      subtitle: "SaaS i Fuqizuar nga AI për çmime dinamike, optimizim dhe përditësime të lehta për restorantet.",
+      title: "MenuMaster AI",
+      subtitle: "E Ardhmja e Menaxhimit të Menusë",
+      description: "SaaS i Fuqizuar nga AI për çmime dinamike, optimizim dhe përditësime të lehta për restorantet që kërkojnë përsosmëri.",
       cta: "Kërko një Demo",
       
-      aiTitle: "Si e Fuqizon AI Aplikacionet Tona",
-      aiDescription: "Ne përdorim Genkit dhe modele të avancuara për të krijuar sisteme inteligjente, vetë-optimizuese që mësojnë nga të dhënat në kohë reale. Kjo siguron që MenuMaster AI të jetë gjithmonë një hap përpara, duke maksimizuar efikasitetin dhe fitimin tuaj.",
+      aiTitle: "Inteligjenca pas Menusë",
+      aiDescription: "Ne përdorim modele të avancuara të AI për të krijuar sisteme vetë-optimizuese që mësojnë nga të dhënat në kohë reale.",
       aiFeatures: [
         {
-          icon: <Code className="h-8 w-8 text-primary" />,
-          title: "Vendime të Bazuara në Të Dhëna",
-          description: "AI analizon shitjet, kërkesën dhe kostot e inventarit për të sugjeruar çmime dinamike dhe për të identifikuar artikujt më fitimprurës."
+          icon: <Code className="h-6 w-6" />,
+          title: "Vendime me Të Dhëna",
+          description: "AI analizon shitjet dhe kërkesën për të sugjeruar çmime dinamike dhe për të rritur fitimin."
         },
         {
-          icon: <Lightbulb className="h-8 w-8 text-primary" />,
-          title: "Optimizimi i Përmbajtjes",
-          description: "Gjeneron automatikisht përshkrime tërheqëse të ushqimeve, të optimizuara për të rritur shitjet dhe për të përmirësuar përvojën e klientit."
+          icon: <Lightbulb className="h-6 w-6" />,
+          title: "Përshkrime AI",
+          description: "Gjeneron automatikisht përshkrime tërheqëse të ushqimeve, të optimizuara për të rritur shitjet."
         },
         {
-          icon: <Zap className="h-8 w-8 text-primary" />,
-          title: "Automatizim i Fluksit të Punës",
-          description: "Automatizon përditësimet e menusë në të gjitha platformat (QR, POS, website) në kohë reale, duke eliminuar gabimet manuale."
+          icon: <Zap className="h-6 w-6" />,
+          title: "Përditësim Real-time",
+          description: "Përditëson menunë në të gjitha platformat (QR, POS, website) në sekonda, pa gabime."
         }
       ],
 
-      restaurantTitle: "Pse Restorantet Kanë Nevojë për MenuMaster AI",
+      restaurantTitle: "Pse ju nevojitet MenuMaster?",
       restaurantFeatures: [
         {
-          icon: <DollarSign className="h-6 w-6 text-green-500" />,
+          icon: <DollarSign className="h-5 w-5" />,
           title: "Maksimizimi i Fitimit",
-          description: "AI sugjeron çmime optimale bazuar në orën e ditës, kërkesën dhe inventarin, duke rritur marzhin e fitimit pa humbur klientë."
+          description: "Sugjerime optimale çmimesh bazuar në kërkesën dhe orarin."
         },
         {
-          icon: <RefreshCw className="h-6 w-6 text-primary" />,
-          title: "Përditësime të Menjëhershme",
-          description: "Ndryshoni çmimet ose shënoni artikujt si 'të shitur' menjëherë, duke siguruar që klientët të shohin gjithmonë informacionin më të saktë."
+          icon: <RefreshCw className="h-5 w-5" />,
+          title: "Instant Updates",
+          description: "Ndryshoni çmimet ose hiqni artikujt nga shitja menjëherë."
         },
         {
-          icon: <CheckCircle2 className="h-6 w-6 text-primary" />,
-          title: "Konsistencë e Markës",
-          description: "Siguroni që çdo menu, qoftë dixhitale apo e printuar, të jetë e unifikuar dhe të pasqyrojë standardet e larta të markës suaj."
+          icon: <CheckCircle2 className="h-5 w-5" />,
+          title: "Konsistencë",
+          description: "Menu e unifikuar në të gjitha kanalet e komunikimit."
         }
       ],
 
-      easeTitle: "Menaxhimi i Menusë Më i Lehtë se Kurrë",
-      easeDescription: "MenuMaster AI ofron një ndërfaqe të thjeshtë dhe intuitive ku pronarët mund të përditësojnë artikujt, përshkrimet dhe çmimet menjëherë në të gjitha platformat dixhitale (kodet QR, faqja e internetit, POS). Nuk kërkohen aftësi kodimi apo dizajni. Thjesht klikoni, ndryshoni dhe publikoni.",
-
-      finalCtaTitle: "Gati për të transformuar menunë tuaj në një mjet fitimi?",
-      finalCtaDescription: "Lëreni AI të menaxhojë kompleksitetin, ndërsa ju fokusoheni në ofrimin e ushqimit të shkëlqyer.",
+      easeTitle: "Menaxhimi Më i Lehtë",
+      easeDescription: "MenuMaster AI ofron një ndërfaqe të thjeshtë ku mund të përditësoni gjithçka pa pasur nevojë për kodim apo dizajn. Thjesht klikoni dhe publikoni.",
     },
     en: {
-      title: "MenuMaster AI: The Future of Menu Management",
-      subtitle: "AI-Powered SaaS for dynamic pricing, optimization, and seamless updates for restaurants.",
+      title: "MenuMaster AI",
+      subtitle: "The Future of Menu Management",
+      description: "AI-Powered SaaS for dynamic pricing, optimization, and seamless updates for restaurants aiming for excellence.",
       cta: "Request a Demo",
 
-      aiTitle: "How AI Powers Our Applications",
-      aiDescription: "We use Genkit and advanced models to create intelligent, self-optimizing systems that learn from real-time data. This ensures MenuMaster AI is always one step ahead, maximizing your efficiency and profit.",
+      aiTitle: "Intelligence Behind the Menu",
+      aiDescription: "We use advanced AI models to create self-optimizing systems that learn from real-time data.",
       aiFeatures: [
         {
-          icon: <Code className="h-8 w-8 text-primary" />,
+          icon: <Code className="h-6 w-6" />,
           title: "Data-Driven Decisions",
-          description: "AI analyzes sales, demand, and inventory costs to suggest dynamic pricing and identify the most profitable menu items."
+          description: "AI analyzes sales and demand to suggest dynamic pricing and increase profit."
         },
         {
-          icon: <Lightbulb className="h-8 w-8 text-primary" />,
-          title: "Content Optimization",
-          description: "Automatically generates compelling food descriptions optimized to boost sales and enhance the customer experience."
+          icon: <Lightbulb className="h-6 w-6" />,
+          title: "AI Descriptions",
+          description: "Automatically generates compelling food descriptions optimized to boost sales."
         },
         {
-          icon: <Zap className="h-8 w-8 text-primary" />,
-          title: "Workflow Automation",
-          description: "Automates menu updates across all platforms (QR, POS, website) in real-time, eliminating manual errors."
+          icon: <Zap className="h-6 w-6" />,
+          title: "Real-time Updates",
+          description: "Updates the menu across all platforms (QR, POS, website) in seconds, without errors."
         }
       ],
 
-      restaurantTitle: "Why Restaurants Need MenuMaster AI",
+      restaurantTitle: "Why you need MenuMaster?",
       restaurantFeatures: [
         {
-          icon: <DollarSign className="h-6 w-6 text-green-500" />,
+          icon: <DollarSign className="h-5 w-5" />,
           title: "Profit Maximization",
-          description: "AI suggests optimal prices based on time of day, demand, and inventory, increasing profit margins without losing customers."
+          description: "Optimal pricing suggestions based on demand and time."
         },
         {
-          icon: <RefreshCw className="h-6 w-6 text-primary" />,
+          icon: <RefreshCw className="h-5 w-5" />,
           title: "Instant Updates",
-          description: "Change prices or mark items as 'sold out' instantly, ensuring customers always see the most accurate information."
+          description: "Change prices or remove items from sale instantly."
         },
         {
-          icon: <CheckCircle2 className="h-6 w-6 text-primary" />,
-          title: "Brand Consistency",
-          description: "Ensure every menu, whether digital or printed, is unified and reflects your brand's high standards."
+          icon: <CheckCircle2 className="h-5 w-5" />,
+          title: "Consistency",
+          description: "Unified menu across all communication channels."
         }
       ],
 
-      easeTitle: "Menu Management Made Easier Than Ever",
-      easeDescription: "MenuMaster AI provides a simple, intuitive interface where owners can update items, descriptions, and prices instantly across all digital platforms (QR codes, website, POS). No coding or design skills required. Simply click, change, and publish.",
-
-      finalCtaTitle: "Ready to turn your menu into a profit tool?",
-      finalCtaDescription: "Let AI handle the complexity while you focus on delivering excellent food.",
+      easeTitle: "Management Made Easy",
+      easeDescription: "MenuMaster AI provides a simple interface where you can update everything without needing coding or design. Just click and publish.",
     }
   }
 
@@ -116,103 +113,118 @@ export default function MenuMasterAIPage({ searchParams }: { searchParams?: { la
   const currentContent = pageContent[lang];
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-white">
       <Header lang={lang} />
-      <main className="flex-1 fade-in">
+      <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative py-20 md:py-32 text-white text-center">
-            <Image 
-                src="https://images.unsplash.com/photo-1551029506-0807df4e2031?q=80&w=2070&auto=format&fit=crop"
-                alt="Digital menu interface on a tablet in a restaurant setting."
-                fill
-                className="object-cover"
-                data-ai-hint="digital restaurant menu"
-            />
-            <div className="absolute inset-0 bg-primary/80"></div>
+        <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-50 to-transparent -z-10" />
             <div className="container relative z-10">
-                <h1 className="text-4xl md:text-6xl font-bold font-headline mb-4">{currentContent.title}</h1>
-                <p className="text-lg md:text-xl max-w-3xl mx-auto">{currentContent.subtitle}</p>
-                 <Button size="lg" asChild className="mt-8">
-                    <Link href={`/contact?lang=${lang}`}>
-                        {currentContent.cta} <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
-                </Button>
-            </div>
-        </section>
-
-        {/* AI Explanation Section */}
-        <section className="py-16 md:py-24">
-            <div className="container">
-                <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-4">{currentContent.aiTitle}</h2>
-                <p className="text-xl md:text-2xl max-w-4xl mx-auto text-muted-foreground text-center mb-12">{currentContent.aiDescription}</p>
-                
-                <div className="grid md:grid-cols-3 gap-8">
-                    {currentContent.aiFeatures.map((feature, index) => (
-                        <Card key={index} className="bg-card p-6 rounded-lg text-center flex flex-col items-center shadow-lg hover:shadow-primary/20 transition-shadow">
-                            <div className="mb-4">{feature.icon}</div>
-                            <h3 className="text-xl font-bold mb-2 font-headline">{feature.title}</h3>
-                            <p className="text-muted-foreground flex-1">{feature.description}</p>
-                        </Card>
-                    ))}
+                <div className="max-w-4xl">
+                    <div className="inline-flex items-center rounded-full border border-black/5 bg-black/5 px-3 py-1 text-sm font-medium mb-8">
+                        <UtensilsCrossed className="h-4 w-4 mr-2 text-black" />
+                        {lang === 'sq' ? 'Zgjidhje për Gastronominë' : 'Gastronomy Solution'}
+                    </div>
+                    <h1 className="text-5xl md:text-8xl font-extrabold font-headline mb-8 tracking-tighter text-black leading-[0.9]">
+                        {currentContent.title}
+                    </h1>
+                    <p className="text-xl md:text-3xl text-black/60 leading-tight font-medium mb-10 max-w-2xl">
+                        {currentContent.subtitle}
+                    </p>
+                    <div className="flex flex-wrap gap-4">
+                        <Button size="lg" className="h-16 px-8 rounded-2xl bg-black text-white hover:bg-black/90 font-bold text-lg group" asChild>
+                            <Link href={`/contact?lang=${lang}`}>
+                                {currentContent.cta}
+                                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
             </div>
         </section>
 
-        {/* Restaurant Problem/Solution Section */}
-        <section className="py-16 md:py-24 bg-card">
+        {/* AI Explanation Section */}
+        <section className="py-24 md:py-40 bg-black text-white">
             <div className="container">
-                <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-12">{currentContent.restaurantTitle}</h2>
-                <div className="grid lg:grid-cols-3 gap-8">
-                    {currentContent.restaurantFeatures.map((feature, index) => (
-                        <div key={index} className="p-6 border rounded-lg flex flex-col items-start space-y-3">
-                            <div className="flex items-center gap-3">
+                <div className="text-center max-w-3xl mx-auto mb-20">
+                    <h2 className="text-4xl md:text-6xl font-extrabold font-headline tracking-tighter mb-6">{currentContent.aiTitle}</h2>
+                    <p className="text-xl text-white/60 leading-relaxed italic border-l-2 border-white/20 pl-6">
+                        {currentContent.aiDescription}
+                    </p>
+                </div>
+                
+                <div className="grid md:grid-cols-3 gap-8">
+                    {currentContent.aiFeatures.map((feature, index) => (
+                        <div key={index} className="p-8 rounded-3xl border border-white/10 bg-white/5 hover:bg-white hover:text-black transition-all duration-500">
+                            <div className="p-3 rounded-2xl bg-white/10 group-hover:bg-black/5 w-fit mb-6">
                                 {feature.icon}
-                                <h3 className="text-xl font-bold font-headline">{feature.title}</h3>
                             </div>
-                            <p className="text-muted-foreground">{feature.description}</p>
+                            <h3 className="text-xl font-bold mb-4 tracking-tight">{feature.title}</h3>
+                            <p className="text-white/40 leading-relaxed group-hover:text-black/60">
+                                {feature.description}
+                            </p>
                         </div>
                     ))}
                 </div>
             </div>
         </section>
+
+        {/* Restaurant Benefits Section */}
+        <section className="py-24 md:py-40 border-b border-black/5">
+            <div className="container">
+                <div className="grid lg:grid-cols-2 gap-24 items-center">
+                    <div>
+                        <h2 className="text-4xl md:text-6xl font-extrabold font-headline tracking-tighter mb-12">{currentContent.restaurantTitle}</h2>
+                        <div className="space-y-12">
+                            {currentContent.restaurantFeatures.map((feature, index) => (
+                                <div key={index} className="flex gap-6">
+                                    <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-black/5 flex items-center justify-center">
+                                        {feature.icon}
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold mb-2 tracking-tight">{feature.title}</h3>
+                                        <p className="text-black/50 leading-relaxed">{feature.description}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="relative aspect-square rounded-[3rem] overflow-hidden bg-gray-100 group">
+                        <Image
+                            src="https://images.unsplash.com/photo-1551029506-0807df4e2031?q=80&w=2070&auto=format&fit=crop"
+                            alt="Menu Management"
+                            fill
+                            className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-12">
+                            <p className="text-white text-lg font-medium italic">"Optimizim në çdo sekondë."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
         
         {/* Ease of Use Section */}
-        <section className="py-16 md:py-24">
-            <div className="container grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                    <h2 className="text-3xl md:text-4xl font-bold font-headline mb-4">{currentContent.easeTitle}</h2>
-                    <p className="text-lg text-muted-foreground mb-8">{currentContent.easeDescription}</p>
-                    <Button size="lg" asChild>
-                        <Link href={`/contact?lang=${lang}`}>
-                            {currentContent.cta} <ArrowRight className="ml-2 h-5 w-5" />
-                        </Link>
-                    </Button>
-                </div>
-                <div className="relative h-64 md:h-96 w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/20">
-                    <Image
-                        src="/images/menumaster.png"
-                        alt="MenuMaster AI Dashboard Interface"
-                        fill
-                        className="object-cover"
-                        data-ai-hint="menu management interface"
-                    />
+        <section className="py-24 md:py-40 bg-gray-50">
+            <div className="container">
+                <div className="max-w-4xl mx-auto text-center">
+                    <h2 className="text-4xl md:text-6xl font-extrabold font-headline tracking-tighter mb-8">{currentContent.easeTitle}</h2>
+                    <p className="text-xl md:text-2xl text-black/60 leading-relaxed mb-12">
+                        {currentContent.easeDescription}
+                    </p>
+                    <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl border border-black/5">
+                         <Image
+                            src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=1974&auto=format&fit=crop"
+                            alt="Dashboard Mockup"
+                            fill
+                            className="object-cover"
+                        />
+                    </div>
                 </div>
             </div>
         </section>
 
-        {/* Final CTA */}
-        <section className="py-20 md:py-32 bg-card">
-            <div className="container text-center">
-                <h2 className="text-3xl md:text-4xl font-bold font-headline mb-4">{currentContent.finalCtaTitle}</h2>
-                <p className="text-muted-foreground max-w-2xl mx-auto mb-8">{currentContent.finalCtaDescription}</p>
-                <Button size="lg" asChild>
-                    <Link href={`/contact?lang=${lang}`}>
-                        {currentContent.cta} <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
-                </Button>
-            </div>
-        </section>
-
+        <FinalCtaSection lang={lang} />
       </main>
       <Footer lang={lang} />
     </div>

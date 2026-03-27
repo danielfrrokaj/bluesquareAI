@@ -6,6 +6,7 @@ import { ProductsSection } from '@/components/sections/products-section';
 import { VisionSection } from '@/components/sections/vision-section';
 import { Chatbot } from '@/components/chatbot';
 import { TestimonialsSection } from '@/components/sections/testimonials-section';
+import { FinalCtaSection } from '@/components/sections/final-cta-section';
 import type { Metadata, ResolvingMetadata } from 'next';
 
 type Props = {
@@ -65,6 +66,7 @@ export default function Home({ searchParams }: { searchParams: { lang?: string }
         <ServicesSection lang={lang} />
         <ProductsSection lang={lang} />
         <TestimonialsSection lang={lang} />
+        <FinalCtaSection lang={lang} />
         <VisionSection lang={lang} />
       </main>
       <Chatbot lang={lang} />

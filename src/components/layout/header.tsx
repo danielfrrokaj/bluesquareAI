@@ -291,44 +291,40 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
   return (
     <header className={cn(
       "sticky top-0 z-50 w-full transition-all duration-300",
-      isScrolled ? "border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" : "bg-transparent"
+      isScrolled ? "border-b border-border bg-white/90 backdrop-blur-md" : "bg-transparent"
     )}>
-      <div className="container flex h-20 items-center">
-        <Link href={getFullHref('/')} onClick={(e) => handleLinkClick(e, '/')} className="mr-6 flex flex-col items-start space-y-0.5">
-            <Image 
-                src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo/logo_black%20(1).png"
-                alt="Blue Square AI Logo"
-                width={160}
-                height={40}
-                className="w-40 h-auto"
-                priority
-            />
-        </Link>
-        <nav className="hidden md:flex items-center space-x-1">
-          {renderNavLinks()}
-        </nav>
-        <div className="flex flex-1 items-center justify-end space-x-4">
-          {/* Desktop CTA Button - Visible from md screen size */}
-          <Button asChild size="sm" className="hidden md:inline-flex">
-            <Link href={getFullHref(currentCta.href)}>
-                {currentCta.label}
-            </Link>
-          </Button>
-          
+      <div className="container flex h-20 items-center justify-between">
+        <div className="flex items-center gap-8">
+          <Link href={getFullHref('/')} onClick={(e) => handleLinkClick(e, '/')} className="flex items-center">
+              <Image 
+                  src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo/logo_black%20(1).png"
+                  alt="Blue Square AI Logo"
+                  width={140}
+                  height={35}
+                  className="w-36 h-auto"
+                  priority
+              />
+          </Link>
+          <nav className="hidden md:flex items-center space-x-1">
+            {renderNavLinks()}
+          </nav>
+        </div>
+
+        <div className="flex items-center space-x-3">
           {/* Language Switch for Desktop */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="hidden md:flex items-center gap-1">
+              <Button variant="ghost" size="sm" className="hidden md:flex items-center gap-2 hover:bg-black/5">
                 <FlagIcon countryCode={currentLanguage?.countryCode || 'us'} />
-                <span className="text-sm font-medium">{lang.toUpperCase()}</span>
-                <ChevronDown className="ml-1 h-4 w-4 opacity-50" />
+                <span className="text-xs font-semibold tracking-wider">{lang.toUpperCase()}</span>
+                <ChevronDown className="h-3 w-3 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuContent align="end" className="w-40 bg-white border-border">
               {languageOptions.map((option) => (
                 <Link key={option.code} href={createLanguageSwitchHref(option.code)} passHref legacyBehavior>
                   <DropdownMenuItem 
-                    className={cn("cursor-pointer", option.code === lang && "bg-accent text-accent-foreground")}
+                    className={cn("cursor-pointer focus:bg-black/5", option.code === lang && "bg-black/5")}
                   >
                     <FlagIcon countryCode={option.countryCode} className="mr-2" />
                     {option.label}
@@ -337,24 +333,31 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {/* Desktop CTA Button */}
+          <Button asChild size="sm" className="hidden md:inline-flex bg-black text-white hover:bg-black/90 font-medium px-6 rounded-full transition-all active:scale-95">
+            <Link href={getFullHref(currentCta.href)}>
+                {currentCta.label}
+            </Link>
+          </Button>
           
           <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
+              <Button variant="ghost" size="icon" className="md:hidden hover:bg-black/5">
                 <Menu className="h-6 w-6" />
                 <span className="sr-only">Toggle Menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-full max-w-xs bg-card p-0">
+            <SheetContent side="right" className="w-full max-w-xs bg-white p-0 border-l border-border">
               <div className="flex flex-col h-full">
-                <div className="p-6 border-b">
-                    <Link href={getFullHref('/')} className="flex items-center space-x-2" onClick={() => setSheetOpen(false)}>
+                <div className="p-6 border-b border-border">
+                    <Link href={getFullHref('/')} className="flex items-center" onClick={() => setSheetOpen(false)}>
                         <Image 
                             src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo/logo_black%20(1).png"
                             alt="Blue Square AI Logo"
-                            width={160}
-                            height={40}
-                            className="w-40 h-auto"
+                            width={120}
+                            height={30}
+                            className="w-32 h-auto"
                             priority
                         />
                     </Link>
@@ -384,16 +387,16 @@ const ListItem = React.forwardRef<
         <a
           ref={ref}
           className={cn(
-            "group block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            "group block select-none space-y-1 rounded-lg p-3 leading-none no-underline outline-none transition-all hover:bg-black/5 hover:text-black focus:bg-black/5 focus:text-black",
             className
           )}
           {...props}
         >
           <div className="flex items-center gap-2">
-            {icon}
-            <div className="text-sm font-medium leading-none">{title}</div>
+            <span className="text-black/70 group-hover:text-black transition-colors">{icon}</span>
+            <div className="text-sm font-semibold leading-none text-black/90">{title}</div>
           </div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground group-hover:text-white">
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground mt-1">
             {children}
           </p>
         </a>

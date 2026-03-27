@@ -3,103 +3,69 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight, Layout, Calendar, Zap, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Layout, Calendar, Zap, CheckCircle2, Monitor, Rocket, Lock } from "lucide-react";
 import Image from "next/image";
 import { useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FinalCtaSection } from "@/components/sections/final-cta-section";
 
 const pageContent = {
     sq: {
-      title: "Tirana Escape Room: Faqe Interneti Profesionale",
-      subtitle: "Një faqe interneti e bukur dhe funksionale e ndërtuar për të rritur rezervimet dhe për të prezantuar dhomat e lojës.",
-      cta: "Kërko një Konsultë",
-      
-      featuresTitle: "Funksionalitetet Kryesore të Faqes",
+      title: "Tirana Escape Room",
+      subtitle: "Faqe interneti profesionale e ndërtuar për konvertim.",
+      description: "Një faqe interneti e bukur dhe funksionale e ndërtuar për të rritur rezervimet dhe për të prezantuar dhomat e lojës në mënyrë profesionale.",
+      cta: "Planifiko një Projekt",
+      featuresTitle: "Përjetoni Cilësinë",
       features: [
         {
-          icon: <Layout className="h-8 w-8 text-primary" />,
-          title: "Dizajn Modern & Reagjues",
-          description: "Një pamje tërheqëse që funksionon në mënyrë perfekte në çdo pajisje, duke përmirësuar përvojën e përdoruesit."
+          icon: <Monitor className="h-6 w-6" />,
+          title: "Dizajn Modern",
+          description: "Pamje tërheqëse që funksionon në mënyrë perfekte në çdo pajisje (Mobile-First)."
         },
         {
-          icon: <Calendar className="h-8 w-8 text-primary" />,
-          title: "Sistem i Integruar Rezervimi",
-          description: "Lejon klientët të shohin disponueshmërinë në kohë reale dhe të rezervojnë dhomat e lojës direkt online me pagesë të sigurt."
+          icon: <Calendar className="h-6 w-6" />,
+          title: "Sistem Rezervimi",
+          description: "Lejoni klientët të shohin disponueshmërinë në kohë reale dhe të rezervojnë direkt."
         },
         {
-          icon: <Zap className="h-8 w-8 text-primary" />,
-          title: "Optimizim i Shpejtësisë",
-          description: "Faqja është ndërtuar për shpejtësi maksimale, duke reduktuar shkallën e braktisjes dhe duke përmirësuar renditjen në motorët e kërkimit."
+          icon: <Zap className="h-6 w-6" />,
+          title: "Performancë e Lartë",
+          description: "Shpejtësi maksimale për të reduktuar braktisjen dhe përmirësuar SEO."
         }
       ],
-
-      benefitsTitle: "Përfitimet për Biznesin",
       benefits: [
-        {
-          icon: <CheckCircle2 className="h-6 w-6 text-green-500" />,
-          title: "Rritje e Rezervimeve",
-          description: "Një proces rezervimi i thjeshtë dhe i qartë konverton më shumë vizitorë në klientë pagues."
-        },
-        {
-          icon: <CheckCircle2 className="h-6 w-6 text-green-500" />,
-          title: "Prezantim Profesional",
-          description: "Prezantoni dhomat tuaja të lojës me galeri imazhesh dhe përshkrime të detajuara që ngjallin interes."
-        },
-        {
-          icon: <CheckCircle2 className="h-6 w-6 text-green-500" />,
-          title: "Menaxhim i Lehtë",
-          description: "Një panel administrimi i thjeshtë për të menaxhuar përmbajtjen, çmimet dhe rezervimet pa nevojë për kodim."
-        }
-      ],
-
-      finalCtaTitle: "Gati për të ndërtuar faqen tuaj të ardhshme?",
-      finalCtaDescription: "Nëse keni nevojë për një faqe interneti të bukur, të shpejtë dhe të optimizuar për konvertim, ne jemi partneri juaj.",
+        { title: "+150% Rezervime", description: "Proces i thjeshtë që konverton vizitorët." },
+        { title: "Saktësi 100%", description: "Gabime zero në kalendarin e dhomave." },
+        { title: "Prezantim Premium", description: "Galeri dhe detaje që ngjallin interes." }
+      ]
     },
     en: {
-      title: "Tirana Escape Room: Professional Website",
-      subtitle: "A beautiful and functional website built to increase bookings and showcase the game rooms.",
-      cta: "Request a Consultation",
-
-      featuresTitle: "Key Website Features",
+      title: "Tirana Escape Room",
+      subtitle: "Professional website built for ultimate conversion.",
+      description: "A beautiful and functional website designed to increase bookings and showcase game rooms in a professional way.",
+      cta: "Plan a Project",
+      featuresTitle: "Experience Quality",
       features: [
         {
-          icon: <Layout className="h-8 w-8 text-primary" />,
-          title: "Modern & Responsive Design",
-          description: "An attractive look that works perfectly on any device, enhancing the user experience."
+          icon: <Monitor className="h-6 w-6" />,
+          title: "Modern Design",
+          description: "Attractive look that works perfectly on every device (Mobile-First)."
         },
         {
-          icon: <Calendar className="h-8 w-8 text-primary" />,
-          title: "Integrated Booking System",
-          description: "Allows customers to see real-time availability and book game rooms directly online with secure payment."
+          icon: <Calendar className="h-6 w-6" />,
+          title: "Booking System",
+          description: "Allow customers to see real-time availability and book directly online."
         },
         {
-          icon: <Zap className="h-8 w-8 text-primary" />,
-          title: "Speed Optimization",
-          description: "The site is built for maximum speed, reducing bounce rates and improving search engine rankings."
+          icon: <Zap className="h-6 w-6" />,
+          title: "High Performance",
+          description: "Maximum speed to reduce bounce rates and improve SEO rankings."
         }
       ],
-
-      benefitsTitle: "Business Benefits",
       benefits: [
-        {
-          icon: <CheckCircle2 className="h-6 w-6 text-green-500" />,
-          title: "Increased Bookings",
-          description: "A simple and clear booking process converts more visitors into paying customers."
-        },
-        {
-          icon: <CheckCircle2 className="h-6 w-6 text-green-500" />,
-          title: "Professional Presentation",
-          description: "Showcase your game rooms with image galleries and detailed descriptions that spark interest."
-        },
-        {
-          icon: <CheckCircle2 className="h-6 w-6 text-green-500" />,
-          title: "Easy Management",
-          description: "A simple admin panel to manage content, prices, and bookings without needing to code."
-        }
-      ],
-
-      finalCtaTitle: "Ready to build your next website?",
-      finalCtaDescription: "If you need a beautiful, fast, and conversion-optimized website, we are your partner.",
+        { title: "+150% Bookings", description: "Seamless process that converts visitors." },
+        { title: "100% Accuracy", description: "Zero errors in the room calendar system." },
+        { title: "Premium Showcase", description: "Galleries and details that spark high interest." }
+      ]
     }
   }
 
@@ -108,77 +74,95 @@ export default function TiranaEscapeRoomPage({ searchParams }: { searchParams?: 
   const currentContent = pageContent[lang];
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-white">
       <Header lang={lang} />
-      <main className="flex-1 fade-in">
+      <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative py-20 md:py-32 text-white text-center">
-            <Image 
-                src="https://i.postimg.cc/597FvF4H/image.png"
-                alt="Tirana Escape Room Website Screenshot"
-                fill
-                className="object-cover"
-                data-ai-hint="escape room website interface"
-            />
-            <div className="absolute inset-0 bg-primary/80"></div>
+        <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-50 to-transparent -z-10" />
             <div className="container relative z-10">
-                <h1 className="text-4xl md:text-6xl font-bold font-headline mb-4">{currentContent.title}</h1>
-                <p className="text-lg md:text-xl max-w-3xl mx-auto">{currentContent.subtitle}</p>
-                 <Button size="lg" asChild className="mt-8">
-                    <Link href={`/contact?lang=${lang}`}>
-                        {currentContent.cta} <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
-                </Button>
-            </div>
-        </section>
-
-        {/* Features Section */}
-        <section className="py-16 md:py-24">
-            <div className="container">
-                <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-12">{currentContent.featuresTitle}</h2>
-                <div className="grid md:grid-cols-3 gap-8">
-                    {currentContent.features.map((feature, index) => (
-                        <Card key={index} className="bg-card p-6 rounded-lg text-center flex flex-col items-center shadow-lg hover:shadow-primary/20 transition-shadow">
-                            <div className="mb-4">{feature.icon}</div>
-                            <h3 className="text-xl font-bold mb-2 font-headline">{feature.title}</h3>
-                            <p className="text-muted-foreground flex-1">{feature.description}</p>
-                        </Card>
-                    ))}
+                <div className="max-w-4xl tracking-tight">
+                    <div className="inline-flex items-center rounded-full border border-black/5 bg-black/5 px-3 py-1 text-sm font-medium mb-8">
+                        <Rocket className="h-4 w-4 mr-2 text-black" />
+                        {lang === 'sq' ? 'Projekt Suksesi' : 'Success Project'}
+                    </div>
+                    <h1 className="text-5xl md:text-8xl font-extrabold font-headline mb-8 tracking-tighter text-black leading-[0.9]">
+                        {currentContent.title}
+                    </h1>
+                    <p className="text-xl md:text-3xl text-black/60 leading-tight font-medium mb-10 max-w-2xl">
+                        {currentContent.subtitle}
+                    </p>
+                    <div className="flex flex-wrap gap-4">
+                        <Button size="lg" className="h-16 px-8 rounded-2xl bg-black text-white hover:bg-black/90 font-bold text-lg group" asChild>
+                            <Link href={`/contact?lang=${lang}`}>
+                                {currentContent.cta}
+                                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
             </div>
         </section>
 
-        {/* Benefits Section */}
-        <section className="py-16 md:py-24 bg-card">
+        {/* Project Details */}
+        <section className="py-24 md:py-40 bg-black text-white">
             <div className="container">
-                <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-12">{currentContent.benefitsTitle}</h2>
-                <div className="grid lg:grid-cols-3 gap-8 max-w-4xl mx-auto">
-                    {currentContent.benefits.map((benefit, index) => (
-                        <div key={index} className="p-6 border rounded-lg flex flex-col items-start space-y-3">
-                            <div className="flex items-center gap-3">
-                                {benefit.icon}
-                                <h3 className="text-xl font-bold font-headline">{benefit.title}</h3>
+                <div className="grid lg:grid-cols-2 gap-20 items-center">
+                    <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-white/10 group">
+                        <Image
+                            src="https://i.postimg.cc/597FvF4H/image.png"
+                            alt="Project Interface"
+                            fill
+                            className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+                    </div>
+                    <div>
+                        <h2 className="text-4xl md:text-6xl font-extrabold font-headline mb-8 tracking-tighter leading-[1]">
+                            {lang === 'sq' ? 'Diferenca Profesionale' : 'Professional Difference'}
+                        </h2>
+                        <p className="text-xl text-white/60 mb-12 max-w-lg leading-relaxed">
+                            {currentContent.description}
+                        </p>
+                        <div className="space-y-6">
+                            {currentContent.benefits.map((benefit, index) => (
+                                <div key={index} className="flex items-center gap-4">
+                                    <div className="h-2 w-2 rounded-full bg-white" />
+                                    <div>
+                                        <span className="font-bold mr-2">{benefit.title}:</span>
+                                        <span className="text-white/60">{benefit.description}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {/* Features Section */}
+        <section className="py-24 md:py-40 border-b border-black/5">
+            <div className="container text-center mb-20 text-black">
+                <h2 className="text-4xl md:text-6xl font-extrabold font-headline tracking-tighter">{currentContent.featuresTitle}</h2>
+            </div>
+            <div className="container">
+                <div className="grid md:grid-cols-3 gap-8">
+                    {currentContent.features.map((feature, index) => (
+                        <div key={index} className="group p-10 rounded-3xl border border-black/5 bg-gray-50/50 hover:bg-white transition-all duration-500 hover:shadow-2xl hover:shadow-black/5">
+                            <div className="mb-8 p-4 rounded-2xl bg-black/5 w-fit group-hover:bg-black group-hover:text-white transition-colors duration-500">
+                                {feature.icon}
                             </div>
-                            <p className="text-muted-foreground">{benefit.description}</p>
+                            <h3 className="text-2xl font-bold mb-4 tracking-tight">{feature.title}</h3>
+                            <p className="text-black/50 leading-relaxed">
+                                {feature.description}
+                            </p>
                         </div>
                     ))}
                 </div>
             </div>
         </section>
 
-        {/* Final CTA */}
-        <section className="py-20 md:py-32">
-            <div className="container text-center">
-                <h2 className="text-3xl md:text-4xl font-bold font-headline mb-4">{currentContent.finalCtaTitle}</h2>
-                <p className="text-muted-foreground max-w-2xl mx-auto mb-8">{currentContent.finalCtaDescription}</p>
-                <Button size="lg" asChild>
-                    <Link href={`/contact?lang=${lang}`}>
-                        {currentContent.cta} <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
-                </Button>
-            </div>
-        </section>
-
+        <FinalCtaSection lang={lang} />
       </main>
       <Footer lang={lang} />
     </div>

@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    --background: 226 25% 10%; /* Dark Blue/Black */
-    --foreground: 222 50% 90%; /* Light Grey */
-    --card: 226 25% 14%;
-    --card-foreground: 222 50% 90%;
-    --popover: 226 25% 14%;
-    --popover-foreground: 222 50% 90%;
-    --primary: 215 85% 55%; /* Bright Blue from #2b7dee */
-    --primary-foreground: 210 40% 98%;
-    --secondary: 215 85% 75%; /* Lighter shade of primary */
-    --secondary-foreground: 226 25% 10%;
-    --muted: 226 25% 20%;
-    --muted-foreground: 222 50% 60%;
-    --accent: 215 85% 65%; /* Accent shade of primary */
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 84.2% 60.2%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 92%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 226 25% 20%;
-    --input: 226 25% 20%;
-    --ring: 215 85% 60%;
-    --radius: 0.8rem;
+    --border: 0 0% 90%;
+    --input: 0 0% 94%;
+    --ring: 0 0% 0%;
+    --radius: 1.5rem;
   }
 }
 
@@ -32,24 +32,22 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
   }
-  section {
-    @apply w-full py-16 md:py-24 lg:py-32;
-  }
-  .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight font-bold;
   }
 }
 
 @layer utilities {
   .fade-in-up {
-    animation: fadeInUp 1.2s ease-in-out forwards;
+    animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
   @keyframes fadeInUp {
     from {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(40px);
     }
     to {
       opacity: 1;
@@ -57,7 +55,7 @@
     }
   }
   .fade-in {
-    animation: fadeIn 1.5s ease-in-out forwards;
+    animation: fadeIn 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
   @keyframes fadeIn {
     from {
@@ -67,4 +65,13 @@
       opacity: 1;
     }
   }
+  
+  .glass {
+    @apply bg-white/70 backdrop-blur-xl border border-white/20;
+  }
+  
+  .text-balance {
+    text-wrap: balance;
+  }
 }
+

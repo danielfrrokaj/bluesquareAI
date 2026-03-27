@@ -65,7 +65,7 @@ export function TestimonialsSection({ lang }: { lang: 'en' | 'sq' }) {
     };
     const currentContent = content[lang];
     const ref = useRef<HTMLDivElement>(null);
-    const isInView = useInView(ref, { once: true, amount: 0.2 });
+    const isInView = useInView(ref, { once: true, threshold: 0.3 });
     const isMobile = useIsMobile();
 
     const autoplayPlugin = useRef(
@@ -73,44 +73,55 @@ export function TestimonialsSection({ lang }: { lang: 'en' | 'sq' }) {
     );
 
 
-  return (
-    <section id="testimonials" className="bg-card py-16 md:py-24 lg:py-32" ref={ref}>
-      <div className={cn("container px-4 md:px-6 transition-all duration-1000", isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10")}>
-        <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">
-                {currentContent.title}
-            </h2>
-            <p className="max-w-2xl text-muted-foreground md:text-xl/relaxed">
-                {currentContent.subtitle}
-            </p>
-        </div>
-        <Carousel
-          opts={{ align: 'start', loop: true }}
-          plugins={isMobile ? [] : [autoplayPlugin.current]}
-          className="w-full max-w-4xl mx-auto"
-        >
-          <CarouselContent>
-            {testimonials.map((testimonial, index) => (
-                    <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/2">
-                        <div className="p-1 h-full">
-                        <Card className="h-full bg-background">
-                            <CardContent className="flex flex-col items-center justify-center p-8 text-center h-full">
-                            <p className="text-lg font-medium italic mb-4 flex-1">"{testimonial.quote}"</p>
-                            <div>
-                                <h4 className="font-bold font-headline">{testimonial.name}</h4>
-                                <p className="text-sm text-muted-foreground">{testimonial.title}</p>
-                            </div>
-                            </CardContent>
-                        </Card>
-                        </div>
-                    </CarouselItem>
-                )
-            )}
-          </CarouselContent>
-          <CarouselPrevious className="hidden md:flex" />
-          <CarouselNext className="hidden md:flex" />
-        </Carousel>
-      </div>
-    </section>
-  );
+    return (
+        <section id="testimonials" className="py-24 bg-white" ref={ref}>
+            <div className={cn("container px-4 md:px-6 transition-all duration-1000", isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10")}>
+                <div className="flex flex-col items-center justify-center space-y-4 text-center mb-16">
+                    <div className="space-y-3 max-w-3xl">
+                        <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl font-headline text-black">
+                            {currentContent.title}
+                        </h2>
+                        <p className="text-lg text-muted-foreground md:text-xl leading-relaxed">
+                            {currentContent.subtitle}
+                        </p>
+                    </div>
+                </div>
+
+                <Carousel
+                    opts={{ align: 'start', loop: true }}
+                    plugins={isMobile ? [] : [autoplayPlugin.current]}
+                    className="w-full max-w-6xl mx-auto"
+                >
+                    <CarouselContent className="-ml-6">
+                        {testimonials.map((testimonial, index) => (
+                            <CarouselItem key={index} className="pl-6 md:basis-1/2 lg:basis-1/3">
+                                <div className="h-full py-4">
+                                    <Card className="h-full border border-black/5 bg-[#FAFAFA] rounded-2xl transition-all duration-500 hover:shadow-xl hover:shadow-black/5 flex flex-col">
+                                        <CardContent className="flex flex-col p-8 h-full">
+                                            <div className="mb-6">
+                                                <svg width="30" height="24" viewBox="0 0 30 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-black/20">
+                                                    <path d="M0 13.92V23.52H9.6V13.92H4.8C4.8 11.36 6.88 9.28 9.44 9.28V4.48C4.224 4.48 0 8.704 0 13.92ZM19.2 13.92V23.52H28.8V13.92H24C24 11.36 26.08 9.28 28.64 9.28V4.48C23.424 4.48 19.2 8.704 19.2 13.92Z" fill="currentColor"/>
+                                                </svg>
+                                            </div>
+                                            <p className="text-lg leading-relaxed text-black/80 mb-8 flex-grow font-medium">
+                                                {testimonial.quote}
+                                            </p>
+                                            <div className="mt-auto pt-6 border-t border-black/5">
+                                                <h4 className="font-bold font-headline text-black">{testimonial.name}</h4>
+                                                <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider mt-1">{testimonial.title}</p>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </div>
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <div className="flex justify-center mt-12 gap-4">
+                        <CarouselPrevious className="static translate-y-0 border-black/10 hover:bg-black hover:text-white transition-colors h-12 w-12" />
+                        <CarouselNext className="static translate-y-0 border-black/10 hover:bg-black hover:text-white transition-colors h-12 w-12" />
+                    </div>
+                </Carousel>
+            </div>
+        </section>
+    );
 }

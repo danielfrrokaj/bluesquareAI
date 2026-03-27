@@ -4,111 +4,81 @@ import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Code, Camera, MessageCircle, ShoppingCart, Plane } from "lucide-react";
-import Image from "next/image";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { FaqSection } from "@/components/sections/faq-section";
+import { FinalCtaSection } from "@/components/sections/final-cta-section";
 import { useMemo } from "react";
+import { cn } from "@/lib/utils";
 
 const pageContent = {
     sq: {
-      title: "Çmime Fleksibël për Çdo Biznes",
-      subtitle: "Zgjidhni shërbimet që ju nevojiten dhe ne do t'ju ofrojmë një çmim të personalizuar.",
-      cta: "Merr një Ofertë",
-      servicesTitle: "Planet e Çmimeve për Shërbimet Tona",
+      title: "Planet e Çmimeve",
+      subtitle: "Zgjidhni shërbimet që ju nevojiten dhe ne do t'ju ofrojmë një ofertë të personalizuar për biznesin tuaj.",
+      cta: "Merr një propozim",
+      servicesTitle: "Zbuloni mundësitë tona",
       services: [
         {
-          icon: <Code className="h-8 w-8 text-primary" />,
+          icon: <Code className="h-10 w-10" />,
           title: "Integrim i AI në Website",
-          price: "Fillestar",
-          priceDescription: "nga €199",
-          features: ["Chatbot Inteligjent", "Analizë Automatike e Trafikut", "Gjenerim Përmbajtje"],
+          price: "Fillon nga",
+          priceAmount: "€199",
+          description: "Për biznese që duan të automatizojnë ndërveprimin me klientët në ueb.",
+          features: ["Chatbot Inteligjent 24/7", "Analizë Automatike e Trafikut", "Gjenerim Përmbajtje me AI"],
           href: "/services/ai-website-integration"
         },
         {
-          icon: <Camera className="h-8 w-8 text-primary" />,
-          title: "Sisteme Menaxhimi & Monitorimi",
-          price: "Sipas kërkesës",
-          priceDescription: "Çmim i personalizuar",
-          features: ["Mini-PMS për Akomodim", "Dashboard Inteligjent", "Integrim me Kamera Sigurie"],
-          href: "/services/management-systems"
-        },
-        {
-          icon: <MessageCircle className="h-8 w-8 text-primary" />,
+          icon: <MessageCircle className="h-10 w-10" />,
           title: "Automatizim Komunikimi",
-          price: "Fillestar",
-          priceDescription: "nga €149/muaj",
-          features: ["Integrim WhatsApp Business API", "AI Chatbot për Përgjigje", "Centralizim i Rrjeteve Sociale"],
+          price: "Fillon nga",
+          priceAmount: "€149/m",
+          description: "Zgjidhja perfekte për menaxhimin e porosive dhe mesazheve në shkallë.",
+          features: ["WhatsApp Business API", "AI Chatbot për Përgjigje", "Centralizim i Rrjeteve Sociale"],
           href: "/services/communication-automation"
         },
         {
-          icon: <ShoppingCart className="h-8 w-8 text-primary" />,
-          title: "Zgjidhje për Biznese Lokale",
-          price: "Sipas kërkesës",
-          priceDescription: "Çmim i personalizuar",
-          features: ["Menaxhim Porosish & Pagesash", "Platformë Rezervimesh Online", "Programe Besnikërie"],
-          href: "/services/local-business-solutions"
-        },
-        {
-          icon: <Plane className="h-8 w-8 text-primary" />,
-          title: "AI për Turizëm & Shërbime",
-          price: "Sipas kërkesës",
-          priceDescription: "Çmim i personalizuar",
-          features: ["Personalized Tourism Chatbot", "Sinkronizim i Platformave", "Analizë e Komenteve me AI"],
-          href: "/services/tourism-ai"
+          icon: <Camera className="h-10 w-10" />,
+          title: "Sisteme Menaxhimi",
+          price: "Personalizuar",
+          priceAmount: "Sipas kërkesës",
+          description: "Sisteme komplekse për monitorim dhe menaxhim të operacioneve.",
+          features: ["Mini-PMS për Akomodim", "Dashboard Analitik", "Integrim me Kamera Sigurie"],
+          href: "/services/management-systems"
         }
-      ],
-      finalCtaTitle: "Nuk jeni të sigurt se cili plan është i duhuri për ju?",
-      finalCtaDescription: "Ekipi ynë është i gadi t'ju ndihmojë të gjeni zgjidhjen perfekte. Na kontaktoni për një konsultë falas dhe një ofertë të personalizuar.",
+      ]
     },
     en: {
-      title: "Flexible Pricing for Every Business",
-      subtitle: "Choose the services you need and we will provide you with a custom quote.",
-      cta: "Get a Quote",
-      servicesTitle: "Pricing Plans for Our Services",
+      title: "Pricing Plans",
+      subtitle: "Choose the services you need and we will provide you with a custom quote tailored to your business needs.",
+      cta: "Get a proposal",
+      servicesTitle: "Explore our options",
       services: [
         {
-          icon: <Code className="h-8 w-8 text-primary" />,
+          icon: <Code className="h-10 w-10" />,
           title: "AI Website Integration",
-          price: "Starting at",
-          priceDescription: "from €199",
-          features: ["Intelligent Chatbot", "Automatic Traffic Analysis", "Content Generation"],
+          price: "Starting from",
+          priceAmount: "€199",
+          description: "For businesses looking to automate customer interaction on their website.",
+          features: ["24/7 Intelligent Chatbot", "Automatic Traffic Analysis", "AI Content Generation"],
           href: "/services/ai-website-integration"
         },
         {
-          icon: <Camera className="h-8 w-8 text-primary" />,
-          title: "Management & Monitoring Systems",
-          price: "On-demand",
-          priceDescription: "Custom price",
-          features: ["Mini-PMS for Accommodation", "Intelligent Dashboard", "Security Camera Integration"],
-          href: "/services/management-systems"
-        },
-        {
-          icon: <MessageCircle className="h-8 w-8 text-primary" />,
+          icon: <MessageCircle className="h-10 w-10" />,
           title: "Communication Automation",
-          price: "Starting at",
-          priceDescription: "from €149/month",
-          features: ["WhatsApp Business API Integration", "AI Chatbot for Responses", "Social Media Centralization"],
+          price: "Starting from",
+          priceAmount: "$149/m",
+          description: "The perfect solution for managing orders and messages at scale.",
+          features: ["WhatsApp Business API", "AI Chatbot for Responses", "Social Media Centralization"],
           href: "/services/communication-automation"
         },
         {
-          icon: <ShoppingCart className="h-8 w-8 text-primary" />,
-          title: "Solutions for Local Businesses",
-          price: "On-demand",
-          priceDescription: "Custom price",
-          features: ["Order & Payment Management", "Online Reservation Platform", "Loyalty Programs"],
-          href: "/services/local-business-solutions"
-        },
-        {
-          icon: <Plane className="h-8 w-8 text-primary" />,
-          title: "AI for Tourism & Services",
-          price: "On-demand",
-          priceDescription: "Custom price",
-          features: ["Personalized Tourism Chatbot", "Platform Synchronization", "AI Review Analysis"],
-          href: "/services/tourism-ai"
+          icon: <Camera className="h-10 w-10" />,
+          title: "Management Systems",
+          price: "Customized",
+          priceAmount: "On-demand",
+          description: "Complex systems for monitoring and managing operations.",
+          features: ["Mini-PMS for Accommodation", "Analytical Dashboard", "Security Camera Integration"],
+          href: "/services/management-systems"
         }
-      ],
-      finalCtaTitle: "Not sure which plan is right for you?",
-      finalCtaDescription: "Our team is ready to help you find the perfect solution. Contact us for a free consultation and a personalized quote.",
+      ]
     }
   }
 
@@ -117,78 +87,79 @@ export default function PricingPage({ searchParams }: { searchParams?: { lang?: 
   const currentContent = pageContent[lang];
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-white">
       <Header lang={lang} />
-      <main className="flex-1 fade-in">
+      <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative py-20 md:py-32 text-white text-center">
-             <Image 
-                src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=2070&auto=format&fit=crop"
-                alt="Pricing background"
-                fill
-                className="object-cover"
-                data-ai-hint="abstract gradient"
-            />
-            <div className="absolute inset-0 bg-primary/80"></div>
-            <div className="container relative z-10">
-                <h1 className="text-4xl md:text-6xl font-bold font-headline mb-4">{currentContent.title}</h1>
-                <p className="text-lg md:text-xl max-w-3xl mx-auto text-white">{currentContent.subtitle}</p>
-                 <Button size="lg" asChild className="mt-8">
-                    <Link href={`/contact?lang=${lang}`}>
-                        {currentContent.cta} <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
-                </Button>
+        <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-50 to-transparent -z-10" />
+            <div className="container relative z-10 text-center">
+                <div className="inline-flex items-center rounded-full border border-black/5 bg-black/5 px-3 py-1 text-sm font-medium mb-8">
+                   {lang === 'sq' ? 'Transparencë dhe Vlerë' : 'Transparency and Value'}
+                </div>
+                <h1 className="text-5xl md:text-7xl font-extrabold font-headline mb-8 tracking-tight text-black">
+                    {currentContent.title}
+                </h1>
+                <p className="text-xl md:text-2xl max-w-2xl mx-auto text-black/60 leading-relaxed font-medium">
+                    {currentContent.subtitle}
+                </p>
             </div>
         </section>
 
-        {/* Services Pricing Section */}
-        <section className="py-16 md:py-24">
+        {/* Pricing Grid */}
+        <section className="py-24 bg-white">
             <div className="container">
-                <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-12">{currentContent.servicesTitle}</h2>
-                <div className="flex flex-wrap justify-center gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     {currentContent.services.map((service, index) => (
-                       <Card key={index} className="flex flex-col w-full sm:w-[45%] lg:w-[30%]">
-                         <CardHeader className="items-center text-center">
-                            {service.icon}
-                           <CardTitle className="font-headline text-xl mt-4">{service.title}</CardTitle>
-                           <CardDescription>{service.price}</CardDescription>
-                           <p><span className="text-3xl font-bold">{service.priceDescription}</span></p>
-                         </CardHeader>
-                         <CardContent className="flex flex-col flex-1">
-                           <ul className="space-y-3 flex-1 mb-8">
-                             {service.features.map((feature, i) => (
-                               <li key={i} className="flex items-center gap-2">
-                                 <CheckCircle2 className="h-5 w-5 text-green-500" />
-                                 <span className="text-sm text-muted-foreground">{feature}</span>
-                               </li>
-                             ))}
-                           </ul>
-                           <Button asChild variant="outline" className="w-full mt-auto">
-                                <Link href={`${service.href}?lang=${lang}`}>
-                                    {lang === 'sq' ? 'Mëso më shumë' : 'Learn More'}
-                                </Link>
-                           </Button>
-                         </CardContent>
-                       </Card>
+                       <div key={index} className={cn(
+                           "relative flex flex-col p-8 rounded-3xl border transition-all duration-300 hover:shadow-xl group",
+                           index === 1 ? "border-black shadow-lg scale-105 z-10 bg-white" : "border-black/5 hover:border-black/20"
+                       )}>
+                            {index === 1 && (
+                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                                    {lang === 'sq' ? 'Më i Populluari' : 'Most Popular'}
+                                </div>
+                            )}
+                            <div className="mb-8 p-3 rounded-2xl bg-black/5 w-fit group-hover:bg-black group-hover:text-white transition-colors">
+                                {service.icon}
+                            </div>
+                            <h3 className="text-2xl font-bold mb-2 text-black">{service.title}</h3>
+                            <p className="text-black/50 text-sm mb-6 font-medium leading-relaxed">{service.description}</p>
+                            
+                            <div className="mb-8">
+                                <span className="text-sm font-bold text-black/40 block mb-1 uppercase tracking-tighter">{service.price}</span>
+                                <span className="text-4xl font-extrabold text-black">{service.priceAmount}</span>
+                            </div>
+
+                            <div className="space-y-4 mb-10 flex-1">
+                                {service.features.map((feature, i) => (
+                                    <div key={i} className="flex items-start gap-3">
+                                        <div className="mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-black/5 group-hover:bg-black/10">
+                                            <CheckCircle2 className="h-3 w-3 text-black" />
+                                        </div>
+                                        <span className="text-sm font-medium text-black/70">{feature}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <Link href={`${service.href}?lang=${lang}`}>
+                                <Button className={cn(
+                                    "w-full rounded-2xl py-6 font-bold text-base transition-all",
+                                    index === 1 ? "bg-black text-white hover:bg-black/90" : "bg-black/5 text-black hover:bg-black/10"
+                                )}>
+                                    {lang === 'sq' ? 'Mëso më shumë' : 'Learn more'}
+                                    <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            </Link>
+                       </div>
                     ))}
                 </div>
             </div>
         </section>
 
         <FaqSection lang={lang}/>
-
-        {/* Final CTA */}
-        <section className="py-20 md:py-32 bg-card">
-            <div className="container text-center">
-                <h2 className="text-3xl md:text-4xl font-bold font-headline mb-4">{currentContent.finalCtaTitle}</h2>
-                <p className="text-muted-foreground max-w-2xl mx-auto mb-8">{currentContent.finalCtaDescription}</p>
-                <Button size="lg" asChild>
-                    <Link href={`/contact?lang=${lang}`}>
-                        {currentContent.cta} <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
-                </Button>
-            </div>
-        </section>
+        
+        <FinalCtaSection lang={lang} />
 
       </main>
       <Footer lang={lang} />
