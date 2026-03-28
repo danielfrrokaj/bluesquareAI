@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +21,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { FinalCtaSection } from '@/components/sections/final-cta-section';
 
-export default function AiInnovationPage() {
+function AiInnovationContent() {
   const searchParams = useSearchParams();
   const lang = searchParams.get('lang') === 'sq' ? 'sq' : 'en';
 
@@ -259,3 +260,12 @@ export default function AiInnovationPage() {
     </div>
   );
 }
+
+export default function AiInnovationPage() {
+  return (
+    <Suspense>
+      <AiInnovationContent />
+    </Suspense>
+  );
+}
+
