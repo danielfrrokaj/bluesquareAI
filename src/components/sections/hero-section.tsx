@@ -4,60 +4,62 @@ import { Button } from '@/components/ui/button';
 export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
   const content = {
     sq: {
-      tag: "Ardhshmëria e Inteligjencës Artificiale",
-      headline: "Fuqizoni Biznesin Tuaj me Zgjidhje\n Inteligjente AI",
-      subheadline: "Zgjidhje të personalizuara që automatizojnë punën tuaj, kursejnë kohë dhe rrisin fitimet. Shndërroni idetë tuaja në realitet me teknologjinë më të fundit.",
-      cta: "Merr një Konsultim Falas",
-      secondaryCta: "Shiko Shërbimet",
+      tag: "Inovacioni i Inteligjencës Artificiale në Ballkan",
+      headline: "Ndërtojmë të Ardhmen e Shqipërisë me AI",
+      subheadline: "Me bazë në Tiranë, ne jemi forca lëvizëse e inovacionit në rajon. Transformojmë idetë në realitet duke përdorur teknologjinë më të fundit të Inteligjencës Artificiale.",
+      cta: "Nisni Inovacionin",
+      secondaryCta: "Mëso më Shumë",
     },
     en: {
-      tag: "The Future of AI Integration",
-      headline: "Empower Your Business with\n Smart AI Solutions",
-      subheadline: "Custom solutions that automate your work, save time, and increase profits. Turn your ideas into reality with state-of-the-art technology.",
-      cta: "Get a Free Consultation",
-      secondaryCta: "Explore Services",
+      tag: "AI Innovation in the Balkans",
+      headline: "Building the Future of Albania with AI",
+      subheadline: "Based in Tirana, we are the driving force of innovation in the region. We turn ideas into reality using state-of-the-art Artificial Intelligence technology.",
+      cta: "Start Innovating",
+      secondaryCta: "Learn More",
     }
   }
   const currentContent = content[lang];
 
   return (
-    <section id="home" className="relative w-full py-20 lg:py-32 flex items-center justify-center overflow-hidden bg-white">
-      {/* Subtle Background Elements */}
+    <section id="home" className="relative w-full py-24 lg:py-48 flex items-center justify-center overflow-hidden bg-white text-black">
+      {/* Dynamic Background Elements */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-blue-50/50 rounded-full blur-3xl opacity-50" />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-slate-50 rounded-full blur-3xl opacity-50" />
+        <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-blue-500/5 rounded-full blur-[140px] opacity-40 animate-pulse" />
+        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-lime-400/5 rounded-full blur-[120px] opacity-30 animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000003_1px,transparent_1px),linear-gradient(to_bottom,#00000003_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_0%,#000_60%,transparent_100%)] pointer-events-none" />
       </div>
 
       <div className="container relative z-10 px-4 md:px-6">
-        <div className="flex flex-col items-center text-center space-y-8 max-w-4xl mx-auto">
-          <div className="inline-flex items-center rounded-full border border-black/10 bg-black/5 px-3 py-1 text-sm font-medium text-black/80 fade-in">
-            <span className="flex h-2 w-2 rounded-full bg-blue-600 mr-2" />
+        <div className="flex flex-col items-center text-center space-y-12 max-w-6xl mx-auto">
+          <div className="inline-flex items-center rounded-full border border-blue-100 bg-blue-50/50 px-5 py-2 text-xs font-bold uppercase tracking-[0.2em] text-blue-600 fade-in shadow-sm backdrop-blur-sm">
+            <span className="flex h-2.5 w-2.5 rounded-full bg-lime-400 animate-pulse mr-3 shadow-[0_0_10px_rgba(163,230,53,0.8)]" />
             {currentContent.tag}
           </div>
           
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl font-headline text-black whitespace-pre-line leading-[1.1] fade-in-up">
+          <h1 className="text-4xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl font-headline text-black whitespace-pre-line leading-[1.1] sm:leading-[1.05] fade-in-up">
             {currentContent.headline}
           </h1>
           
-          <p className="max-w-[700px] text-lg md:text-xl text-muted-foreground leading-relaxed fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <p className="max-w-[850px] text-lg md:text-2xl text-zinc-500 leading-relaxed fade-in-up font-medium tracking-tight" style={{ animationDelay: '0.2s' }}>
             {currentContent.subheadline}
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 pt-4 fade-in-up" style={{ animationDelay: '0.4s' }}>
-            <Button size="lg" asChild className="bg-black text-white hover:bg-black/90 rounded-full px-8 text-lg font-semibold h-14 shadow-lg shadow-black/10">
+          <div className="flex flex-col sm:flex-row gap-6 pt-8 fade-in-up" style={{ animationDelay: '0.4s' }}>
+            <Button size="lg" asChild className="bg-black text-white hover:bg-zinc-800 rounded-full px-12 text-xl font-bold h-16 shadow-xl transition-all hover:scale-105 hover:shadow-lime-400/20 active:scale-95">
               <Link href={`/contact?lang=${lang}`}>{currentContent.cta}</Link>
             </Button>
-            <Button size="lg" variant="outline" asChild className="rounded-full px-8 text-lg font-semibold h-14 border-black/10 hover:bg-black/5">
+            <Button size="lg" variant="outline" asChild className="rounded-full px-12 text-xl font-bold h-16 border-black/5 text-black hover:bg-zinc-50 transition-all hover:border-blue-400/30">
               <Link href="#services">{currentContent.secondaryCta}</Link>
             </Button>
           </div>
           
-          {/* Trust Element */}
-          <div className="pt-12 flex flex-col items-center gap-4 fade-in" style={{ animationDelay: '0.6s' }}>
-            <p className="text-sm font-medium text-black/40 uppercase tracking-widest">Besuar nga inovatorët</p>
-            <div className="flex flex-wrap justify-center gap-8 grayscale opacity-40">
-              {/* Add company logos here if available */}
-            </div>
+          {/* Subtle Trust Element */}
+          <div className="pt-24 flex flex-col items-center gap-6 fade-in" style={{ animationDelay: '0.6s' }}>
+             <div className="flex items-center gap-4 opacity-30 group">
+                <div className="h-[1px] w-12 bg-black transition-all group-hover:w-20 group-hover:bg-blue-500" />
+                <p className="text-[10px] font-bold text-black uppercase tracking-[0.4em]">{lang === 'sq' ? 'MUNDËSUAR NGA TEKNOLOGJIA AI' : 'POWERED BY AI TECHNOLOGY'}</p>
+                <div className="h-[1px] w-12 bg-black transition-all group-hover:w-20 group-hover:bg-lime-500" />
+             </div>
           </div>
         </div>
       </div>

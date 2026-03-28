@@ -13,16 +13,16 @@ export function FinalCtaSection({ lang = 'en' }: { lang?: 'en' | 'sq' }) {
 
     const content = {
         sq: {
-            title: "Gati për të fuqizuar biznesin tuaj?",
-            subtitle: "Zbuloni se si inteligjenca artificiale mund të transformojë mënyrën se si punoni. Filloni sot me një konsultë falas.",
-            primaryCta: "Na kontaktoni tani",
-            secondaryCta: "Shiko demo"
+            title: "Të ndërtojmë të ardhmen së bashku?",
+            subtitle: "Zbuloni se si Blue Square AI po transformon rajonin e Ballkanit përmes inovacionit. Nisni projektin tuaj sot.",
+            primaryCta: "Nisni Bashkëpunimin",
+            secondaryCta: "Shiko Vizioni"
         },
         en: {
-            title: "Ready to empower your business?",
-            subtitle: "Discover how artificial intelligence can transform the way you work. Start today with a free consultation.",
-            primaryCta: "Contact us now",
-            secondaryCta: "View demo"
+            title: "Building the future together?",
+            subtitle: "Discover how Blue Square AI is transforming the Balkan region through innovation. Start your project today.",
+            primaryCta: "Start Collaborating",
+            secondaryCta: "View Vision"
         }
     };
 
@@ -33,37 +33,47 @@ export function FinalCtaSection({ lang = 'en' }: { lang?: 'en' | 'sq' }) {
     };
 
     return (
-        <section className="py-24 bg-white" ref={ref}>
+        <section className="py-40 bg-white" ref={ref}>
             <div className={cn("container px-4 md:px-6 transition-all duration-1000", isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10")}>
-                <div className="relative rounded-3xl bg-black px-8 py-16 md:px-16 md:py-24 text-center text-white shadow-2xl overflow-hidden group">
+                <div className="relative rounded-[4rem] bg-[#050505] px-8 py-24 md:px-24 md:py-36 text-center text-white shadow-[0_80px_120px_-20px_rgba(0,0,0,0.4)] overflow-hidden group border border-white/5">
                     {/* Background decorations */}
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl group-hover:bg-white/10 transition-colors duration-1000" />
-                    <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl group-hover:bg-white/10 transition-colors duration-1000" />
+                    <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-500/[0.08] rounded-full -translate-x-1/4 -translate-y-1/4 blur-[140px] group-hover:bg-blue-500/[0.12] transition-all duration-1000" />
+                    <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-lime-400/[0.05] rounded-full translate-x-1/4 translate-y-1/4 blur-[140px] group-hover:bg-lime-400/[0.08] transition-all duration-1000" />
                     
-                    <div className="relative z-10 max-w-3xl mx-auto">
-                        <h2 className="text-4xl font-extrabold tracking-tight sm:text-6xl font-headline mb-8 leading-tight">
+                    <div className="relative z-10 max-w-5xl mx-auto">
+                        <div className="inline-flex items-center gap-2 px-5 py-2 mb-12 text-[10px] font-bold tracking-[0.4em] text-blue-400 uppercase bg-blue-400/10 rounded-full border border-blue-400/20 backdrop-blur-sm">
+                            <span className="h-1 w-1 rounded-full bg-blue-400 animate-pulse" />
+                            {lang === 'sq' ? 'Bashkohu me Ne' : 'Ready to Start?'}
+                        </div>
+                        <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter font-headline mb-12 leading-[1.05]">
                             {currentContent.title}
                         </h2>
-                        <p className="mb-12 text-lg md:text-xl text-white/70 leading-relaxed font-medium">
+                        <p className="mb-20 text-xl md:text-3xl text-zinc-400 leading-relaxed font-medium tracking-tight max-w-3xl mx-auto">
                             {currentContent.subtitle}
                         </p>
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-10">
                             <Link href={getFullHref('/contact')} className="w-full sm:w-auto">
-                                <Button size="lg" className="w-full sm:w-auto bg-white text-black hover:bg-white/90 font-bold px-10 py-7 text-lg rounded-full group-button">
+                                <Button size="lg" className="h-24 w-full sm:w-auto bg-white text-black hover:bg-zinc-100 font-bold px-16 text-2xl rounded-full group transition-all hover:scale-105 active:scale-95 shadow-[0_20px_50px_-10px_rgba(255,255,255,0.2)]">
                                     {currentContent.primaryCta}
-                                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                                    <ArrowRight className="ml-3 h-7 w-7 transition-transform group-hover:translate-x-2" />
                                 </Button>
                             </Link>
-                            <Link href={getFullHref('/services')} className="w-full sm:w-auto">
-                                <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10 font-bold px-10 py-7 text-lg rounded-full">
-                                    <PlayCircle className="mr-2 h-5 w-5" />
+                            <Link href={getFullHref('/#vision')} className="w-full sm:w-auto">
+                                <Button size="lg" variant="outline" className="h-24 w-full sm:w-auto bg-transparent border-white/10 text-white hover:bg-white/5 font-bold px-16 text-2xl rounded-full transition-all active:scale-95">
                                     {currentContent.secondaryCta}
                                 </Button>
                             </Link>
                         </div>
-                        <p className="mt-8 text-sm text-white/40 font-medium">
-                            {lang === 'sq' ? 'S’ka nevojë për kartë krediti. Konfigurim i shpejtë.' : 'No credit card required. Fast setup.'}
-                        </p>
+                        <div className="mt-20 flex flex-wrap items-center justify-center gap-8 text-[10px] text-white/20 font-bold uppercase tracking-[0.4em]">
+                            <div className="flex items-center gap-3">
+                                <div className="h-1 w-1 bg-blue-500 rounded-full" />
+                                {lang === 'sq' ? 'Bashkëpunim i Shpejtë' : 'Fast Setup'}
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <div className="h-1 w-1 bg-lime-400 rounded-full" />
+                                {lang === 'sq' ? 'Cilësi Premium' : 'Premium Quality'}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

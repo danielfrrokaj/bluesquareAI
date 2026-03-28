@@ -75,3 +75,8 @@
   }
 }
 
+/* Fix for Leaflet tile grid lines */
+.leaflet-container img.leaflet-tile {
+  outline: 1px solid transparent;
+}
+

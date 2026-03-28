@@ -112,48 +112,48 @@ export default function ContactPage({ searchParams }: { searchParams?: { lang?: 
     <div className="flex flex-col min-h-screen bg-white">
       <Header lang={lang} />
       <main className="flex-1">
-        <section className="relative pt-32 pb-16 md:pt-48 md:pb-24 overflow-hidden">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-50 to-transparent -z-10" />
+        <section className="relative pt-32 pb-24 md:pt-48 md:pb-32 overflow-hidden bg-white">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(0,0,0,0.03)_0%,transparent_70%)] -z-10" />
             <div className="container relative z-10">
-                <div className="max-w-3xl">
-                    <div className="inline-flex items-center rounded-full border border-black/5 bg-black/5 px-3 py-1 text-sm font-medium mb-8">
+                <div className="max-w-5xl">
+                    <div className="inline-flex items-center rounded-full border border-black/5 bg-black/5 px-6 py-2 text-[10px] font-black uppercase tracking-[0.3em] mb-10">
                         {lang === 'sq' ? 'Le të bisedojmë' : 'Let\'s talk'}
                     </div>
-                    <h1 className="text-5xl md:text-7xl font-extrabold font-headline mb-8 tracking-tight text-black">
+                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold font-headline mb-10 tracking-tighter text-black leading-none">
                         {currentContent.title}
                     </h1>
-                    <p className="text-xl md:text-2xl text-black/60 leading-relaxed font-medium">
+                    <p className="text-xl md:text-2xl text-zinc-600 leading-tight font-medium tracking-tight max-w-3xl">
                         {currentContent.subtitle}
                     </p>
                 </div>
             </div>
         </section>
 
-        <section className="py-20 md:py-32 border-t border-black/5">
+        <section className="py-24 md:py-40 bg-white border-t border-black/5">
             <div className="container">
-                <div className="grid lg:grid-cols-2 gap-20 items-start">
+                <div className="grid lg:grid-cols-2 gap-32 items-start">
                     {/* Contact Form */}
                     <div className="relative">
                         <div className="mb-12">
-                            <h2 className="text-3xl font-bold font-headline text-black mb-4">{currentContent.formTitle}</h2>
-                            <p className="text-black/50 font-medium">{currentContent.formDescription}</p>
+                            <h2 className="text-3xl md:text-4xl font-extrabold font-headline text-black mb-4 tracking-tighter">{currentContent.formTitle}</h2>
+                            <p className="text-lg text-zinc-500 font-medium tracking-tight">{currentContent.formDescription}</p>
                         </div>
                         
                         <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                                <div className="grid md:grid-cols-2 gap-6">
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
+                                <div className="grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-8">
                                     <FormField
                                         control={form.control}
                                         name="name"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className="text-sm font-bold uppercase tracking-wider text-black/40">{currentContent.nameLabel}</FormLabel>
+                                                <FormLabel className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40 ml-4 mb-2 block">{currentContent.nameLabel}</FormLabel>
                                                 <FormControl>
                                                     <Input 
                                                         placeholder={currentContent.namePlaceholder} 
                                                         {...field} 
                                                         disabled={isSubmitting} 
-                                                        className="h-14 rounded-2xl border-black/5 bg-black/5 focus:bg-white transition-all text-base font-medium"
+                                                        className="h-16 md:h-18 rounded-2xl border-black/5 bg-black/[0.02] focus:bg-white focus:border-black/20 focus:ring-0 transition-all text-base font-medium px-6"
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
@@ -165,13 +165,13 @@ export default function ContactPage({ searchParams }: { searchParams?: { lang?: 
                                         name="email"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className="text-sm font-bold uppercase tracking-wider text-black/40">{currentContent.emailLabel}</FormLabel>
+                                                <FormLabel className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40 ml-4 mb-2 block">{currentContent.emailLabel}</FormLabel>
                                                 <FormControl>
                                                     <Input 
                                                         placeholder={currentContent.emailPlaceholder} 
                                                         {...field} 
                                                         disabled={isSubmitting} 
-                                                        className="h-14 rounded-2xl border-black/5 bg-black/5 focus:bg-white transition-all text-base font-medium"
+                                                        className="h-16 md:h-18 rounded-2xl border-black/5 bg-black/[0.02] focus:bg-white focus:border-black/20 focus:ring-0 transition-all text-base font-medium px-6"
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
@@ -184,26 +184,26 @@ export default function ContactPage({ searchParams }: { searchParams?: { lang?: 
                                     name="message"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel className="text-sm font-bold uppercase tracking-wider text-black/40">{currentContent.messageLabel}</FormLabel>
+                                            <FormLabel className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40 ml-4 mb-2 block">{currentContent.messageLabel}</FormLabel>
                                             <FormControl>
                                                 <Textarea 
                                                     placeholder={currentContent.messagePlaceholder} 
                                                     {...field} 
                                                     disabled={isSubmitting} 
                                                     rows={6} 
-                                                    className="rounded-2xl border-black/5 bg-black/5 focus:bg-white transition-all text-base font-medium resize-none"
+                                                    className="rounded-3xl border-black/5 bg-black/[0.02] focus:bg-white focus:border-black/20 focus:ring-0 transition-all text-base font-medium px-6 py-6 resize-none"
                                                 />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
-                                <Button type="submit" size="lg" className="w-full h-16 rounded-2xl bg-black text-white hover:bg-black/90 font-bold text-lg group-button" disabled={isSubmitting}>
-                                    {isSubmitting ? <Loader2 className="animate-spin" /> : (
-                                        <>
+                                <Button type="submit" size="lg" className="w-full h-16 md:h-20 rounded-full bg-black text-white hover:bg-zinc-800 font-extrabold text-xl shadow-xl transition-all hover:scale-[1.02]" disabled={isSubmitting}>
+                                    {isSubmitting ? <Loader2 className="animate-spin h-6 w-6" /> : (
+                                        <div className="flex items-center gap-3">
                                             {currentContent.submitButton}
-                                            <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                                        </>
+                                            <ArrowRight className="h-5 w-5" />
+                                        </div>
                                     )}
                                 </Button>
                             </form>
@@ -211,41 +211,41 @@ export default function ContactPage({ searchParams }: { searchParams?: { lang?: 
                     </div>
 
                     {/* Contact Info & Map */}
-                    <div className="space-y-12">
-                        <div className="grid sm:grid-cols-2 gap-8">
-                            <div className="group p-8 rounded-3xl border border-black/5 bg-black/5 hover:bg-black hover:text-white transition-all duration-300">
-                                <div className="p-3 rounded-2xl bg-white/10 w-fit mb-6 text-black group-hover:text-white transition-colors">
-                                    <Phone className="h-6 w-6" />
+                    <div className="space-y-16">
+                        <div className="grid sm:grid-cols-2 gap-10">
+                            <div className="group p-12 rounded-[3.5rem] border border-black/5 bg-black/[0.01] hover:bg-black hover:text-white transition-all duration-700 shadow-sm">
+                                <div className="p-6 rounded-2xl bg-white shadow-sm border border-black/5 w-fit mb-10 text-black transition-colors">
+                                    <Phone className="h-8 w-8" />
                                 </div>
-                                <h3 className="text-lg font-bold mb-2 tracking-tight">{currentContent.phone}</h3>
-                                <a href="tel:+355693815070" className="text-base font-medium opacity-60 hover:opacity-100 transition-opacity">
+                                <h3 className="text-xs font-bold mb-3 tracking-[0.3em] uppercase text-black/40 group-hover:text-white/40">{currentContent.phone}</h3>
+                                <a href="tel:+355693815070" className="text-xl md:text-2xl font-extrabold tracking-tight hover:underline underline-offset-8">
                                     +355 69 381 5070
                                 </a>
                             </div>
 
-                            <div className="group p-8 rounded-3xl border border-black/5 bg-black/5 hover:bg-black hover:text-white transition-all duration-300">
-                                <div className="p-3 rounded-2xl bg-white/10 w-fit mb-6 text-black group-hover:text-white transition-colors">
-                                    <Mail className="h-6 w-6" />
+                            <div className="group p-12 rounded-[3.5rem] border border-black/5 bg-black/[0.01] hover:bg-black hover:text-white transition-all duration-700 shadow-sm">
+                                <div className="p-6 rounded-2xl bg-white shadow-sm border border-black/5 w-fit mb-10 text-black transition-colors">
+                                    <Mail className="h-8 w-8" />
                                 </div>
-                                <h3 className="text-lg font-bold mb-2 tracking-tight">{currentContent.emailLabel}</h3>
-                                <a href="mailto:info@bluesquare.ai" className="text-base font-medium opacity-60 hover:opacity-100 transition-opacity break-all">
+                                <h3 className="text-xs font-bold mb-3 tracking-[0.3em] uppercase text-black/40 group-hover:text-white/40">{currentContent.emailLabel}</h3>
+                                <a href="mailto:info@bluesquare.ai" className="text-xl md:text-2xl font-extrabold tracking-tight hover:underline underline-offset-8 break-all">
                                     info@bluesquare.ai
                                 </a>
                             </div>
 
-                            <div className="group p-8 rounded-3xl border border-black/5 bg-black/5 hover:bg-black hover:text-white transition-all duration-300 sm:col-span-2">
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-8">
+                            <div className="group p-12 rounded-[3.5rem] border border-black/5 bg-black/[0.01] hover:bg-black hover:text-white transition-all duration-700 shadow-sm sm:col-span-2">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-12">
                                     <div>
-                                        <div className="p-3 rounded-2xl bg-white/10 w-fit mb-6 text-black group-hover:text-white transition-colors">
-                                            <MapPin className="h-6 w-6" />
+                                        <div className="p-6 rounded-2xl bg-white shadow-sm border border-black/5 w-fit mb-10 text-black transition-colors">
+                                            <MapPin className="h-8 w-8" />
                                         </div>
-                                        <h3 className="text-lg font-bold mb-2 tracking-tight">{currentContent.address}</h3>
-                                        <p className="text-base font-medium opacity-60">Tirana, Albania</p>
+                                        <h3 className="text-xs font-bold mb-3 tracking-[0.3em] uppercase text-black/40 group-hover:text-white/40">{currentContent.address}</h3>
+                                        <p className="text-xl md:text-2xl font-extrabold tracking-tight">Tirana, Albania</p>
                                     </div>
-                                    <div className="flex gap-4">
+                                    <div className="flex gap-6">
                                         {[Instagram, Facebook, Linkedin].map((Icon, i) => (
-                                            <Link key={i} href="#" className="h-12 w-12 rounded-2xl border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-all">
-                                                <Icon className="h-5 w-5" />
+                                            <Link key={i} href="#" className="h-16 w-16 rounded-2xl border border-black/10 flex items-center justify-center hover:bg-white hover:text-black transition-all group-hover:bg-white/10 group-hover:border-white/20 group-hover:text-white">
+                                                <Icon className="h-6 w-6" />
                                             </Link>
                                         ))}
                                     </div>
@@ -253,20 +253,21 @@ export default function ContactPage({ searchParams }: { searchParams?: { lang?: 
                             </div>
                         </div>
 
-                        {/* Map */}
-                        <div className="relative rounded-3xl overflow-hidden border border-black/5 h-[400px] shadow-2xl group">
-                            <LeafletMap 
-                                latitude={mapCoords.lat}
-                                longitude={mapCoords.lng}
-                                zoom={mapCoords.zoom}
-                                popupText={currentContent.mapPopup}
-                            />
-                            <div className="absolute top-6 left-6 z-10">
-                                <div className="bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl border border-black/5 text-sm font-bold text-black flex items-center gap-2">
-                                    <MapPin className="h-4 w-4" />
-                                    {currentContent.location}
-                                </div>
-                            </div>
+                    </div>
+                </div>
+
+                {/* Map Row */}
+                <div className="mt-20 md:mt-32 relative rounded-[2.5rem] md:rounded-[4rem] overflow-hidden border border-black/5 h-[400px] md:h-[600px] shadow-2xl group transition-all duration-700 hover:scale-[1.005]">
+                    <LeafletMap 
+                        latitude={mapCoords.lat}
+                        longitude={mapCoords.lng}
+                        zoom={mapCoords.zoom}
+                        popupText={currentContent.mapPopup}
+                    />
+                    <div className="absolute top-10 left-10 z-10">
+                        <div className="bg-white/95 backdrop-blur-3xl px-8 py-4 rounded-3xl border border-black/5 text-sm font-black text-black flex items-center gap-4 shadow-2xl">
+                            <div className="h-3 w-3 bg-primary rounded-full animate-pulse" />
+                            <span className="tracking-[0.2em] uppercase">{currentContent.location}</span>
                         </div>
                     </div>
                 </div>

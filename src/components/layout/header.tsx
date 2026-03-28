@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, ChevronDown, Code, Camera, MessageCircle, ShoppingCart, Plane, Globe } from 'lucide-react';
+import { Menu, ChevronDown, Code, MessageCircle, Zap, Plane, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useState, useEffect } from 'react';
@@ -29,82 +29,54 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 
 const navLinksSq = [
-  { href: '/#products', label: 'Produktet' },
-  { href: '/pricing', label: 'Çmimet' },
   { href: '/#vision', label: 'Vizioni' },
   { href: '/contact', label: 'Kontakti' },
 ];
 
 const navLinksEn = [
-  { href: '/#products', label: 'Products' },
-  { href: '/pricing', label: 'Pricing' },
   { href: '/#vision', label: 'Vision' },
   { href: '/contact', label: 'Contact' },
 ];
 
 const servicesEn = [
     {
-        title: "AI Website Integration",
-        href: "/services/ai-website-integration",
-        description: "Intelligent chatbot, traffic analysis, and AI-powered SEO content generation.",
-        icon: <Code className="h-5 w-5" />
-    },
-    {
-        title: "Management & Monitoring Systems",
-        href: "/services/management-systems",
-        description: "Mini-PMS for accommodation, smart dashboards, and security camera integration.",
-        icon: <Camera className="h-5 w-5" />
-    },
-    {
-        title: "Communication Automation",
-        href: "/services/communication-automation",
-        description: "WhatsApp Business API and AI integration for automated social media responses.",
+        title: "AI for Innovation",
+        href: "/services/ai-innovation",
+        description: "Mobile Apps like ShqipFol, Chatbots, Openclaw, N8N, and Automations.",
         icon: <MessageCircle className="h-5 w-5" />
     },
     {
-        title: "Solutions for Local Businesses",
-        href: "/services/local-business-solutions",
-        description: "Systems for ordering, payments, online reservations, and loyalty programs.",
-        icon: <ShoppingCart className="h-5 w-5" />
+        title: "Tourism Systems",
+        href: "/services/tourism-systems",
+        description: "Discover Albania PMS, Booking Engine, Channel Manager, and AI Integrations.",
+        icon: <Plane className="h-5 w-5" />
     },
     {
-        title: "AI for Tourism & Services",
-        href: "/services/tourism-ai",
-        description: "Chatbot for hotels/agjencies, reservation synchronization, and review analysis.",
-        icon: <Plane className="h-5 w-5" />
+        title: "Quick Solutions",
+        href: "/services/quick-solutions",
+        description: "SEO-optimized websites with CMS starting from 300 euro.",
+        icon: <Zap className="h-5 w-5" />
     },
 ];
 
 const servicesSq = [
     {
-        title: "Integrim i AI në Website",
-        href: "/services/ai-website-integration",
-        description: "Chatbot inteligjent, analizë trafiku, dhe gjenerim përmbajtje SEO me AI.",
-        icon: <Code className="h-5 w-5" />
-    },
-    {
-        title: "Sisteme Menaxhimi & Monitorimi",
-        href: "/services/management-systems",
-        description: "Mini-PMS për akomodim, dashboard inteligjent dhe integrim me kamera sigurie.",
-        icon: <Camera className="h-5 w-5" />
-    },
-    {
-        title: "Automatizim Komunikimi",
-        href: "/services/communication-automation",
-        description: "Integrim WhatsApp Business API dhe AI për përgjigje automatike në rrjete sociale.",
+        title: "AI për Inovacion",
+        href: "/services/ai-innovation",
+        description: "Aplikacione Mobile si ShqipFol, Chatbote, Openclaw, N8N dhe Automatizime.",
         icon: <MessageCircle className="h-5 w-5" />
     },
     {
-        title: "Zgjidhje për Biznese Lokale",
-        href: "/services/local-business-solutions",
-        description: "Sisteme për porosi, pagesa, rezervime online dhe programe besnikërie.",
-        icon: <ShoppingCart className="h-5 w-5" />
+        title: "Sisteme për Turizëm",
+        href: "/services/tourism-systems",
+        description: "Discover Albania PMS, Booking Engine, Channel Manager dhe integrime AI.",
+        icon: <Plane className="h-5 w-5" />
     },
     {
-        title: "AI për Turizëm & Shërbime",
-        href: "/services/tourism-ai",
-        description: "Chatbot për hotele/agjenci, sinkronizim rezervimesh dhe analizë komentesh.",
-        icon: <Plane className="h-5 w-5" />
+        title: "Zgjidhje të Shpejta",
+        href: "/services/quick-solutions",
+        description: "Website të optimizuar për SEO me CMS duke filluar nga 300 euro.",
+        icon: <Zap className="h-5 w-5" />
     },
 ];
 
@@ -291,7 +263,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
   return (
     <header className={cn(
       "sticky top-0 z-50 w-full transition-all duration-300",
-      isScrolled ? "border-b border-border bg-white/90 backdrop-blur-md" : "bg-transparent"
+      isScrolled ? "border-b border-black/5 bg-white/95 backdrop-blur-md" : "bg-transparent"
     )}>
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-8">

@@ -28,8 +28,8 @@ interface LeafletMapProps {
 export function LeafletMap({ latitude, longitude, zoom, popupText }: LeafletMapProps) {
   const position: [number, number] = [latitude, longitude];
 
-  // CartoDB Dark Matter tiles for a dark theme
-  const darkTileLayer = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+  // CartoDB Voyager tiles for a crisp light theme
+  const lightTileLayer = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
   const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
   return (
@@ -41,7 +41,7 @@ export function LeafletMap({ latitude, longitude, zoom, popupText }: LeafletMapP
     >
       <TileLayer
         attribution={attribution}
-        url={darkTileLayer}
+        url={lightTileLayer}
       />
       <Marker position={position}>
         <Popup>{popupText}</Popup>

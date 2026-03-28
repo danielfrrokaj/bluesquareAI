@@ -78,7 +78,7 @@ export function TestimonialsSection({ lang }: { lang: 'en' | 'sq' }) {
             <div className={cn("container px-4 md:px-6 transition-all duration-1000", isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10")}>
                 <div className="flex flex-col items-center justify-center space-y-4 text-center mb-16">
                     <div className="space-y-3 max-w-3xl">
-                        <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl font-headline text-black">
+                        <h2 className="text-3xl font-extrabold tracking-tight sm:text-5xl font-headline text-black">
                             {currentContent.title}
                         </h2>
                         <p className="text-lg text-muted-foreground md:text-xl leading-relaxed">

@@ -1,0 +1,263 @@
+'use client';
+
+import { useSearchParams } from 'next/navigation';
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { 
+  Plane, 
+  MapPin, 
+  Hotel, 
+  Calendar, 
+  Settings, 
+  ShieldCheck, 
+  Sparkles,
+  Database,
+  Cloud,
+  ChevronRight,
+  TrendingUp,
+  Users
+} from "lucide-react";
+import Link from "next/link";
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
+import { FinalCtaSection } from '@/components/sections/final-cta-section';
+
+export default function TourismSystemsPage() {
+  const searchParams = useSearchParams();
+  const lang = searchParams.get('lang') === 'sq' ? 'sq' : 'en';
+
+  const content = {
+    sq: {
+      tag: "Sisteme për Turizëm",
+      title: "Discover Albania PMS: E Ardhmja e Menaxhimit të Mikpritjes",
+      subtitle: "Transformoni mënyrën se si menaxhoni hotelin ose bujtinën tuaj me teknologjinë e fundit.",
+      description: "Discover Albania PMS kombinon teknologjinë e fundit me lehtësinë në përdorim, duke i dhënë biznesit tuaj kontroll të plotë dhe vizitorëve një eksperiencë pa asnjë pengesë.",
+      featuresHeader: "Karakteristikat Kryesore",
+      features: [
+        {
+          title: "Integrim i Avancuar me AI",
+          desc: "Automatizoni operacionet e përditshme, nga komunikimi i zgjuar me klientët deri te sugjerimet e personalizuara.",
+          icon: <Sparkles className="h-6 w-6 text-black" />
+        },
+        {
+          title: "Menaxhim Qendror (All-in-One)",
+          desc: "Kontrolloni disponueshmërinë, çmimet dhe rezervimet nga platforma të ndryshme në kohë reale nga një pult i vetëm.",
+          icon: <Database className="h-6 w-6 text-black" />
+        },
+        {
+          title: "Fokus te Eksperienca Lokale",
+          desc: "Sistemi lehtëson integrimin e tureve, agroturizmit dhe aventurave lokale për t'i ofruar turistëve një zbulim të vërtetë.",
+          icon: <MapPin className="h-6 w-6 text-black" />
+        },
+        {
+          title: "Cloud dhe Siguri e Lartë",
+          desc: "Infrastrukturë cloud për të garantuar shpejtësi maksimale, qasje nga çdo pajisje dhe siguri absolute.",
+          icon: <Cloud className="h-6 w-6 text-black" />
+        }
+      ],
+      whyHeader: "Pse Discover Albania PMS?",
+      whyText: "Nuk është thjesht një softuer, por një motor dixhital për rritjen e biznesit tuaj. Duke dixhitalizuar faturimin, menaxhimin e stafit dhe raportimet analitike, ky sistem ju lë të lirë të fokusoheni tek ajo që ka më shumë rëndësi: mikpritja e shkëlqyer.",
+      stats: [
+        { label: "Rezervime Real-Time", value: "100%" },
+        { label: "Rritje Eficience", value: "40%+" },
+        { label: "Mbështetje 24/7", value: "Zgjidhje" }
+      ]
+    },
+    en: {
+      tag: "Tourism Systems",
+      title: "Discover Albania PMS: The Future of Hospitality Management",
+      subtitle: "Transform the way you manage your hotel or guesthouse with cutting-edge technology.",
+      description: "Discover Albania PMS combines the latest technology with ease of use, giving your business full control and visitors a seamless experience.",
+      featuresHeader: "Key Features",
+      features: [
+        {
+          title: "Advanced AI Integration",
+          desc: "Automate daily operations, from smart customer communication to personalized recommendations.",
+          icon: <Sparkles className="h-6 w-6 text-black" />
+        },
+        {
+          title: "All-in-One Management",
+          desc: "Control availability, pricing, and bookings from multiple platforms in real-time from a single dashboard.",
+          icon: <Database className="h-6 w-6 text-black" />
+        },
+        {
+          title: "Focus on Local Experience",
+          desc: "The system facilitates integration of tours, agrotourism, and local adventures to offer tourists a true discovery.",
+          icon: <MapPin className="h-6 w-6 text-black" />
+        },
+        {
+          title: "High Performance Cloud",
+          desc: "Cloud infrastructure guaranteeing maximum speed, access from any device, and absolute data security.",
+          icon: <Cloud className="h-6 w-6 text-black" />
+        }
+      ],
+      whyHeader: "Why Discover Albania PMS?",
+      whyText: "It's not just software, it's a digital engine for your business growth. By digitalizing invoicing, staff management, and analytical reporting, this system leaves you free to focus on what matters most: excellent hospitality.",
+      stats: [
+        { label: "Real-Time Bookings", value: "100%" },
+        { label: "Efficiency Increase", value: "40%+" },
+        { label: "24/7 Support", value: "Solutions" }
+      ]
+    }
+  };
+
+  const c = content[lang];
+
+  return (
+    <div className="min-h-screen bg-white flex flex-col">
+      <Header lang={lang} />
+      <main className="flex-grow">
+        {/* Hero Section */}
+        <section className="relative pt-32 pb-32 overflow-hidden bg-white text-black">
+          <div className="container px-4 mx-auto relative z-10">
+            <div className="grid lg:grid-cols-2 gap-20 items-center">
+              <div className="text-left flex flex-col items-start">
+                <div className="inline-flex items-center gap-2 px-5 py-2 mb-8 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 backdrop-blur-sm">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
+                  {c.tag}
+                </div>
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold font-headline mb-8 md:mb-10 tracking-tighter leading-[1.1] md:leading-[1.15] text-black">
+                  {c.title}
+                </h1>
+                <p className="text-lg md:text-2xl text-zinc-500 mb-10 md:mb-12 leading-relaxed max-w-xl font-medium tracking-tight">
+                  {c.subtitle}
+                </p>
+                <div className="flex flex-col sm:flex-row gap-6 md:gap-8">
+                  <Button size="lg" className="h-16 md:h-20 px-10 md:px-12 w-full sm:w-auto rounded-full font-bold text-xl bg-black text-white hover:bg-zinc-800 shadow-2xl transition-all hover:scale-105 active:scale-95">
+                    {lang === 'sq' ? 'Fillo Tani' : 'Get Started'} <ChevronRight className="ml-2 h-5 w-5 md:h-6 md:w-6" />
+                  </Button>
+                  <Button size="lg" variant="outline" className="h-16 md:h-20 px-10 md:px-12 w-full sm:w-auto rounded-full font-bold text-xl border-black/5 text-black hover:bg-zinc-50 transition-all active:scale-95">
+                    Demo
+                  </Button>
+                </div>
+              </div>
+              <div className="relative group">
+                <div className="relative z-10 p-8 md:p-12 bg-zinc-50/50 border border-black/[0.03] rounded-[2.5rem] md:rounded-[4rem] backdrop-blur-xl shadow-2xl transition-all duration-700 group-hover:bg-white group-hover:border-blue-100 group-hover:shadow-[0_60px_100px_-20px_rgba(59,130,246,0.1)]">
+                   <div className="aspect-video bg-white rounded-[2rem] md:rounded-[2.5rem] flex items-center justify-center p-8 md:p-12 overflow-hidden border border-black/5 shadow-sm">
+                      <Hotel className="h-40 w-40 text-blue-500/10 group-hover:scale-110 group-hover:text-blue-500/20 transition-all duration-1000" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-blue-500/[0.03] to-transparent flex flex-col justify-end p-12">
+                          <div className="h-3 w-3/4 bg-blue-500/10 rounded-full mb-6 group-hover:bg-blue-500/20 transition-all" />
+                          <div className="h-3 w-1/2 bg-lime-400/10 rounded-full group-hover:bg-lime-400/20 transition-all" />
+                      </div>
+                   </div>
+                </div>
+                <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-500/5 rounded-full blur-[120px] group-hover:bg-blue-500/10 transition-all" />
+                <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-lime-400/5 rounded-full blur-[120px] group-hover:bg-lime-400/10 transition-all" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Stats Section */}
+        <section className="py-16 bg-white border-y border-black/5 relative overflow-hidden">
+          <div className="absolute top-1/2 left-0 w-full h-[1px] bg-blue-500/5 -z-0" />
+          <div className="container px-4 mx-auto relative z-10">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-12 text-center">
+              {c.stats.map((s, i) => (
+                <div key={i} className="flex flex-col items-center group">
+                  <span className="text-3xl md:text-6xl font-extrabold font-headline text-black mb-2 md:mb-3 tracking-tighter group-hover:text-blue-600 transition-colors duration-500">{s.value}</span>
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.3em] group-hover:text-black transition-colors duration-500">{s.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Experience Description */}
+        <section className="py-32 bg-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-500/[0.02] rounded-full blur-[150px] pointer-events-none" />
+          <div className="container px-4 mx-auto relative z-10">
+             <div className="max-w-5xl mx-auto text-center mb-32">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 mb-10">
+                   {lang === 'sq' ? 'Ndërtimi i Ekselencës' : 'Building Excellence'}
+                </div>
+                <h3 className="text-2xl md:text-5xl font-extrabold font-headline text-black mb-8 md:mb-12 tracking-tighter max-w-4xl mx-auto leading-tight">
+                  {c.whyHeader}
+                </h3>
+                <div className="w-20 md:w-24 h-1 md:h-1.5 bg-gradient-to-r from-blue-500 to-lime-500 rounded-full mx-auto" />
+                <p className="text-xl md:text-3xl lg:text-4xl text-black leading-tight font-extrabold tracking-tighter max-w-4xl mx-auto mt-10 md:mt-16">
+                  "{c.whyText}"
+                </p>
+             </div>
+
+             <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+                {c.features.map((f, i) => (
+                  <div key={i} className="flex items-start gap-8 p-12 rounded-[3.5rem] bg-zinc-50/50 border border-black/[0.03] hover:bg-white hover:border-blue-200 hover:shadow-[0_40px_80px_-20px_rgba(59,130,246,0.1)] transition-all duration-500 group hover:-translate-y-2">
+                     <div className="flex-shrink-0 p-5 bg-white rounded-2xl shadow-sm group-hover:bg-blue-50 group-hover:text-blue-600 transition-all duration-500 flex items-center justify-center border border-black/[0.03]">
+                        {f.icon}
+                     </div>
+                     <div>
+                        <h3 className="text-2xl font-bold font-headline mb-4 text-black tracking-tight">
+                          {f.title}
+                        </h3>
+                        <p className="text-zinc-500 leading-relaxed text-lg font-medium tracking-tight">
+                          {f.desc}
+                        </p>
+                     </div>
+                  </div>
+                ))}
+             </div>
+          </div>
+        </section>
+
+        {/* Systems Summary */}
+        <section className="py-32 bg-white text-black overflow-hidden relative border-t border-black/5">
+          <div className="container px-4 mx-auto relative z-10">
+             <div className="grid lg:grid-cols-2 gap-24 items-center">
+                <div className="order-2 lg:order-1 relative">
+                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                       <Card className="p-8 md:p-10 bg-zinc-50/50 border-black/[0.03] hover:bg-white hover:border-blue-200 transition-all duration-500 rounded-[2.5rem] md:rounded-[3rem] group shadow-sm hover:shadow-[0_40px_80px_-20px_rgba(59,130,246,0.1)] hover:-translate-y-2">
+                          <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl bg-white flex items-center justify-center mb-6 md:mb-8 border border-black/5 group-hover:bg-blue-50 group-hover:text-blue-600 transition-all shadow-sm">
+                             <TrendingUp className="h-5 w-5 md:h-6 md:w-6 text-black" />
+                          </div>
+                          <h4 className="font-bold text-xl md:text-2xl mb-2 md:mb-3 text-black tracking-tight">Revenue Management</h4>
+                          <p className="text-zinc-500 text-xs md:text-sm font-medium">Dynamic pricing and analytical insights.</p>
+                       </Card>
+                       <Card className="p-8 md:p-10 bg-zinc-50/50 border-black/[0.03] hover:bg-white hover:border-lime-200 transition-all duration-500 rounded-[2.5rem] md:rounded-[3rem] group shadow-sm hover:shadow-[0_40px_80px_-20px_rgba(163,230,81,0.1)] hover:-translate-y-2 sm:mt-8">
+                          <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl bg-white flex items-center justify-center mb-6 md:mb-8 border border-black/5 group-hover:bg-lime-50 group-hover:text-lime-600 transition-all shadow-sm">
+                             <Users className="h-5 w-5 md:h-6 md:w-6 text-black" />
+                          </div>
+                          <h4 className="font-bold text-xl md:text-2xl mb-2 md:mb-3 text-black tracking-tight">Staff Control</h4>
+                          <p className="text-zinc-500 text-xs md:text-sm font-medium">Efficient roles and task management.</p>
+                       </Card>
+                       <Card className="p-8 md:p-10 bg-zinc-50/50 border-black/[0.03] hover:bg-white hover:border-blue-200 transition-all duration-500 rounded-[2.5rem] md:rounded-[3rem] group shadow-sm hover:shadow-[0_40px_80px_-20px_rgba(59,130,246,0.1)] hover:-translate-y-2">
+                          <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl bg-white flex items-center justify-center mb-6 md:mb-8 border border-black/5 group-hover:bg-blue-50 group-hover:text-blue-600 transition-all shadow-sm">
+                             <Calendar className="h-5 w-5 md:h-6 md:w-6 text-black" />
+                          </div>
+                          <h4 className="font-bold text-xl md:text-2xl mb-2 md:mb-3 text-black tracking-tight">Booking Engine</h4>
+                          <p className="text-zinc-500 text-xs md:text-sm font-medium">Seamless direct booking integration.</p>
+                       </Card>
+                       <Card className="p-8 md:p-10 bg-zinc-50/50 border-black/[0.03] hover:bg-white hover:border-lime-200 transition-all duration-500 rounded-[2.5rem] md:rounded-[3rem] group shadow-sm hover:shadow-[0_40px_80px_-20px_rgba(163,230,81,0.1)] hover:-translate-y-2 sm:mt-8">
+                          <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl bg-white flex items-center justify-center mb-6 md:mb-8 border border-black/5 group-hover:bg-lime-50 group-hover:text-lime-600 transition-all shadow-sm">
+                             <Settings className="h-5 w-5 md:h-6 md:w-6 text-black" />
+                          </div>
+                          <h4 className="font-bold text-xl md:text-2xl mb-2 md:mb-3 text-black tracking-tight">Channel Manager</h4>
+                          <p className="text-zinc-500 text-xs md:text-sm font-medium">Sync with Booking.com, Airbnb, etc.</p>
+                       </Card>
+                   </div>
+                </div>
+                <div className="order-1 lg:order-2 flex flex-col items-start text-left">
+                   <div className="inline-flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 mb-8">
+                      {lang === 'sq' ? 'Menaxhim i Plotë' : 'Complete Management'}
+                   </div>
+                   <h2 className="text-4xl md:text-6xl font-extrabold font-headline mb-10 tracking-tighter leading-[1.15] text-black">
+                      Every tool for the <span className="text-blue-600">modern hospitality</span> era.
+                   </h2>
+                   <p className="text-xl md:text-2xl text-zinc-500 leading-relaxed mb-12 font-medium tracking-tight">
+                      We've designed Discover Albania PMS to be the ultimate companion for your tourism business, ensuring stability, growth, and excellence in service.
+                   </p>
+                   <Button size="lg" className="h-20 px-12 rounded-full font-bold text-xl bg-black text-white hover:bg-zinc-800 transition-all shadow-xl hover:scale-105 active:scale-95">
+                     {lang === 'sq' ? 'Kërko Konsultim Personal' : 'Request Personal Consultation'}
+                   </Button>
+                </div>
+             </div>
+          </div>
+        </section>
+
+        <FinalCtaSection lang={lang} />
+      </main>
+      <Footer lang={lang} />
+    </div>
+  );
+}

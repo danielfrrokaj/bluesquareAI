@@ -16,16 +16,16 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Blue Square AI - Zgjidhje Inteligjente për Biznesin',
+    default: 'Blue Square AI - Driving Innovation in Albania & The Balkans',
     template: '%s | Blue Square AI',
   },
-  description: 'Blue Square AI krijon zgjidhje inteligjente për biznese të vogla dhe të mesme, duke kombinuar eksperiencën me fuqinë e Inteligjencës Artificiale.',
+  description: 'Based in Tirana, Blue Square AI uses state-of-the-art Artificial Intelligence to build innovation across Albania and the Balkan region.',
   icons: {
     icon: 'https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo_bluesquare.jpg', // Updated favicon URL
   },
   openGraph: {
-    title: 'Blue Square AI - Zgjidhje Inteligjente për Biznesin',
-    description: 'Blue Square AI krijon zgjidhje inteligjente për biznese të vogla dhe të mesme, duke kombinuar eksperiencën me fuqinë e Inteligjencës Artificiale.',
+    title: 'Blue Square AI - Driving Innovation in Albania & The Balkans',
+    description: 'Based in Tirana, Blue Square AI uses state-of-the-art Artificial Intelligence to build innovation across Albania and the Balkan region.',
     url: 'https://bluesquare.ai',
     siteName: 'Blue Square AI',
     images: [
@@ -41,8 +41,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Blue Square AI - Zgjidhje Inteligjente për Biznesin',
-    description: 'Blue Square AI krijon zgjidhje inteligjente për biznese të vogla dhe të mesme, duke kombinuar eksperiencën me fuqinë e Inteligjencës Artificiale.',
+    title: 'Blue Square AI - Driving Innovation in Albania & The Balkans',
+    description: 'Based in Tirana, Blue Square AI uses state-of-the-art Artificial Intelligence to build innovation across Albania and the Balkan region.',
     images: ['/logo.png'],
   },
 };
