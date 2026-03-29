@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +26,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { FinalCtaSection } from '@/components/sections/final-cta-section';
 
-export default function QuickSolutionsPage() {
+function QuickSolutionsContent() {
   const searchParams = useSearchParams();
   const lang = searchParams.get('lang') === 'sq' ? 'sq' : 'en';
 
@@ -87,7 +88,7 @@ export default function QuickSolutionsPage() {
         {
           title: "CMS Management",
           desc: "Change texts and photos yourself without needing a programmer every time.",
-          icon: <Settings2 className="h-6 w-6 text-black" />
+          icon: <Settings2 className="h-10 w-10 text-black" />
         },
         {
           title: "Responsive Design",
@@ -100,6 +101,13 @@ export default function QuickSolutionsPage() {
           icon: <Zap className="h-6 w-6 text-black" />
         }
       ],
+      whyHeader: "Why Choose Quick Solutions?",
+      whyText: "In a world that moves fast, we help your business keep up. Our quick solutions are designed to get you online in record time, with a focus on results and style.",
+      stats: [
+        { label: "Delivery Time", value: "7 Days" },
+        { label: "SEO Result", value: "A+" },
+        { label: "Support", value: "Lifetime" }
+      ],
       examplesHeader: "Success Examples",
       examples: [
         { name: "Discover Albania", url: "https://discoveralbania.al", category: "Tourism" },
@@ -108,11 +116,6 @@ export default function QuickSolutionsPage() {
       pricingHeader: "Our Packages",
       pricingTag: "From 300 Euro",
       pricingDesc: "A smart investment for a presence that converts every visitor into a customer.",
-      stats: [
-        { label: "Delivery Time", value: "7 Days" },
-        { label: "SEO Result", value: "A+" },
-        { label: "Support", value: "Lifetime" }
-      ]
     }
   };
 
@@ -278,5 +281,13 @@ export default function QuickSolutionsPage() {
       </main>
       <Footer lang={lang} />
     </div>
+  );
+}
+
+export default function QuickSolutionsPage() {
+  return (
+    <Suspense fallback={null}>
+      <QuickSolutionsContent />
+    </Suspense>
   );
 }

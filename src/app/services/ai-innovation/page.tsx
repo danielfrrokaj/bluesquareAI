@@ -263,7 +263,7 @@ function AiInnovationContent() {
 
 export default function AiInnovationPage() {
   return (
-    <Suspense>
+    <Suspense fallback={null}>
       <AiInnovationContent />
     </Suspense>
   );

@@ -265,7 +265,7 @@ function TourismSystemsContent() {
 
 export default function TourismSystemsPage() {
   return (
-    <Suspense>
+    <Suspense fallback={null}>
       <TourismSystemsContent />
     </Suspense>
   );

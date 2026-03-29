@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
@@ -56,7 +57,9 @@ export default function RootLayout({
     <html lang="sq" className="scroll-smooth" suppressHydrationWarning>
       <body className={cn('min-h-screen bg-background font-body antialiased', inter.className, poppins.className)}>
         <FirebaseClientProvider>
-          {children}
+          <Suspense>
+            {children}
+          </Suspense>
         </FirebaseClientProvider>
         <Toaster />
       </body>
