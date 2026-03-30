@@ -21,6 +21,7 @@ import Link from "next/link";
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { FinalCtaSection } from '@/components/sections/final-cta-section';
+import { motion } from 'framer-motion';
 
 function VisionContent() {
   const searchParams = useSearchParams();
@@ -97,18 +98,23 @@ function VisionContent() {
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="relative pt-32 pb-48 overflow-hidden bg-black text-white text-center">
-            {/* Background Decor */}
-            <div className="absolute inset-0 z-0">
+            {/* Background Wallpaper */}
+            <motion.div 
+              initial={{ scale: 1.1, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 2, ease: "easeOut" }}
+              className="absolute inset-0 z-0"
+            >
                <NextImage 
                   src="/background/wallpaper-dark3.jpg"
                   alt="Vision Wallpaper"
                   fill
-                  className="object-cover"
+                  className="object-cover scale-110"
                   priority
                />
                <div className="absolute inset-0 bg-black/40" />
                <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-white to-transparent" />
-            </div>
+            </motion.div>
 
           <div className="container px-4 mx-auto relative z-10 flex flex-col items-center">
             <div className="inline-flex items-center gap-2 px-5 py-2 mb-10 text-[10px] font-bold tracking-[0.2em] text-white uppercase bg-white/10 rounded-full border border-white/20 backdrop-blur-md">
@@ -116,11 +122,11 @@ function VisionContent() {
               {c.tag}
             </div>
             
-            <h1 className="text-4xl md:text-7xl lg:text-8xl font-extrabold font-headline mb-10 tracking-tighter leading-[1.1] text-white">
+            <h1 className="text-3xl sm:text-4xl md:text-7xl lg:text-8xl font-extrabold font-headline mb-8 md:mb-10 tracking-tighter leading-[1.1] text-white">
               {c.title}
             </h1>
             
-            <p className="text-lg md:text-2xl lg:text-3xl text-zinc-300 mb-14 leading-relaxed max-w-3xl mx-auto font-medium tracking-tight">
+            <p className="text-lg md:text-2xl lg:text-3xl text-zinc-300 mb-10 md:mb-14 leading-relaxed max-w-3xl mx-auto font-medium tracking-tight">
               {c.subtitle}
             </p>
 

@@ -26,6 +26,7 @@ import React from 'react';
 import Image from 'next/image';
 import FlagIcon from '@/components/flag-icon';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { motion, AnimatePresence } from 'framer-motion';
 
 
 const navLinksSq = [
@@ -280,22 +281,38 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
   };
 
   return (
-    <header className={cn(
-      "fixed top-0 z-50 w-full transition-all duration-300",
-      !isTransparentHeader ? "border-b border-black/5 bg-white/95 backdrop-blur-md" : ""
-    )} id="main-header">
-      <div className="container flex h-20 items-center justify-between">
-        <div className="flex items-center gap-8">
-          <Link href={getFullHref('/')} onClick={(e) => handleLinkClick(e, '/')} className="flex items-center">
-              <Image 
-                  src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo/logo_black%20(1).png"
-                  alt="Blue Square AI Logo"
-                  width={140}
-                  height={35}
-                  className="w-36 h-auto transition-all"
-                  priority
-              />
-          </Link>
+    <header 
+      className={cn(
+        "fixed top-0 z-50 w-full transition-all duration-500",
+        !isTransparentHeader ? "border-b border-black/5 bg-white/80 backdrop-blur-xl py-2" : "py-4"
+      )} 
+      id="main-header"
+    >
+      <div className="container flex h-16 items-center justify-between">
+        <div className="flex items-center gap-10">
+          <div className="flex items-center">
+            <Link href={getFullHref('/')} onClick={(e) => handleLinkClick(e, '/')} className="flex items-center relative group">
+                <div className="flex items-center gap-3">
+                    <Image 
+                        src="https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/logos%2FGemini_Generated_Image_uuixsnuuixsnuuix-removebg-preview.png?alt=media&token=eae0c0c2-2554-4aa4-af2e-84ddc673dd21"
+                        alt="Blue Square AI Logo"
+                        width={40}
+                        height={40}
+                        className="w-10 h-10 object-contain transition-all"
+                        priority
+                    />
+                    <span className={cn(
+                        "font-headline font-extrabold text-xl tracking-tighter transition-colors group-hover:text-blue-600",
+                        isScrolled ? "text-zinc-900" : "text-white"
+                    )}>
+                        Blue Square
+                    </span>
+                </div>
+                <div 
+                    className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"
+                />
+            </Link>
+          </div>
           <nav className={cn(
               "hidden md:flex items-center space-x-1 transition-all"
           )}>
@@ -303,68 +320,145 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
           </nav>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-4">
           {/* Language Switch for Desktop */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="hidden md:flex items-center gap-2 hover:bg-black/5">
-                <FlagIcon countryCode={currentLanguage?.countryCode || 'us'} />
-                <span className="text-xs font-semibold tracking-wider">{lang.toUpperCase()}</span>
-                <ChevronDown className="h-3 w-3 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40 bg-white border-border">
-              {languageOptions.map((option) => (
-                <DropdownMenuItem 
-                  key={option.code}
-                  asChild
-                  className={cn("cursor-pointer focus:bg-black/5", option.code === lang && "bg-black/5")}
-                >
-                  <Link href={createLanguageSwitchHref(option.code)}>
-                    <FlagIcon countryCode={option.countryCode} className="mr-2" />
-                    {option.label}
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="hidden md:flex items-center gap-2 hover:bg-black/5 rounded-full transition-all">
+                  <FlagIcon countryCode={currentLanguage?.countryCode || 'us'} />
+                  <span className="text-[10px] font-bold tracking-widest text-zinc-500">{lang.toUpperCase()}</span>
+                  <ChevronDown className="h-3 w-3 opacity-30" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40 bg-white/95 backdrop-blur-md border-black/5 p-1 rounded-2xl shadow-2xl">
+                {languageOptions.map((option) => (
+                  <DropdownMenuItem 
+                    key={option.code}
+                    asChild
+                    className={cn("cursor-pointer focus:bg-black/5 rounded-xl px-3 py-2 transition-colors", option.code === lang && "bg-black/5 font-medium")}
+                  >
+                    <Link href={createLanguageSwitchHref(option.code)}>
+                      <FlagIcon countryCode={option.countryCode} className="mr-3" />
+                      <span className="text-sm">{option.label}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
 
-          {/* Desktop CTA Button */}
-          <Button asChild size="sm" className="hidden md:inline-flex bg-black text-white hover:bg-black/90 font-medium px-6 rounded-full transition-all active:scale-95">
-            <Link href={getFullHref(currentCta.href)}>
-                {currentCta.label}
-            </Link>
+          {/* Desktop CTA Button - Removed asChild to simplify and avoid potential multiple children issue in Slot */}
+          <Button 
+            size="sm" 
+            className="hidden md:inline-flex bg-black text-white hover:bg-zinc-800 font-semibold px-8 h-11 rounded-full transition-all relative overflow-hidden group"
+            onClick={() => router.push(getFullHref(currentCta.href))}
+          >
+            <span className="relative z-10">
+              {currentCta.label}
+            </span>
+            <div className="absolute inset-0 bg-blue-600 translate-y-full transition-transform duration-300 group-hover:translate-y-0" />
           </Button>
           
-          <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden hover:bg-black/5">
-                <Menu className="h-6 w-6" />
-                <span className="sr-only">Toggle Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-full max-w-xs bg-white p-0 border-l border-border">
-              <div className="flex flex-col h-full">
-                <div className="p-6 border-b border-border">
-                    <Link href={getFullHref('/')} className="flex items-center" onClick={() => setSheetOpen(false)}>
-                        <Image 
-                            src="https://nnuptjtmzjdjegjguqbh.supabase.co/storage/v1/object/public/Blue%20Square/logo/logo_black%20(1).png"
-                            alt="Blue Square AI Logo"
-                            width={120}
-                            height={30}
-                            className="w-32 h-auto"
-                            priority
-                        />
-                    </Link>
+          <div>
+            <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className={cn(
+                  "md:hidden rounded-full w-10 h-10",
+                  isTransparentHeader ? "text-white hover:bg-white/10" : "text-black hover:bg-black/5"
+                )}>
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Toggle Menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-full max-w-xs bg-zinc-950/98 backdrop-blur-2xl p-0 border-l border-white/10 text-white">
+                <div className="flex flex-col h-full">
+                  <ScrollArea className="flex-1">
+                      <div className="flex flex-col space-y-8 pt-10 pb-12 px-4">
+                          {/* Home Link */}
+                          <Link
+                            href={getFullHref(homeLink.href)}
+                            onClick={(e) => handleLinkClick(e, homeLink.href)}
+                            className={cn("text-lg px-4 transition-colors", pathname === homeLink.href ? "text-blue-400 font-bold" : "text-white/70 hover:text-white")}
+                          >
+                            {homeLink.label}
+                          </Link>
+
+                          {/* Services Group */}
+                          <div className="space-y-4">
+                              <p className="font-bold text-xs uppercase tracking-widest text-zinc-500 px-4">{lang === 'sq' ? 'Shërbimet' : 'Services'}</p>
+                              <div className="flex flex-col space-y-2">
+                                  {services.map((service) => (
+                                    <Link 
+                                        key={service.href} 
+                                        href={getFullHref(service.href)} 
+                                        className={cn("text-lg pl-8 transition-colors py-2 rounded-xl", pathname === service.href ? "text-blue-400 font-bold bg-blue-500/10" : "text-white/50 hover:text-white hover:bg-white/5")} 
+                                        onClick={() => setSheetOpen(false)}
+                                    >
+                                      {service.title}
+                                    </Link>
+                                  ))}
+                              </div>
+                          </div>
+
+                          {/* Menu Group */}
+                          <div className="space-y-4 pb-8">
+                              <p className="font-bold text-xs uppercase tracking-widest text-zinc-500 px-4">{lang === 'sq' ? 'Menu' : 'Menu'}</p>
+                              <div className="flex flex-col space-y-2">
+                                  {navLinks.map((link) => (
+                                     <Link
+                                      key={link.href}
+                                      href={getFullHref(link.href)}
+                                      onClick={(e) => handleLinkClick(e, link.href)}
+                                      className={cn("text-lg px-4 transition-colors py-2 rounded-xl", pathname === link.href ? "text-blue-400 font-bold bg-blue-500/10" : "text-white/70 hover:text-white hover:bg-white/5")}
+                                    >
+                                      {link.label}
+                                    </Link>
+                                  ))}
+                              </div>
+                          </div>
+                          
+                          {/* Mobile CTA Button */}
+                          <div className="px-4 pt-4">
+                            <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full h-12 font-bold shadow-lg shadow-blue-600/20" onClick={() => { router.push(getFullHref(currentCta.href)); setSheetOpen(false); }}>
+                                {currentCta.label}
+                            </Button>
+                          </div>
+                      </div>
+                  </ScrollArea>
+
+                  {/* Mobile Language Switch at Bottom */}
+                  <div className="p-8 border-t border-white/5">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="w-full justify-between bg-white/5 hover:bg-white/10 text-white rounded-xl border border-white/10">
+                          <div className="flex items-center">
+                            <FlagIcon countryCode={currentLanguage?.countryCode || 'us'} className="mr-3" />
+                            <span className="font-medium">{currentLanguage?.label}</span>
+                          </div>
+                          <ChevronDown className="h-4 w-4 opacity-50" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-[calc(100vw-4rem)] max-w-xs bg-zinc-900 border-white/10 text-white rounded-2xl shadow-2xl backdrop-blur-xl">
+                        {languageOptions.map((option) => (
+                          <DropdownMenuItem 
+                            key={option.code}
+                            asChild
+                            className={cn("cursor-pointer focus:bg-white/10 rounded-xl px-4 py-3 transition-colors", option.code === lang && "bg-white/10")}
+                          >
+                            <Link href={createLanguageSwitchHref(option.code)} onClick={() => setSheetOpen(false)}>
+                              <FlagIcon countryCode={option.countryCode} className="mr-3" />
+                              <span>{option.label}</span>
+                            </Link>
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </div>
-                <ScrollArea className="flex-1">
-                    <div className="flex flex-col space-y-6 pt-4 pb-8">
-                        {renderNavLinks(true)}
-                    </div>
-                </ScrollArea>
-              </div>
-            </SheetContent>
-          </Sheet>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </header>

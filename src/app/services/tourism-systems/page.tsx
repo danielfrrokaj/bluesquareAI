@@ -24,6 +24,7 @@ import Image from "next/image";
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { FinalCtaSection } from '@/components/sections/final-cta-section';
+import { motion } from 'framer-motion';
 
 function TourismSystemsContent() {
   const searchParams = useSearchParams();
@@ -113,17 +114,22 @@ function TourismSystemsContent() {
         {/* Hero Section */}
         <section className="relative pt-32 pb-48 overflow-hidden bg-black text-white">
           {/* Background Wallpaper */}
-          <div className="absolute inset-0 z-0">
+          <motion.div 
+            initial={{ scale: 1.1, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="absolute inset-0 z-0"
+          >
              <Image 
                 src="/background/wallpaper-dark2.jpg"
                 alt="Tourism Systems Wallpaper"
                 fill
-                className="object-cover"
+                className="object-cover scale-110"
                 priority
              />
              <div className="absolute inset-0 bg-black/40" />
              <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-white to-transparent" />
-          </div>
+          </motion.div>
 
           <div className="container px-4 mx-auto relative z-10">
             <div className="grid lg:grid-cols-2 gap-20 items-center">
@@ -132,7 +138,7 @@ function TourismSystemsContent() {
                   <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
                   {c.tag}
                 </div>
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold font-headline mb-8 md:mb-10 tracking-tighter leading-[1.1] md:leading-[1.15] text-white">
+                <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold font-headline mb-8 md:mb-10 tracking-tighter leading-[1.1] md:leading-[1.15] text-white">
                   {c.title}
                 </h1>
                 <p className="text-lg md:text-2xl text-zinc-300 mb-10 md:mb-12 leading-relaxed max-w-xl font-medium tracking-tight">
@@ -213,30 +219,30 @@ function TourismSystemsContent() {
         <section className="py-32 bg-white relative overflow-hidden">
           <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-500/[0.02] rounded-full blur-[150px] pointer-events-none" />
           <div className="container px-4 mx-auto relative z-10">
-             <div className="max-w-5xl mx-auto text-center mb-32">
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 mb-10">
+             <div className="max-w-5xl mx-auto text-center mb-16 md:mb-32">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 mb-8 md:mb-10">
                    {lang === 'sq' ? 'Ndërtimi i Ekselencës' : 'Building Excellence'}
                 </div>
-                <h3 className="text-2xl md:text-5xl font-extrabold font-headline text-black mb-8 md:mb-12 tracking-tighter max-w-4xl mx-auto leading-tight">
+                <h3 className="text-2xl md:text-5xl font-extrabold font-headline text-black mb-6 md:mb-12 tracking-tighter max-w-4xl mx-auto leading-tight">
                   {c.whyHeader}
                 </h3>
                 <div className="w-20 md:w-24 h-1 md:h-1.5 bg-gradient-to-r from-blue-500 to-lime-500 rounded-full mx-auto" />
-                <p className="text-xl md:text-3xl lg:text-4xl text-zinc-600 leading-snug font-normal tracking-tight max-w-4xl mx-auto mt-10 md:mt-16">
+                <p className="text-lg md:text-3xl lg:text-4xl text-zinc-600 leading-snug font-normal tracking-tight max-w-4xl mx-auto mt-8 md:mt-16 italic">
                   "{c.whyText}"
                 </p>
              </div>
 
-             <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+             <div className="grid md:grid-cols-2 gap-6 lg:gap-12">
                 {c.features.map((f, i) => (
-                  <div key={i} className="flex items-start gap-8 p-12 rounded-[3.5rem] bg-zinc-50/50 border border-black/[0.03] hover:bg-white hover:border-blue-200 hover:shadow-[0_40px_80px_-20px_rgba(59,130,246,0.1)] transition-all duration-500 group hover:-translate-y-2">
-                     <div className="flex-shrink-0 p-5 bg-white rounded-2xl shadow-sm group-hover:bg-blue-50 group-hover:text-blue-600 transition-all duration-500 flex items-center justify-center border border-black/[0.03]">
+                  <div key={i} className="flex flex-col sm:flex-row items-start gap-6 md:gap-8 p-8 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] bg-zinc-50/50 border border-black/[0.03] hover:bg-white hover:border-blue-200 hover:shadow-[0_40px_80px_-20px_rgba(59,130,246,0.1)] transition-all duration-500 group hover:-translate-y-2">
+                     <div className="flex-shrink-0 p-4 md:p-5 bg-white rounded-2xl shadow-sm group-hover:bg-blue-50 group-hover:text-blue-600 transition-all duration-500 flex items-center justify-center border border-black/[0.03]">
                         {f.icon}
                      </div>
                      <div>
-                        <h3 className="text-2xl font-bold font-headline mb-4 text-black tracking-tight">
+                        <h3 className="text-xl md:text-2xl font-bold font-headline mb-3 md:mb-4 text-black tracking-tight">
                           {f.title}
                         </h3>
-                        <p className="text-zinc-500 leading-relaxed text-lg font-medium tracking-tight">
+                        <p className="text-zinc-500 leading-relaxed text-base md:text-lg font-medium tracking-tight">
                           {f.desc}
                         </p>
                      </div>
@@ -282,17 +288,17 @@ function TourismSystemsContent() {
                        </Card>
                    </div>
                 </div>
-                <div className="order-1 lg:order-2 flex flex-col items-start text-left">
+                <div className="order-1 lg:order-2 flex flex-col items-center lg:items-start text-center lg:text-left">
                    <div className="inline-flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 mb-8">
                       {lang === 'sq' ? 'Menaxhim i Plotë' : 'Complete Management'}
                    </div>
-                   <h2 className="text-4xl md:text-6xl font-extrabold font-headline mb-10 tracking-tighter leading-[1.15] text-black">
+                   <h2 className="text-3xl sm:text-4xl md:text-6xl font-extrabold font-headline mb-8 md:mb-10 tracking-tighter leading-[1.15] text-black">
                       Every tool for the <span className="text-blue-600">modern hospitality</span> era.
                    </h2>
-                   <p className="text-xl md:text-2xl text-zinc-500 leading-relaxed mb-12 font-medium tracking-tight">
+                   <p className="text-lg md:text-2xl text-zinc-500 leading-relaxed mb-10 md:mb-12 font-medium tracking-tight">
                       We've designed Discover Albania PMS to be the ultimate companion for your tourism business, ensuring stability, growth, and excellence in service.
                    </p>
-                   <Button size="lg" className="h-20 px-12 rounded-full font-bold text-xl bg-black text-white hover:bg-zinc-800 transition-all shadow-xl hover:scale-105 active:scale-95">
+                   <Button size="lg" className="h-16 md:h-20 px-10 md:px-12 rounded-full font-bold text-lg md:text-xl bg-black text-white hover:bg-zinc-800 transition-all shadow-xl hover:scale-105 active:scale-95 w-full sm:w-auto">
                      {lang === 'sq' ? 'Kërko Konsultim Personal' : 'Request Personal Consultation'}
                    </Button>
                 </div>

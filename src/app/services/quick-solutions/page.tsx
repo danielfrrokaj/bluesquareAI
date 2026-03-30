@@ -25,6 +25,7 @@ import Image from "next/image";
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { FinalCtaSection } from '@/components/sections/final-cta-section';
+import { motion } from 'framer-motion';
 
 function QuickSolutionsContent() {
   const searchParams = useSearchParams();
@@ -178,17 +179,22 @@ function QuickSolutionsContent() {
         {/* Hero Section */}
         <section className="relative pt-32 pb-48 overflow-hidden bg-black text-white">
           {/* Background Wallpaper */}
-          <div className="absolute inset-0 z-0">
+          <motion.div 
+            initial={{ scale: 1.1, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="absolute inset-0 z-0"
+          >
              <Image 
                 src="/background/wallpaper-dark1.jpg"
                 alt="Quick Solutions Wallpaper"
                 fill
-                className="object-cover"
+                className="object-cover scale-110"
                 priority
              />
              <div className="absolute inset-0 bg-black/40" />
              <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-white to-transparent" />
-          </div>
+          </motion.div>
 
           <div className="container px-4 mx-auto relative z-10">
             <div className="grid lg:grid-cols-2 gap-20 items-center">
@@ -197,7 +203,7 @@ function QuickSolutionsContent() {
                   <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
                   {c.tag}
                 </div>
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold font-headline mb-8 md:mb-10 tracking-tighter leading-[1.1] md:leading-[1.15] text-white">
+                <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold font-headline mb-8 md:mb-10 tracking-tighter leading-[1.1] md:leading-[1.15] text-white">
                   {c.title}
                 </h1>
                 <p className="text-lg md:text-2xl text-zinc-300 mb-10 md:mb-12 leading-relaxed max-w-xl font-medium tracking-tight">

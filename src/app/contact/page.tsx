@@ -13,6 +13,7 @@ import { Loader2, Mail, Phone, MapPin, Instagram, Facebook, Linkedin, ArrowRight
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import Link from 'next/link';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import dynamic from 'next/dynamic';
@@ -115,17 +116,22 @@ export default function ContactPage({ searchParams }: { searchParams?: { lang?: 
       <main className="flex-1">
         <section className="relative pt-32 pb-24 md:pt-48 md:pb-32 overflow-hidden bg-black text-white">
           {/* Background Wallpaper */}
-          <div className="absolute inset-0 z-0">
+          <motion.div 
+            initial={{ scale: 1.1, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="absolute inset-0 z-0"
+          >
              <Image 
                 src="/background/wallpaper-dark3.jpg"
                 alt="Contact Wallpaper"
                 fill
-                className="object-cover"
+                className="object-cover scale-110"
                 priority
              />
              <div className="absolute inset-0 bg-black/50" />
              <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-white to-transparent" />
-          </div>
+          </motion.div>
 
           <div className="container relative z-10">
             <div className="max-w-5xl">

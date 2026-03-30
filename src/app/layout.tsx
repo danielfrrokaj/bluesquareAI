@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { Inter, Poppins } from 'next/font/google'
 import { FirebaseClientProvider } from '@/firebase';
+import { GlobalBackground } from '@/components/layout/global-background';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -16,6 +17,7 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://bluesquare.ai"),
   title: {
     default: 'Blue Square AI - Driving Innovation in Albania & The Balkans',
     template: '%s | Blue Square AI',
@@ -55,7 +57,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="sq" className="scroll-smooth" suppressHydrationWarning>
-      <body className={cn('min-h-screen bg-background font-body antialiased', inter.className, poppins.className)}>
+      <body className={cn('min-h-screen bg-transparent font-body antialiased selection:bg-blue-500/10 selection:text-blue-600', inter.className, poppins.className)}>
+        <GlobalBackground />
         <FirebaseClientProvider>
           <Suspense>
             {children}

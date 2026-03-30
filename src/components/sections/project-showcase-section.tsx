@@ -1,75 +1,90 @@
-
 'use client';
 
 import NextImage from 'next/image';
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { useInView } from "@/hooks/use-in-view";
 import { useRef } from "react";
+import { motion } from "framer-motion";
 
 export function ProjectShowcaseSection({ lang }: { lang: 'en' | 'sq' }) {
     const ref = useRef<HTMLDivElement>(null);
-    const isInView = useInView(ref, { once: true, threshold: 0.1 });
-
-    const content = {
-        sq: {
-            tag: "Projektet tona",
-            title: "Inovacioni në Praksë",
-            subtitle: "Një vështrim në disa nga zgjidhjet tona më të fundit që po transformojnë industrinë."
-        },
-        en: {
-            tag: "Our Projects",
-            title: "Innovation in Action",
-            subtitle: "A look at some of our latest solutions that are transforming the industry."
-        }
-    };
-
-    const c = content[lang];
 
     return (
-        <section className="py-32 bg-zinc-50/30 overflow-hidden" ref={ref}>
-            <div className={cn("container px-4 mx-auto transition-all duration-1000", isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10")}>
-                <div className="flex flex-col items-center mb-24 text-center max-w-4xl mx-auto">
-                    <div className="inline-flex items-center gap-2 px-5 py-2 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 backdrop-blur-sm mb-8">
-                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
-                        {c.tag}
-                    </div>
-                    <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter font-headline text-black leading-tight mb-8">
-                        {c.title}
+        <section className="py-24 relative overflow-hidden bg-white" id="innovation" ref={ref}>
+            <div className="container px-4 relative z-10 max-w-4xl mx-auto">
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8 }}
+                    className="text-center mb-20"
+                >
+                    <h2 className="text-sm font-bold tracking-[0.3em] uppercase text-blue-600 mb-6 drop-shadow-sm">
+                        {lang === 'sq' ? 'Inovacioni në Veprim' : 'Innovation in Action'}
                     </h2>
-                    <p className="text-xl md:text-2xl text-zinc-500 leading-relaxed font-medium tracking-tight">
-                        {c.subtitle}
+                    <p className="text-4xl md:text-5xl font-bold text-black leading-tight tracking-tight">
+                        {lang === 'sq' 
+                            ? 'Një vështrim në disa nga zgjidhjet tona më të fundit.' 
+                            : 'A look at some of our latest solutions.'}
                     </p>
-                    <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-lime-500 rounded-full mt-12" />
+                </motion.div>
+
+                <div className="space-y-12">
+                    <motion.div
+                        initial={{ opacity: 0, y: 40 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: 0.1 }}
+                    >
+                        <Card className="overflow-hidden border-black/5 shadow-2xl rounded-[2rem] md:rounded-[3rem] group transition-all duration-700 hover:shadow-[0_60px_100px_-20px_rgba(59,130,246,0.15)] bg-white w-full">
+                            <div className="w-full overflow-hidden">
+                                <NextImage 
+                                    src="https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FUntitled%20design%20(1).png?alt=media&token=79776295-c0cf-4ff5-b12e-015d85915a3c"
+                                    alt="AI Projects Showcase"
+                                    width={1600}
+                                    height={900}
+                                    className="w-full h-auto transition-transform duration-1000 group-hover:scale-105"
+                                    priority
+                                    sizes="(max-width: 1024px) 100vw, 896px"
+                                />
+                            </div>
+                        </Card>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 40 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: 0.3 }}
+                    >
+                        <Card className="overflow-hidden border-black/5 shadow-2xl rounded-[2rem] md:rounded-[3rem] group transition-all duration-700 hover:shadow-[0_60px_100px_-20px_rgba(59,130,246,0.15)] bg-white w-full">
+                            <div className="w-full overflow-hidden">
+                                <NextImage 
+                                    src="https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FMenaxhim%20i%20lehte%CC%88%20i%20hotelit%20tuaj.png?alt=media&token=920dc86d-30bf-4bab-b595-a94735755f86"
+                                    alt="Hotel Management Solution"
+                                    width={1600}
+                                    height={900}
+                                    className="w-full h-auto transition-transform duration-1000 group-hover:scale-105"
+                                    sizes="(max-width: 1024px) 100vw, 896px"
+                                />
+                            </div>
+                        </Card>
+                    </motion.div>
                 </div>
-                
-                <div className="grid grid-cols-1 gap-16 lg:gap-24 max-w-7xl mx-auto">
-                    <Card className="overflow-hidden border-black/5 shadow-2xl rounded-[2rem] md:rounded-[3rem] group transition-all duration-700 hover:shadow-[0_60px_100px_-20px_rgba(59,130,246,0.15)] bg-white">
-                        <div className="w-full overflow-hidden">
-                            <NextImage 
-                                src="https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FUntitled%20design%20(1).png?alt=media&token=79776295-c0cf-4ff5-b12e-015d85915a3c"
-                                alt="AI Projects Showcase"
-                                width={1600}
-                                height={900}
-                                className="w-full h-auto transition-transform duration-1000 group-hover:scale-105"
-                                priority
-                                sizes="100vw"
-                            />
-                        </div>
-                    </Card>
-                    <Card className="overflow-hidden border-black/5 shadow-2xl rounded-[2rem] md:rounded-[3rem] group transition-all duration-700 hover:shadow-[0_60px_100px_-20px_rgba(59,130,246,0.15)] bg-white">
-                        <div className="w-full overflow-hidden">
-                            <NextImage 
-                                src="https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FMenaxhim%20i%20lehte%CC%88%20i%20hotelit%20tuaj.png?alt=media&token=920dc86d-30bf-4bab-b595-a94735755f86"
-                                alt="Hotel Management Solution"
-                                width={1600}
-                                height={900}
-                                className="w-full h-auto transition-transform duration-1000 group-hover:scale-105"
-                                sizes="100vw"
-                            />
-                        </div>
-                    </Card>
-                </div>
+
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.6 }}
+                    className="mt-16 text-center"
+                >
+                    <p className="text-zinc-400 font-medium tracking-widest text-sm uppercase flex items-center justify-center gap-3">
+                        <span className="w-8 h-px bg-zinc-200" />
+                        {lang === 'sq' ? 'dhe shumë të tjerë....' : 'and many more....'}
+                        <span className="w-8 h-px bg-zinc-200" />
+                    </p>
+                </motion.div>
             </div>
         </section>
     );

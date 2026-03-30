@@ -21,6 +21,7 @@ import Link from "next/link";
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { FinalCtaSection } from '@/components/sections/final-cta-section';
+import { motion } from 'framer-motion';
 
 function AiInnovationContent() {
   const searchParams = useSearchParams();
@@ -115,21 +116,26 @@ function AiInnovationContent() {
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="relative pt-32 pb-48 overflow-hidden text-white text-center">
-          {/* Background Wallpaper */}
-          <div className="absolute inset-0 z-0">
-            <NextImage 
-              src="/background/header_wallpaper_services:ai-innovation.jpg"
-              alt="AI Innovation Wallpaper"
-              fill
-              className="object-cover"
-              priority
-            />
-            {/* Dark overlay for better text contrast */}
-            <div className="absolute inset-0 bg-black/40" />
-            
-            {/* Bottom fading transition */}
-            <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-white to-transparent" />
-          </div>
+            {/* Background Wallpaper */}
+            <motion.div 
+              initial={{ scale: 1.1, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 2, ease: "easeOut" }}
+              className="absolute inset-0 z-0"
+            >
+              <NextImage 
+                src="/background/header_wallpaper_services:ai-innovation.jpg"
+                alt="AI Innovation Wallpaper"
+                fill
+                className="object-cover scale-110"
+                priority
+              />
+              {/* Dark overlay for better text contrast */}
+              <div className="absolute inset-0 bg-black/40" />
+              
+              {/* Bottom fading transition */}
+              <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-white to-transparent" />
+            </motion.div>
 
           <div className="container px-4 mx-auto relative z-10 flex flex-col items-center">
             <div className="inline-flex items-center gap-2 px-5 py-2 mb-10 text-[10px] font-bold tracking-[0.2em] text-white uppercase bg-white/10 rounded-full border border-white/20 backdrop-blur-md">
@@ -137,7 +143,7 @@ function AiInnovationContent() {
               {c.tag}
             </div>
             
-            <h1 className="text-4xl md:text-7xl lg:text-8xl font-extrabold font-headline text-white mb-8 md:mb-10 tracking-tighter leading-[1.1] md:leading-[1.05]">
+            <h1 className="text-3xl sm:text-4xl md:text-7xl lg:text-8xl font-extrabold font-headline text-white mb-8 md:mb-10 tracking-tighter leading-[1.1] md:leading-[1.05]">
               {c.title}
             </h1>
             
@@ -145,11 +151,11 @@ function AiInnovationContent() {
               {c.subtitle}
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 md:gap-8">
-              <Button size="lg" className="h-16 md:h-20 px-10 md:px-16 w-full sm:w-auto rounded-full font-bold text-xl md:text-2xl bg-white text-black hover:bg-zinc-100 shadow-2xl transition-all hover:scale-105 active:scale-95">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 md:gap-8 w-full max-w-2xl px-4 mx-auto">
+              <Button size="lg" className="h-16 md:h-20 px-10 md:px-16 w-full sm:w-auto rounded-full font-bold text-lg md:text-2xl bg-white text-black hover:bg-zinc-100 shadow-2xl transition-all hover:scale-105 active:scale-95">
                 {c.cta} <ArrowRight className="ml-2 h-5 w-5 md:h-6 md:w-6" />
               </Button>
-              <Button size="lg" variant="outline" className="h-16 md:h-20 px-10 md:px-16 w-full sm:w-auto rounded-full font-bold text-xl md:text-2xl border-white/20 text-white bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all active:scale-95">
+              <Button size="lg" variant="outline" className="h-16 md:h-20 px-10 md:px-16 w-full sm:w-auto rounded-full font-bold text-lg md:text-2xl border-white/20 text-white bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all active:scale-95">
                 {lang === 'sq' ? 'Mëso më Shumë' : 'Learn More'}
               </Button>
             </div>
