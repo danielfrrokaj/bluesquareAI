@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
 export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
@@ -21,44 +22,45 @@ export function HeroSection({ lang }: { lang: 'en' | 'sq' }) {
   const currentContent = content[lang];
 
   return (
-    <section id="home" className="relative w-full py-24 lg:py-48 flex items-center justify-center overflow-hidden bg-white text-black">
-      {/* Dynamic Background Elements */}
+    <section id="home" className="relative w-full py-32 lg:py-48 min-h-[90vh] flex items-center justify-center overflow-hidden">
+      {/* Background Wallpaper */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-blue-500/5 rounded-full blur-[140px] opacity-40 animate-pulse" />
-        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-lime-400/5 rounded-full blur-[120px] opacity-30 animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000003_1px,transparent_1px),linear-gradient(to_bottom,#00000003_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_0%,#000_60%,transparent_100%)] pointer-events-none" />
+        <Image 
+          src="/background/header_wallpaper.jpg"
+          alt="Hero Wallpaper"
+          fill
+          className="object-cover"
+          priority
+        />
+        {/* Darkening overlay for better contrast if needed, but we use blend modes */}
+        <div className="absolute inset-0 bg-black/10" />
+        
+        {/* Bottom fading transition to #c29cd2 */}
+        <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#c29cd2] to-transparent" />
       </div>
 
       <div className="container relative z-10 px-4 md:px-6">
         <div className="flex flex-col items-center text-center space-y-12 max-w-6xl mx-auto">
-          <div className="inline-flex items-center rounded-full border border-blue-100 bg-blue-50/50 px-5 py-2 text-xs font-bold uppercase tracking-[0.2em] text-blue-600 fade-in shadow-sm backdrop-blur-sm">
-            <span className="flex h-2.5 w-2.5 rounded-full bg-lime-400 animate-pulse mr-3 shadow-[0_0_10px_rgba(163,230,53,0.8)]" />
-            {currentContent.tag}
-          </div>
+
           
-          <h1 className="text-4xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl font-headline text-black whitespace-pre-line leading-[1.1] sm:leading-[1.05] fade-in-up">
+          <h1 className="text-4xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl font-headline text-white whitespace-pre-line leading-[1.1] sm:leading-[1.05] fade-in-up mix-blend-difference">
             {currentContent.headline}
           </h1>
           
-          <p className="max-w-[850px] text-lg md:text-2xl text-zinc-500 leading-relaxed fade-in-up font-medium tracking-tight" style={{ animationDelay: '0.2s' }}>
+          <p className="max-w-[850px] text-lg md:text-2xl text-white/90 leading-relaxed fade-in-up font-medium tracking-tight mix-blend-difference" style={{ animationDelay: '0.2s' }}>
             {currentContent.subheadline}
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-6 pt-8 fade-in-up" style={{ animationDelay: '0.4s' }}>
-            <Button size="lg" asChild className="bg-black text-white hover:bg-zinc-800 rounded-full px-12 text-xl font-bold h-16 shadow-xl transition-all hover:scale-105 hover:shadow-lime-400/20 active:scale-95">
-              <Link href={`/contact?lang=${lang}`}>{currentContent.cta}</Link>
+            <Button size="lg" variant="outline" asChild className="rounded-full px-12 text-xl font-bold h-16 border-white/20 text-white bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all hover:border-white/40">
+              <Link href={`/vision?lang=${lang}`}>{currentContent.secondaryCta}</Link>
             </Button>
-            <Button size="lg" variant="outline" asChild className="rounded-full px-12 text-xl font-bold h-16 border-black/5 text-black hover:bg-zinc-50 transition-all hover:border-blue-400/30">
-              <Link href="#services">{currentContent.secondaryCta}</Link>
-            </Button>
-          </div>
           
           {/* Subtle Trust Element */}
           <div className="pt-24 flex flex-col items-center gap-6 fade-in" style={{ animationDelay: '0.6s' }}>
-             <div className="flex items-center gap-4 opacity-30 group">
-                <div className="h-[1px] w-12 bg-black transition-all group-hover:w-20 group-hover:bg-blue-500" />
-                <p className="text-[10px] font-bold text-black uppercase tracking-[0.4em]">{lang === 'sq' ? 'MUNDËSUAR NGA TEKNOLOGJIA AI' : 'POWERED BY AI TECHNOLOGY'}</p>
-                <div className="h-[1px] w-12 bg-black transition-all group-hover:w-20 group-hover:bg-lime-500" />
+             <div className="flex items-center gap-4 opacity-70 group">
+                <div className="h-[1px] w-12 bg-white transition-all group-hover:w-20 group-hover:bg-[#ae012f]" />
+                <p className="text-[10px] font-bold text-white uppercase tracking-[0.4em] mix-blend-difference">{lang === 'sq' ? 'MUNDËSUAR NGA TEKNOLOGJIA AI' : 'POWERED BY AI TECHNOLOGY'}</p>
+                <div className="h-[1px] w-12 bg-white transition-all group-hover:w-20 group-hover:bg-[#ae012f]" />
              </div>
           </div>
         </div>

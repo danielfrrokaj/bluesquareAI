@@ -2,7 +2,7 @@
 
 import { HeroSection } from "@/components/sections/hero-section";
 import { ServicesSection } from "@/components/sections/services-section";
-import { VisionSection } from "@/components/sections/vision-section";
+import { ProjectShowcaseSection } from "@/components/sections/project-showcase-section";
 import { FinalCtaSection } from "@/components/sections/final-cta-section";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -15,8 +15,8 @@ const Home = ({ searchParams }: { searchParams: { lang?: string } }) => {
       <Header lang={lang} />
       <main className="flex-grow">
         <HeroSection lang={lang} />
-        <VisionSection lang={lang} />
         <ServicesSection lang={lang} />
+        <ProjectShowcaseSection lang={lang} />
         <FinalCtaSection lang={lang} />
       </main>
       <Footer lang={lang} />

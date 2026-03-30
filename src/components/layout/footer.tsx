@@ -41,7 +41,7 @@ export function Footer({ lang }: { lang: 'en' | 'sq' }) {
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-lime-400/[0.02] rounded-full blur-[120px] -z-0" />
       
       <div className="container py-24 px-4 md:px-6 relative z-10">
-        <div className="grid gap-16 md:grid-cols-4">
+        <div className="grid gap-16 md:grid-cols-5">
             <div className="flex flex-col gap-10 md:col-span-1">
                 <Link href={getFullHref('/')} className="flex items-center space-x-2">
                         <Image 
@@ -68,7 +68,7 @@ export function Footer({ lang }: { lang: 'en' | 'sq' }) {
             <div className="grid gap-8">
                  <h3 className="font-bold font-headline text-black text-xs tracking-[0.3em] uppercase opacity-40">{lang === 'sq' ? 'Menu' : 'Menu'}</h3>
                  <nav className="flex flex-col gap-6">
-                    <Link href={getFullHref('/#vision')} className="text-zinc-600 hover:text-blue-600 transition-all duration-300 font-bold text-lg group flex items-center gap-3">
+                    <Link href={getFullHref('/vision')} className="text-zinc-600 hover:text-blue-600 transition-all duration-300 font-bold text-lg group flex items-center gap-3">
                         <span className="w-1.5 h-1.5 rounded-full bg-blue-500/0 group-hover:bg-blue-500 transition-all" />
                         {lang === 'sq' ? 'Vizioni' : 'Vision'}
                     </Link>
@@ -79,7 +79,25 @@ export function Footer({ lang }: { lang: 'en' | 'sq' }) {
                  </nav>
             </div>
             
-            <div className="grid gap-8">
+             <div className="grid gap-8">
+                  <h3 className="font-bold font-headline text-black text-xs tracking-[0.3em] uppercase opacity-40">{lang === 'sq' ? 'Shërbimet' : 'Services'}</h3>
+                  <nav className="flex flex-col gap-6">
+                     <Link href={getFullHref('/services/ai-innovation')} className="text-zinc-600 hover:text-blue-600 transition-all duration-300 font-bold text-lg group flex items-center gap-3">
+                         <span className="w-1.5 h-1.5 rounded-full bg-blue-500/0 group-hover:bg-blue-500 transition-all" />
+                         {lang === 'sq' ? 'AI për Inovacion' : 'AI for Innovation'}
+                     </Link>
+                     <Link href={getFullHref('/services/tourism-systems')} className="text-zinc-600 hover:text-blue-600 transition-all duration-300 font-bold text-lg group flex items-center gap-3">
+                         <span className="w-1.5 h-1.5 rounded-full bg-blue-500/0 group-hover:bg-blue-500 transition-all" />
+                         {lang === 'sq' ? 'Sisteme Turizmi' : 'Tourism Systems'}
+                     </Link>
+                     <Link href={getFullHref('/services/quick-solutions')} className="text-zinc-600 hover:text-blue-600 transition-all duration-300 font-bold text-lg group flex items-center gap-3">
+                         <span className="w-1.5 h-1.5 rounded-full bg-blue-500/0 group-hover:bg-blue-500 transition-all" />
+                         {lang === 'sq' ? 'Zgjidhje të Shpejta' : 'Quick Solutions'}
+                     </Link>
+                  </nav>
+             </div>
+             
+             <div className="grid gap-8">
                  <h3 className="font-bold font-headline text-black text-xs tracking-[0.3em] uppercase opacity-40">{currentContent.contact}</h3>
                  <div className="flex flex-col gap-8">
                     <div className="flex items-center gap-5 group">

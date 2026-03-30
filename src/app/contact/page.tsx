@@ -9,9 +9,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { submitContactForm } from '@/app/actions';
-import { Loader2, Mail, Phone, MapPin, Instagram, Facebook, Linkedin, ArrowRight } from 'lucide-react';
+import { Loader2, Mail, Phone, MapPin, Instagram, Facebook, Linkedin, ArrowRight, Sparkles } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import dynamic from 'next/dynamic';
@@ -112,21 +113,34 @@ export default function ContactPage({ searchParams }: { searchParams?: { lang?: 
     <div className="flex flex-col min-h-screen bg-white">
       <Header lang={lang} />
       <main className="flex-1">
-        <section className="relative pt-32 pb-24 md:pt-48 md:pb-32 overflow-hidden bg-white">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(0,0,0,0.03)_0%,transparent_70%)] -z-10" />
-            <div className="container relative z-10">
-                <div className="max-w-5xl">
-                    <div className="inline-flex items-center rounded-full border border-black/5 bg-black/5 px-6 py-2 text-[10px] font-black uppercase tracking-[0.3em] mb-10">
-                        {lang === 'sq' ? 'Le të bisedojmë' : 'Let\'s talk'}
-                    </div>
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold font-headline mb-10 tracking-tighter text-black leading-none">
-                        {currentContent.title}
-                    </h1>
-                    <p className="text-xl md:text-2xl text-zinc-600 leading-tight font-medium tracking-tight max-w-3xl">
-                        {currentContent.subtitle}
-                    </p>
-                </div>
+        <section className="relative pt-32 pb-24 md:pt-48 md:pb-32 overflow-hidden bg-black text-white">
+          {/* Background Wallpaper */}
+          <div className="absolute inset-0 z-0">
+             <Image 
+                src="/background/wallpaper-dark3.jpg"
+                alt="Contact Wallpaper"
+                fill
+                className="object-cover"
+                priority
+             />
+             <div className="absolute inset-0 bg-black/50" />
+             <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-white to-transparent" />
+          </div>
+
+          <div className="container relative z-10">
+            <div className="max-w-5xl">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-md px-6 py-2 text-[10px] font-black uppercase tracking-[0.3em] mb-10 text-white">
+                <Sparkles className="h-3 w-3" />
+                {lang === 'sq' ? 'Le të bisedojmë' : 'Let\'s talk'}
+              </div>
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold font-headline mb-10 tracking-tighter text-white leading-none">
+                {currentContent.title}
+              </h1>
+              <p className="text-xl md:text-2xl text-zinc-300 leading-tight font-medium tracking-tight max-w-3xl">
+                {currentContent.subtitle}
+              </p>
             </div>
+          </div>
         </section>
 
         <section className="py-24 md:py-40 bg-white border-t border-black/5">
@@ -213,27 +227,27 @@ export default function ContactPage({ searchParams }: { searchParams?: { lang?: 
                     {/* Contact Info & Map */}
                     <div className="space-y-16">
                         <div className="grid sm:grid-cols-2 gap-10">
-                            <div className="group p-12 rounded-[3.5rem] border border-black/5 bg-black/[0.01] hover:bg-black hover:text-white transition-all duration-700 shadow-sm">
+                            <div className="group p-8 md:p-10 rounded-[3.5rem] border border-black/5 bg-black/[0.01] hover:bg-black hover:text-white transition-all duration-700 shadow-sm">
                                 <div className="p-6 rounded-2xl bg-white shadow-sm border border-black/5 w-fit mb-10 text-black transition-colors">
                                     <Phone className="h-8 w-8" />
                                 </div>
                                 <h3 className="text-xs font-bold mb-3 tracking-[0.3em] uppercase text-black/40 group-hover:text-white/40">{currentContent.phone}</h3>
-                                <a href="tel:+355693815070" className="text-xl md:text-2xl font-extrabold tracking-tight hover:underline underline-offset-8">
+                                <a href="tel:+355693815070" className="text-xl md:text-2xl font-extrabold tracking-tight hover:underline underline-offset-8 whitespace-nowrap">
                                     +355 69 381 5070
                                 </a>
                             </div>
 
-                            <div className="group p-12 rounded-[3.5rem] border border-black/5 bg-black/[0.01] hover:bg-black hover:text-white transition-all duration-700 shadow-sm">
+                            <div className="group p-8 md:p-10 rounded-[3.5rem] border border-black/5 bg-black/[0.01] hover:bg-black hover:text-white transition-all duration-700 shadow-sm">
                                 <div className="p-6 rounded-2xl bg-white shadow-sm border border-black/5 w-fit mb-10 text-black transition-colors">
                                     <Mail className="h-8 w-8" />
                                 </div>
                                 <h3 className="text-xs font-bold mb-3 tracking-[0.3em] uppercase text-black/40 group-hover:text-white/40">{currentContent.emailLabel}</h3>
-                                <a href="mailto:info@bluesquare.ai" className="text-xl md:text-2xl font-extrabold tracking-tight hover:underline underline-offset-8 break-all">
+                                <a href="mailto:info@bluesquare.ai" className="text-xl md:text-2xl font-extrabold tracking-tight hover:underline underline-offset-8 whitespace-nowrap">
                                     info@bluesquare.ai
                                 </a>
                             </div>
 
-                            <div className="group p-12 rounded-[3.5rem] border border-black/5 bg-black/[0.01] hover:bg-black hover:text-white transition-all duration-700 shadow-sm sm:col-span-2">
+                            <div className="group p-8 md:p-10 rounded-[3.5rem] border border-black/5 bg-black/[0.01] hover:bg-black hover:text-white transition-all duration-700 shadow-sm sm:col-span-2">
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-12">
                                     <div>
                                         <div className="p-6 rounded-2xl bg-white shadow-sm border border-black/5 w-fit mb-10 text-black transition-colors">

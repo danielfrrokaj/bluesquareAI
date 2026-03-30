@@ -1,26 +1,33 @@
+'use client';
+
 import React from 'react';
+import Flag from 'react-flagpack';
 import { cn } from '@/lib/utils';
+import 'react-flagpack/dist/style.css';
 
 interface FlagIconProps {
   countryCode: 'us' | 'al';
   className?: string;
+  size?: 's' | 'm' | 'l';
 }
 
-const FlagIcon: React.FC<FlagIconProps> = ({ countryCode, className }) => {
-  // Increased size slightly for better visibility of text
-  const baseClasses = "h-6 w-6 rounded-full border border-border shadow-sm text-xs font-bold flex items-center justify-center";
-
-  // Using colors to represent the flags, and white text for contrast
-  const flagStyles = {
-    us: 'bg-blue-600 text-white', // US colors (Blue/White)
-    al: 'bg-red-600 text-white', // Albanian colors (Red/White text for visibility)
+const FlagIcon: React.FC<FlagIconProps> = ({ countryCode, className, size = 's' }) => {
+  // Convert 2-letter codes to 3-letter codes as flagpack often prefers them
+  const codeMap = {
+    'al': 'ALB',
+    'us': 'USA'
   };
   
-  const text = countryCode === 'us' ? 'EN' : 'SQ';
+  const code = codeMap[countryCode] || countryCode.toUpperCase();
 
   return (
-    <div className={cn(baseClasses, flagStyles[countryCode], className)}>
-      {text}
+    <div className={cn("inline-flex items-center", className)}>
+      <Flag 
+        code={code} 
+        size={size}
+        hasBorderRadius={true}
+        className="rounded-sm shadow-sm"
+      />
     </div>
   );
 };

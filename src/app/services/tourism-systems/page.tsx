@@ -20,6 +20,7 @@ import {
   Users
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { FinalCtaSection } from '@/components/sections/final-cta-section';
@@ -110,41 +111,46 @@ function TourismSystemsContent() {
       <Header lang={lang} />
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative pt-32 pb-32 overflow-hidden bg-white text-black">
+        <section className="relative pt-32 pb-48 overflow-hidden bg-black text-white">
+          {/* Background Wallpaper */}
+          <div className="absolute inset-0 z-0">
+             <Image 
+                src="/background/wallpaper-dark2.jpg"
+                alt="Tourism Systems Wallpaper"
+                fill
+                className="object-cover"
+                priority
+             />
+             <div className="absolute inset-0 bg-black/40" />
+             <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-white to-transparent" />
+          </div>
+
           <div className="container px-4 mx-auto relative z-10">
             <div className="grid lg:grid-cols-2 gap-20 items-center">
-              <div className="text-left flex flex-col items-start">
-                <div className="inline-flex items-center gap-2 px-5 py-2 mb-8 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 backdrop-blur-sm">
+              <div className="text-left flex flex-col items-start text-white">
+                <div className="inline-flex items-center gap-2 px-5 py-2 mb-8 text-[10px] font-bold tracking-[0.2em] text-white uppercase bg-white/10 rounded-full border border-white/20 backdrop-blur-md">
                   <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
                   {c.tag}
                 </div>
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold font-headline mb-8 md:mb-10 tracking-tighter leading-[1.1] md:leading-[1.15] text-black">
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold font-headline mb-8 md:mb-10 tracking-tighter leading-[1.1] md:leading-[1.15] text-white">
                   {c.title}
                 </h1>
-                <p className="text-lg md:text-2xl text-zinc-500 mb-10 md:mb-12 leading-relaxed max-w-xl font-medium tracking-tight">
+                <p className="text-lg md:text-2xl text-zinc-300 mb-10 md:mb-12 leading-relaxed max-w-xl font-medium tracking-tight">
                   {c.subtitle}
                 </p>
-                <div className="flex flex-col sm:flex-row gap-6 md:gap-8">
-                  <Button size="lg" className="h-16 md:h-20 px-10 md:px-12 w-full sm:w-auto rounded-full font-bold text-xl bg-black text-white hover:bg-zinc-800 shadow-2xl transition-all hover:scale-105 active:scale-95">
-                    {lang === 'sq' ? 'Fillo Tani' : 'Get Started'} <ChevronRight className="ml-2 h-5 w-5 md:h-6 md:w-6" />
-                  </Button>
-                  <Button size="lg" variant="outline" className="h-16 md:h-20 px-10 md:px-12 w-full sm:w-auto rounded-full font-bold text-xl border-black/5 text-black hover:bg-zinc-50 transition-all active:scale-95">
-                    Demo
-                  </Button>
-                </div>
               </div>
               <div className="relative group">
-                <div className="relative z-10 p-8 md:p-12 bg-zinc-50/50 border border-black/[0.03] rounded-[2.5rem] md:rounded-[4rem] backdrop-blur-xl shadow-2xl transition-all duration-700 group-hover:bg-white group-hover:border-blue-100 group-hover:shadow-[0_60px_100px_-20px_rgba(59,130,246,0.1)]">
-                   <div className="aspect-video bg-white rounded-[2rem] md:rounded-[2.5rem] flex items-center justify-center p-8 md:p-12 overflow-hidden border border-black/5 shadow-sm">
-                      <Hotel className="h-40 w-40 text-blue-500/10 group-hover:scale-110 group-hover:text-blue-500/20 transition-all duration-1000" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-blue-500/[0.03] to-transparent flex flex-col justify-end p-12">
-                          <div className="h-3 w-3/4 bg-blue-500/10 rounded-full mb-6 group-hover:bg-blue-500/20 transition-all" />
-                          <div className="h-3 w-1/2 bg-lime-400/10 rounded-full group-hover:bg-lime-400/20 transition-all" />
-                      </div>
-                   </div>
+                <div className="relative z-10 p-8 md:p-12 bg-white/5 border border-white/10 rounded-[2.5rem] md:rounded-[4rem] backdrop-blur-xl shadow-2xl transition-all duration-700 group-hover:bg-white/10 group-hover:border-white/20 group-hover:shadow-[0_60px_100px_-20px_rgba(255,255,255,0.05)]">
+                    <div className="aspect-video flex items-center justify-center overflow-hidden relative">
+                       <Image 
+                          src="https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/abstract_png_images%2Fabstract_png.png?alt=media&token=acb9af53-c91b-4801-8f59-f96da034daf1"
+                          alt="Discover Albania PMS Abstract Visualization"
+                          fill
+                          className="object-contain transition-transform duration-1000 group-hover:scale-105"
+                          priority
+                       />
+                    </div>
                 </div>
-                <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-500/5 rounded-full blur-[120px] group-hover:bg-blue-500/10 transition-all" />
-                <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-lime-400/5 rounded-full blur-[120px] group-hover:bg-lime-400/10 transition-all" />
               </div>
             </div>
           </div>
@@ -164,6 +170,44 @@ function TourismSystemsContent() {
             </div>
           </div>
         </section>
+ 
+        {/* Native Interface Showcase */}
+        <section className="py-24 bg-zinc-50/50 border-b border-black/5">
+           <div className="container px-4 mx-auto">
+             <div className="max-w-6xl mx-auto space-y-16">
+                <div className="flex flex-col items-center text-center">
+                   <div className="inline-flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 mb-6">
+                     Native Interface
+                   </div>
+                   <h2 className="text-3xl md:text-5xl font-extrabold font-headline text-black tracking-tighter">
+                     Experience Discover Albania PMS
+                   </h2>
+                </div>
+                <div className="grid md:grid-cols-2 gap-12">
+                    <Card className="overflow-hidden border-black/5 shadow-xl rounded-[2rem] group bg-white">
+                        <div className="relative aspect-video w-full">
+                            <Image 
+                                src="https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FScreenshot%202026-03-30%20at%202.06.14%E2%80%AFPM.png?alt=media&token=ba7a12a1-fc4b-40aa-a319-dbb33193dee1"
+                                alt="System Interface 1"
+                                fill
+                                className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                            />
+                        </div>
+                    </Card>
+                    <Card className="overflow-hidden border-black/5 shadow-xl rounded-[2rem] group bg-white">
+                        <div className="relative aspect-video w-full">
+                            <Image 
+                                src="https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FScreenshot%202026-03-30%20at%202.06.22%E2%80%AFPM.png?alt=media&token=f0209045-3704-4958-b463-5c6369cf9c30"
+                                alt="System Interface 2"
+                                fill
+                                className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                            />
+                        </div>
+                    </Card>
+                </div>
+             </div>
+           </div>
+        </section>
 
         {/* Experience Description */}
         <section className="py-32 bg-white relative overflow-hidden">
@@ -177,7 +221,7 @@ function TourismSystemsContent() {
                   {c.whyHeader}
                 </h3>
                 <div className="w-20 md:w-24 h-1 md:h-1.5 bg-gradient-to-r from-blue-500 to-lime-500 rounded-full mx-auto" />
-                <p className="text-xl md:text-3xl lg:text-4xl text-black leading-tight font-extrabold tracking-tighter max-w-4xl mx-auto mt-10 md:mt-16">
+                <p className="text-xl md:text-3xl lg:text-4xl text-zinc-600 leading-snug font-normal tracking-tight max-w-4xl mx-auto mt-10 md:mt-16">
                   "{c.whyText}"
                 </p>
              </div>
@@ -255,6 +299,7 @@ function TourismSystemsContent() {
              </div>
           </div>
         </section>
+
 
         <FinalCtaSection lang={lang} />
       </main>

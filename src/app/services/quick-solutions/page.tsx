@@ -17,11 +17,11 @@ import {
   Zap,
   Globe,
   CheckCircle2,
-  ArrowUpRight,
   TrendingUp,
   Clock
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { FinalCtaSection } from '@/components/sections/final-cta-section';
@@ -61,8 +61,33 @@ function QuickSolutionsContent() {
       ],
       examplesHeader: "Shembuj Suksesi",
       examples: [
-        { name: "Discover Albania", url: "https://discoveralbania.al", category: "Turizëm" },
-        { name: "Tirana Escape Room", url: "https://tiranaescaperoom.com", category: "Argëtim" }
+        { 
+          name: "Discover Albania", 
+          logo: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/logos%2Fdownload.png?alt=media&token=fd453cd6-49c0-46b2-a149-90cd108c9100",
+          description: "Një ekosistem i plotë menaxhimi për operatorët turistikë, duke integruar rezervimet në kohë reale, procesimin e sigurt të pagesave dhe menaxhimin e klientëve në një mjedis Next.js me performancë të lartë.",
+          image: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FScreenshot%202026-03-30%20at%202.20.38%E2%80%AFPM.png?alt=media&token=3f1bc2db-f26d-4b27-9582-e214c7e1f700",
+          url: "https://discoveralbania.al", 
+          category: "Turizëm & Menaxhim",
+          features: ["Interface Admin", "Pagesa", "Rezervime", "Klientë", "Next.js", "SEO Efikas", "AI Chat Bot", "Disponueshmëri", "Email-e", "Fatura"]
+        },
+        { 
+          name: "Tirana Escape Room", 
+          logo: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/logos%2Fdownload%20(1).png?alt=media&token=1acc5700-baeb-46c4-9c70-056fb20df885",
+          description: "Një motor rezervimi dhe disponueshmërie i krijuar për ndërveprim në kohë reale. Ai automatizon menaxhimin e inventarit, konfirmimet me email dhe gjenerimin e faturave duke ruajtur kualitetin më të lartë të SEO-s.",
+          image: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FScreenshot%202026-03-30%20at%202.20.46%E2%80%AFPM.png?alt=media&token=42e63ec4-fe23-4841-bf3f-9a054157b427",
+          url: "https://tiranaescaperoom.com", 
+          category: "Argëtim",
+          features: ["Disponueshmëri Rezervimesh", "Interface Admin", "Email-e", "Fatura", "SEO Efikas", "Analizë Reviews"]
+        },
+        { 
+          name: "CoolestMenu AI", 
+          logo: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/logos%2Fdownload%20(2).png?alt=media&token=8e05591f-9227-4143-8bbd-f449e0978a69",
+          description: "Një SaaS inovativ i fuqizuar nga Inteligjenca Artificiale që transformon menutë fizike në përvoja inteligjente digjitale. Përmban një model vision të personalizuar për gjenerim automatik të menusë dhe algoritme të zgjuara çmimi.",
+          image: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FScreenshot%202026-03-30%20at%202.21.02%E2%80%AFPM.png?alt=media&token=09f5f5b8-a40e-4eb7-bc80-f5289b97db23",
+          url: "#", 
+          category: "SaaS & AI",
+          features: ["SaaS", "Abonime", "AI Vision Model", "Algoritëm Smart", "Sistem Admin", "Monitorim Sistemi"]
+        }
       ],
       pricingHeader: "Paketat Tona",
       pricingTag: "Nga 300 Euro",
@@ -110,8 +135,33 @@ function QuickSolutionsContent() {
       ],
       examplesHeader: "Success Examples",
       examples: [
-        { name: "Discover Albania", url: "https://discoveralbania.al", category: "Tourism" },
-        { name: "Tirana Escape Room", url: "https://tiranaescaperoom.com", category: "Entertainment" }
+        { 
+          name: "Discover Albania", 
+          logo: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/logos%2Fdownload.png?alt=media&token=fd453cd6-49c0-46b2-a149-90cd108c9100",
+          description: "A complete management ecosystem for tourism operators, integrating real-time bookings, secure payment processing, and customer relationship management in a high-performance Next.js environment.",
+          image: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FScreenshot%202026-03-30%20at%202.20.38%E2%80%AFPM.png?alt=media&token=3f1bc2db-f26d-4b27-9582-e214c7e1f700",
+          url: "https://discoveralbania.al", 
+          category: "Tourism & Management",
+          features: ["Admin Interface", "Payments", "Bookings", "Customers", "Next.js", "SEO Efficient", "AI Chat Bot", "Availability", "Emails", "Invoices"]
+        },
+        { 
+          name: "Tirana Escape Room", 
+          logo: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/logos%2Fdownload%20(1).png?alt=media&token=1acc5700-baeb-46c4-9c70-056fb20df885",
+          description: "A seamless booking and availability engine designed for real-time interaction. It automates inventory management, email confirmations, and invoice generation while maintaining top-tier SEO performance.",
+          image: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FScreenshot%202026-03-30%20at%202.20.46%E2%80%AFPM.png?alt=media&token=42e63ec4-fe23-4841-bf3f-9a054157b427",
+          url: "https://tiranaescaperoom.com", 
+          category: "Entertainment",
+          features: ["Booking Availability", "Admin Interface", "Emails", "Invoices", "SEO Efficient", "Review Analysis"]
+        },
+        { 
+          name: "CoolestMenu AI", 
+          logo: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/logos%2Fdownload%20(2).png?alt=media&token=8e05591f-9227-4143-8bbd-f449e0978a69",
+          description: "A disruptive AI-powered SaaS that transforms physical menus into intelligent digital experiences. It features a custom vision model for automatic menu generation, smart pricing algorithms, and comprehensive monitoring.",
+          image: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FScreenshot%202026-03-30%20at%202.21.02%E2%80%AFPM.png?alt=media&token=09f5f5b8-a40e-4eb7-bc80-f5289b97db23",
+          url: "#", 
+          category: "SaaS & AI",
+          features: ["SaaS", "Subscriptions", "AI Vision Model", "Smart Algorithm", "Admin System", "Monitoring"]
+        }
       ],
       pricingHeader: "Our Packages",
       pricingTag: "From 300 Euro",
@@ -122,40 +172,62 @@ function QuickSolutionsContent() {
   const c = content[lang];
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="flex flex-col min-h-screen bg-white">
       <Header lang={lang} />
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative pt-32 pb-32 overflow-hidden bg-white text-black text-center">
-          <div className="container px-4 mx-auto relative z-10 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 px-5 py-2 mb-10 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 backdrop-blur-sm">
-              <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
-              {c.tag}
-            </div>
-            
-            <h1 className="text-4xl md:text-7xl lg:text-8xl font-extrabold font-headline text-black mb-8 md:mb-10 tracking-tighter leading-[1.1] md:leading-[1.05]">
-              {c.title}
-            </h1>
-            
-            <p className="text-lg md:text-2xl lg:text-3xl text-zinc-500 mb-10 md:mb-14 leading-relaxed max-w-3xl mx-auto font-medium tracking-tight">
-              {c.subtitle}
-            </p>
-            
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 md:gap-8">
-              <Button size="lg" className="h-16 md:h-20 px-10 md:px-16 w-full sm:w-auto rounded-full font-bold text-xl md:text-2xl bg-black text-white hover:bg-zinc-800 shadow-2xl transition-all hover:scale-105 active:scale-95">
-                {lang === 'sq' ? 'Fillo Projektin Tënd' : 'Start Your Project'}
-              </Button>
-              <div className="flex items-center gap-3 text-zinc-400 font-bold uppercase tracking-[0.2em] text-[10px] group transition-all">
-                 <div className="h-10 w-10 rounded-full bg-zinc-50 flex items-center justify-center border border-black/5 group-hover:bg-blue-50 group-hover:text-blue-600 transition-all shadow-sm">
-                    <Clock className="h-5 w-5" />
-                 </div>
-                 <span className="group-hover:text-black transition-colors">{c.stats[0].value} {lang === 'sq' ? 'Dorëzim' : 'Delivery'}</span>
+        <section className="relative pt-32 pb-48 overflow-hidden bg-black text-white">
+          {/* Background Wallpaper */}
+          <div className="absolute inset-0 z-0">
+             <Image 
+                src="/background/wallpaper-dark1.jpg"
+                alt="Quick Solutions Wallpaper"
+                fill
+                className="object-cover"
+                priority
+             />
+             <div className="absolute inset-0 bg-black/40" />
+             <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-white to-transparent" />
+          </div>
+
+          <div className="container px-4 mx-auto relative z-10">
+            <div className="grid lg:grid-cols-2 gap-20 items-center">
+              <div className="text-left flex flex-col items-start translate-z-0">
+                <div className="inline-flex items-center gap-2 px-5 py-2 mb-8 text-[10px] font-bold tracking-[0.2em] text-white uppercase bg-white/10 rounded-full border border-white/20 backdrop-blur-md">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
+                  {c.tag}
+                </div>
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold font-headline mb-8 md:mb-10 tracking-tighter leading-[1.1] md:leading-[1.15] text-white">
+                  {c.title}
+                </h1>
+                <p className="text-lg md:text-2xl text-zinc-300 mb-10 md:mb-12 leading-relaxed max-w-xl font-medium tracking-tight">
+                  {c.subtitle}
+                </p>
+                <div className="flex flex-col sm:flex-row gap-6 md:gap-8">
+                  <Button size="lg" asChild className="h-16 md:h-20 px-10 md:px-12 w-full sm:w-auto rounded-full font-bold text-xl bg-white text-black hover:bg-zinc-100 shadow-2xl transition-all hover:scale-105 active:scale-95">
+                    <Link href={`/contact?lang=${lang}`}>{lang === 'sq' ? 'Fillo Projektin Tënd' : 'Start Your Project'}</Link>
+                  </Button>
+                  <div className="flex items-center gap-3 text-zinc-400 font-bold uppercase tracking-[0.2em] text-[10px] group transition-all">
+                     <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-blue-50 group-hover:text-blue-600 transition-all shadow-sm">
+                        <Clock className="h-5 w-5" />
+                     </div>
+                     <span className="group-hover:text-white transition-colors">{c.stats[0].value} {lang === 'sq' ? 'Dorëzim' : 'Delivery'}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="relative group">
+                <div className="relative z-10 aspect-square md:aspect-video rounded-[2.5rem] md:rounded-[4rem] overflow-hidden border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl transition-all duration-700 group-hover:bg-white/10 group-hover:border-white/20 group-hover:shadow-[0_60px_100px_-20px_rgba(255,255,255,0.05)]">
+                   <Image 
+                      src="https://static.vecteezy.com/system/resources/previews/041/306/253/non_2x/ai-generated-3d-abstract-colorful-glass-3d-rendering-free-png.png"
+                      alt="Quick Solutions Illustration"
+                      fill
+                      className="object-contain p-8 md:p-12 transition-transform duration-1000 group-hover:scale-105"
+                      priority
+                   />
+                </div>
               </div>
             </div>
           </div>
-          
-          {/* Background Grid Pattern */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#3b82f605_1px,transparent_1px),linear-gradient(to_bottom,#3b82f605_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#fff_70%,transparent_100%)] pointer-events-none opacity-100" />
         </section>
 
         {/* Features Grid */}
@@ -208,25 +280,65 @@ function QuickSolutionsContent() {
                  <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-lime-500 rounded-full mx-auto" />
               </div>
 
-              <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+              <div className="flex flex-col gap-32 md:gap-40 max-w-7xl mx-auto">
                  {c.examples.map((ex, i) => (
-                   <Link key={i} href={ex.url} target="_blank" className="group">
-                    <div className="relative aspect-[16/10] bg-zinc-50/50 rounded-[2.5rem] md:rounded-[4rem] overflow-hidden border border-black/[0.03] group-hover:border-blue-200 transition-all duration-700 group-hover:shadow-[0_60px_100px_-20px_rgba(59,130,246,0.1)] group-hover:-translate-y-2">
-                         <div className="absolute inset-0 flex items-center justify-center p-12 md:p-16 transition-transform duration-1000 group-hover:scale-105">
-                            <Monitor className="h-full w-full text-blue-500/[0.02]" />
-                            <span className="absolute text-2xl md:text-3xl font-extrabold font-headline text-black/10 uppercase tracking-[0.2em] transition-all duration-700 group-hover:text-blue-500 group-hover:text-opacity-20">{ex.name}</span>
-                         </div>
-                         <div className="absolute bottom-6 left-6 right-6 md:bottom-10 md:left-10 md:right-10 p-6 md:p-8 flex items-center justify-between bg-white/80 backdrop-blur-xl rounded-[2rem] md:rounded-[2.5rem] border border-black/5 shadow-lg shadow-black/[0.02] group-hover:bottom-8 md:group-hover:bottom-12 transition-all duration-500">
-                            <div>
-                               <span className="text-[9px] md:text-[10px] font-bold text-blue-600 uppercase tracking-[0.2em] mb-1 md:mb-2 block">{ex.category}</span>
-                               <span className="text-xl md:text-2xl font-bold text-black tracking-tight">{ex.name}</span>
-                            </div>
-                            <div className="h-12 w-12 md:h-14 md:w-14 bg-black rounded-full flex items-center justify-center text-white group-hover:bg-blue-600 transition-all duration-500 shadow-lg group-hover:rotate-45">
-                               <ArrowUpRight className="h-5 w-5 md:h-6 md:w-6" />
-                            </div>
-                         </div>
+                    <div key={i} className="flex flex-col gap-12 lg:gap-16 transition-all duration-1000">
+                      {/* Image Preview Container - Expanded for Visual Impact */}
+                      <div className="w-full group relative px-4 md:px-0">
+                        <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/5 to-lime-500/5 rounded-[3.5rem] md:rounded-[5rem] blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                        <Card className="relative aspect-[21/9] md:aspect-[21/10] overflow-hidden rounded-[2.5rem] md:rounded-[4rem] border-black/[0.05] shadow-2xl transition-all duration-700 group-hover:shadow-blue-500/10 group-hover:-translate-y-3 bg-zinc-50">
+                           <Image 
+                              src={ex.image}
+                              alt={ex.name}
+                              fill
+                              className="object-cover object-top transition-transform duration-1000 group-hover:scale-[1.03]"
+                              priority={i === 0}
+                           />
+                           <div className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-[2.5rem] md:rounded-[4rem]" />
+                           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex flex-col justify-end p-8 md:p-16">
+                              <p className="text-white/60 font-black uppercase tracking-[0.3em] text-[10px] mb-3">{ex.category}</p>
+                              <h3 className="text-white text-3xl md:text-5xl font-extrabold font-headline tracking-tighter">{ex.name}</h3>
+                           </div>
+                        </Card>
                       </div>
-                   </Link>
+
+                      {/* Content Block - Centered and Refined */}
+                      <div className="w-full max-w-4xl mx-auto flex flex-col items-center text-center px-6">
+                         <div className="inline-flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 mb-8">
+                            {ex.category}
+                         </div>
+                         <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-10 mb-8 w-full">
+                            {ex.logo && (
+                               <div className="relative h-20 w-48 md:h-24 md:w-56 flex-shrink-0">
+                                  <Image 
+                                     src={ex.logo}
+                                     alt={`${ex.name} Logo`}
+                                     fill
+                                     className="object-contain"
+                                  />
+                               </div>
+                            )}
+                            <h3 className="text-3xl md:text-5xl lg:text-7xl font-extrabold font-headline text-black tracking-tighter leading-[1.1]">
+                               {ex.name}
+                            </h3>
+                         </div>
+                         <p className="text-xl md:text-2xl text-zinc-500 leading-relaxed mb-12 font-medium tracking-tight">
+                            {ex.description}
+                         </p>
+                         
+                         <div className="flex flex-wrap justify-center gap-2 mb-14">
+                            {ex.features.map((feature, idx) => (
+                               <span 
+                                  key={idx} 
+                                  className="px-5 py-2.5 bg-zinc-50 border border-black/[0.03] rounded-full text-[10px] md:text-xs font-bold text-zinc-600 hover:border-blue-100 hover:text-blue-600 transition-colors shadow-sm"
+                               >
+                                  {feature}
+                               </span>
+                            ))}
+                         </div>
+
+                      </div>
+                    </div>
                  ))}
               </div>
            </div>
@@ -271,12 +383,14 @@ function QuickSolutionsContent() {
                        ))}
                     </div>
                  </div>
-                 <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.15)_0%,transparent_60%)] pointer-events-none" />
-                 <div className="absolute bottom-0 left-0 w-full h-full bg-[radial-gradient(circle_at_bottom_left,rgba(163,230,81,0.05)_0%,transparent_60%)] pointer-events-none" />
+                 
+                 {/* Decorative elements */}
+                 <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
+                 <div className="absolute bottom-0 left-0 w-96 h-96 bg-lime-400/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />
               </div>
            </div>
         </section>
-
+        
         <FinalCtaSection lang={lang} />
       </main>
       <Footer lang={lang} />

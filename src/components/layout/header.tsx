@@ -29,12 +29,12 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 
 const navLinksSq = [
-  { href: '/#vision', label: 'Vizioni' },
+  { href: '/vision', label: 'Vizioni' },
   { href: '/contact', label: 'Kontakti' },
 ];
 
 const navLinksEn = [
-  { href: '/#vision', label: 'Vision' },
+  { href: '/vision', label: 'Vision' },
   { href: '/contact', label: 'Contact' },
 ];
 
@@ -144,7 +144,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
   ];
   
   const currentLanguage = languageOptions.find(opt => opt.code === lang);
-
+  const isTransparentHeader = !isScrolled;
 
   const renderNavLinks = (isMobile = false) => {
     if (isMobile) {
@@ -153,13 +153,18 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
           <Link
             href={getFullHref(homeLink.href)}
             onClick={(e) => handleLinkClick(e, homeLink.href)}
-            className="text-lg px-4"
+            className={cn("text-lg px-4 transition-colors", pathname === homeLink.href ? "text-blue-600 font-bold" : "text-black/70")}
           >
             {homeLink.label}
           </Link>
           <p className="font-bold text-lg px-4">{lang === 'sq' ? 'Shërbimet' : 'Services'}</p>
           {services.map((service) => (
-            <Link key={service.href} href={getFullHref(service.href)} className="text-muted-foreground hover:text-primary pl-8" onClick={() => setSheetOpen(false)}>
+            <Link 
+                key={service.href} 
+                href={getFullHref(service.href)} 
+                className={cn("hover:text-primary pl-8 transition-colors", pathname === service.href ? "text-blue-600 font-bold" : "text-muted-foreground")} 
+                onClick={() => setSheetOpen(false)}
+            >
               {service.title}
             </Link>
           ))}
@@ -169,7 +174,7 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
               key={link.href}
               href={getFullHref(link.href)}
               onClick={(e) => handleLinkClick(e, link.href)}
-              className="text-lg px-4"
+              className={cn("text-lg px-4 transition-colors", pathname === link.href ? "text-blue-600 font-bold" : "text-black/70")}
             >
               {link.label}
             </Link>
@@ -196,15 +201,16 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-48">
                 {languageOptions.map((option) => (
-                  <Link key={option.code} href={createLanguageSwitchHref(option.code)} passHref legacyBehavior>
-                    <DropdownMenuItem 
-                      className={cn("cursor-pointer", option.code === lang && "bg-accent text-accent-foreground")}
-                      onClick={() => setSheetOpen(false)}
-                    >
+                  <DropdownMenuItem 
+                    key={option.code}
+                    asChild
+                    className={cn("cursor-pointer", option.code === lang && "bg-accent text-accent-foreground")}
+                  >
+                    <Link href={createLanguageSwitchHref(option.code)} onClick={() => setSheetOpen(false)}>
                       <FlagIcon countryCode={option.countryCode} className="mr-2" />
                       {option.label}
-                    </DropdownMenuItem>
-                  </Link>
+                    </Link>
+                  </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
@@ -215,19 +221,28 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
 
     return (
        <NavigationMenu>
-        <NavigationMenuList>
+        <NavigationMenuList className="bg-transparent">
             <NavigationMenuItem>
-                <Link href={getFullHref(homeLink.href)} legacyBehavior passHref>
-                    <NavigationMenuLink 
-                        className={navigationMenuTriggerStyle()}
-                        onClick={(e) => handleLinkClick(e, homeLink.href)}
-                    >
+                <NavigationMenuLink 
+                    asChild
+                    className={cn(
+                        navigationMenuTriggerStyle(),
+                        !isTransparentHeader ? "text-black" : "text-white hover:bg-white/10 hover:text-white",
+                        pathname === homeLink.href && (isTransparentHeader ? "bg-white/10" : "bg-black/5")
+                    )}
+                >
+                    <Link href={getFullHref(homeLink.href)} onClick={(e) => handleLinkClick(e, homeLink.href)}>
                         {homeLink.label}
-                    </NavigationMenuLink>
-                </Link>
+                    </Link>
+                </NavigationMenuLink>
             </NavigationMenuItem>
           <NavigationMenuItem>
-            <NavigationMenuTrigger>{lang === 'sq' ? 'Shërbimet' : 'Services'}</NavigationMenuTrigger>
+            <NavigationMenuTrigger className={cn(
+                !isTransparentHeader ? "text-black" : "text-white hover:bg-white/10 hover:text-white bg-transparent",
+                pathname.startsWith('/services') && (isTransparentHeader ? "bg-white/12" : "bg-black/5")
+            )}>
+                {lang === 'sq' ? 'Shërbimet' : 'Services'}
+            </NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                 {services.map((service) => (
@@ -244,16 +259,20 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
             </NavigationMenuContent>
           </NavigationMenuItem>
           {navLinks.map((link) => (
-            <NavigationMenuItem key={link.href}>
-                <Link href={getFullHref(link.href)} legacyBehavior passHref>
-                    <NavigationMenuLink 
-                        className={navigationMenuTriggerStyle()}
-                        onClick={(e) => handleLinkClick(e, link.href)}
-                    >
+              <NavigationMenuItem key={link.href}>
+                <NavigationMenuLink 
+                    asChild
+                    className={cn(
+                        navigationMenuTriggerStyle(),
+                        !isTransparentHeader ? "text-black" : "text-white hover:bg-white/10 hover:text-white",
+                        pathname === link.href && (isTransparentHeader ? "bg-white/10" : "bg-black/5")
+                    )}
+                >
+                    <Link href={getFullHref(link.href)} onClick={(e) => handleLinkClick(e, link.href)}>
                         {link.label}
-                    </NavigationMenuLink>
-                </Link>
-            </NavigationMenuItem>
+                    </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
           ))}
         </NavigationMenuList>
       </NavigationMenu>
@@ -262,9 +281,9 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
 
   return (
     <header className={cn(
-      "sticky top-0 z-50 w-full transition-all duration-300",
-      isScrolled ? "border-b border-black/5 bg-white/95 backdrop-blur-md" : "bg-transparent"
-    )}>
+      "fixed top-0 z-50 w-full transition-all duration-300",
+      !isTransparentHeader ? "border-b border-black/5 bg-white/95 backdrop-blur-md" : ""
+    )} id="main-header">
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href={getFullHref('/')} onClick={(e) => handleLinkClick(e, '/')} className="flex items-center">
@@ -273,11 +292,13 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
                   alt="Blue Square AI Logo"
                   width={140}
                   height={35}
-                  className="w-36 h-auto"
+                  className="w-36 h-auto transition-all"
                   priority
               />
           </Link>
-          <nav className="hidden md:flex items-center space-x-1">
+          <nav className={cn(
+              "hidden md:flex items-center space-x-1 transition-all"
+          )}>
             {renderNavLinks()}
           </nav>
         </div>
@@ -294,14 +315,16 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40 bg-white border-border">
               {languageOptions.map((option) => (
-                <Link key={option.code} href={createLanguageSwitchHref(option.code)} passHref legacyBehavior>
-                  <DropdownMenuItem 
-                    className={cn("cursor-pointer focus:bg-black/5", option.code === lang && "bg-black/5")}
-                  >
+                <DropdownMenuItem 
+                  key={option.code}
+                  asChild
+                  className={cn("cursor-pointer focus:bg-black/5", option.code === lang && "bg-black/5")}
+                >
+                  <Link href={createLanguageSwitchHref(option.code)}>
                     <FlagIcon countryCode={option.countryCode} className="mr-2" />
                     {option.label}
-                  </DropdownMenuItem>
-                </Link>
+                  </Link>
+                </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
