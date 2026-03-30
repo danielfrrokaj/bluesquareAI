@@ -134,16 +134,33 @@ function TourismSystemsContent() {
           <div className="container px-4 mx-auto relative z-10">
             <div className="grid lg:grid-cols-2 gap-20 items-center">
               <div className="text-left flex flex-col items-start text-white">
-                <div className="inline-flex items-center gap-2 px-5 py-2 mb-8 text-[10px] font-bold tracking-[0.2em] text-white uppercase bg-white/10 rounded-full border border-white/20 backdrop-blur-md">
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
+                  className="inline-flex items-center gap-2 px-5 py-2 mb-8 text-[10px] font-bold tracking-[0.2em] text-white uppercase bg-white/10 rounded-full border border-white/20 backdrop-blur-md"
+                >
                   <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
                   {c.tag}
-                </div>
-                <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold font-headline mb-8 md:mb-10 tracking-tighter leading-[1.1] md:leading-[1.15] text-white">
+                </motion.div>
+                
+                <motion.h1 
+                  initial={{ filter: 'blur(20px)', opacity: 0, y: 20 }}
+                  animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
+                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold font-headline mb-8 md:mb-10 tracking-tighter leading-[1.1] md:leading-[1.15] text-white"
+                >
                   {c.title}
-                </h1>
-                <p className="text-lg md:text-2xl text-zinc-300 mb-10 md:mb-12 leading-relaxed max-w-xl font-medium tracking-tight">
+                </motion.h1>
+                
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-lg md:text-2xl text-zinc-300 mb-10 md:mb-12 leading-relaxed max-w-xl font-medium tracking-tight"
+                >
                   {c.subtitle}
-                </p>
+                </motion.p>
               </div>
               <div className="relative group">
                 <div className="relative z-10 p-8 md:p-12 bg-white/5 border border-white/10 rounded-[2.5rem] md:rounded-[4rem] backdrop-blur-xl shadow-2xl transition-all duration-700 group-hover:bg-white/10 group-hover:border-white/20 group-hover:shadow-[0_60px_100px_-20px_rgba(255,255,255,0.05)]">

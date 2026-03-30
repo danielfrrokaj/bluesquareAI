@@ -199,16 +199,33 @@ function QuickSolutionsContent() {
           <div className="container px-4 mx-auto relative z-10">
             <div className="grid lg:grid-cols-2 gap-20 items-center">
               <div className="text-left flex flex-col items-start translate-z-0">
-                <div className="inline-flex items-center gap-2 px-5 py-2 mb-8 text-[10px] font-bold tracking-[0.2em] text-white uppercase bg-white/10 rounded-full border border-white/20 backdrop-blur-md">
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
+                  className="inline-flex items-center gap-2 px-5 py-2 mb-8 text-[10px] font-bold tracking-[0.2em] text-white uppercase bg-white/10 rounded-full border border-white/20 backdrop-blur-md"
+                >
                   <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
                   {c.tag}
-                </div>
-                <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold font-headline mb-8 md:mb-10 tracking-tighter leading-[1.1] md:leading-[1.15] text-white">
+                </motion.div>
+                
+                <motion.h1 
+                  initial={{ filter: 'blur(20px)', opacity: 0, y: 20 }}
+                  animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
+                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold font-headline mb-8 md:mb-10 tracking-tighter leading-[1.1] md:leading-[1.15] text-white"
+                >
                   {c.title}
-                </h1>
-                <p className="text-lg md:text-2xl text-zinc-300 mb-10 md:mb-12 leading-relaxed max-w-xl font-medium tracking-tight">
+                </motion.h1>
+                
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-lg md:text-2xl text-zinc-300 mb-10 md:mb-12 leading-relaxed max-w-xl font-medium tracking-tight"
+                >
                   {c.subtitle}
-                </p>
+                </motion.p>
                 <div className="flex flex-col sm:flex-row gap-6 md:gap-8">
                   <Button size="lg" asChild className="h-16 md:h-20 px-10 md:px-12 w-full sm:w-auto rounded-full font-bold text-xl bg-white text-black hover:bg-zinc-100 shadow-2xl transition-all hover:scale-105 active:scale-95">
                     <Link href={`/contact?lang=${lang}`}>{lang === 'sq' ? 'Fillo Projektin Tënd' : 'Start Your Project'}</Link>

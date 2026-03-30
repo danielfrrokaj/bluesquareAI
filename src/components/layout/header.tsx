@@ -293,19 +293,19 @@ export function Header({ lang }: { lang: 'en' | 'sq' }) {
           <div className="flex items-center">
             <Link href={getFullHref('/')} onClick={(e) => handleLinkClick(e, '/')} className="flex items-center relative group">
                 <div className="flex items-center gap-3">
-                    <Image 
-                        src="https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/logos%2FGemini_Generated_Image_uuixsnuuixsnuuix-removebg-preview.png?alt=media&token=eae0c0c2-2554-4aa4-af2e-84ddc673dd21"
-                        alt="Blue Square AI Logo"
-                        width={40}
-                        height={40}
-                        className="w-10 h-10 object-contain transition-all"
-                        priority
-                    />
+                        <Image 
+                            src="https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/logos%2FGemini_Generated_Image_uuixsnuuixsnuuix-removebg-preview.png?alt=media&token=eae0c0c2-2554-4aa4-af2e-84ddc673dd21"
+                            alt="BlueSquare Logo"
+                            width={32}
+                            height={32}
+                            className="w-8 h-8 object-contain transition-all"
+                            priority
+                        />
                     <span className={cn(
-                        "font-headline font-extrabold text-xl tracking-tighter transition-colors group-hover:text-blue-600",
+                        "font-headline font-extrabold text-lg md:text-xl tracking-tighter transition-colors group-hover:text-blue-600",
                         isScrolled ? "text-zinc-900" : "text-white"
                     )}>
-                        Blue Square
+                        BlueSquare
                     </span>
                 </div>
                 <div 

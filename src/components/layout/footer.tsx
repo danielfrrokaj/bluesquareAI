@@ -97,13 +97,13 @@ export function Footer({ lang }: { lang: 'en' | 'sq' }) {
                             <div className="flex items-center gap-4">
                                 <Image 
                                     src="https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/logos%2FGemini_Generated_Image_uuixsnuuixsnuuix-removebg-preview.png?alt=media&token=eae0c0c2-2554-4aa4-af2e-84ddc673dd21"
-                                    alt="Blue Square AI Logo"
-                                    width={48}
-                                    height={48}
-                                    className="w-12 h-12 object-contain"
+                                    alt="BlueSquare Logo"
+                                    width={40}
+                                    height={40}
+                                    className="w-10 h-10 object-contain"
                                 />
-                                <span className="font-headline font-extrabold text-2xl tracking-tighter text-white group-hover:text-blue-400 transition-colors">
-                                    Blue Square
+                                <span className="font-headline font-extrabold text-xl tracking-tighter text-white group-hover:text-blue-400 transition-colors">
+                                    BlueSquare
                                 </span>
                             </div>
                         </Link>

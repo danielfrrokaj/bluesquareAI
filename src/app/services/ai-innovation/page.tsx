@@ -138,18 +138,33 @@ function AiInnovationContent() {
             </motion.div>
 
           <div className="container px-4 mx-auto relative z-10 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 px-5 py-2 mb-10 text-[10px] font-bold tracking-[0.2em] text-white uppercase bg-white/10 rounded-full border border-white/20 backdrop-blur-md">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
+              className="inline-flex items-center gap-2 px-5 py-2 mb-10 text-[10px] font-bold tracking-[0.2em] text-white uppercase bg-white/10 rounded-full border border-white/20 backdrop-blur-md"
+            >
               <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
               {c.tag}
-            </div>
+            </motion.div>
             
-            <h1 className="text-3xl sm:text-4xl md:text-7xl lg:text-8xl font-extrabold font-headline text-white mb-8 md:mb-10 tracking-tighter leading-[1.1] md:leading-[1.05]">
+            <motion.h1 
+              initial={{ filter: 'blur(20px)', opacity: 0, y: 20 }}
+              animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+              className="text-3xl sm:text-4xl md:text-7xl lg:text-8xl font-extrabold font-headline text-white mb-8 md:mb-10 tracking-tighter leading-[1.1] md:leading-[1.05]"
+            >
               {c.title}
-            </h1>
+            </motion.h1>
             
-            <p className="text-lg md:text-2xl lg:text-3xl text-white/90 mb-10 md:mb-14 leading-relaxed max-w-3xl mx-auto font-medium tracking-tight">
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="text-lg md:text-2xl lg:text-3xl text-white/90 mb-10 md:mb-14 leading-relaxed max-w-3xl mx-auto font-medium tracking-tight"
+            >
               {c.subtitle}
-            </p>
+            </motion.p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 md:gap-8 w-full max-w-2xl px-4 mx-auto">
               <Button size="lg" className="h-16 md:h-20 px-10 md:px-16 w-full sm:w-auto rounded-full font-bold text-lg md:text-2xl bg-white text-black hover:bg-zinc-100 shadow-2xl transition-all hover:scale-105 active:scale-95">
