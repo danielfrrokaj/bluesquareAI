@@ -225,48 +225,53 @@ export default function ContactPage({ searchParams }: { searchParams?: { lang?: 
                     </div>
 
                     {/* Contact Info & Map */}
-                    <div className="space-y-16">
-                        <div className="grid sm:grid-cols-2 gap-10">
-                            <div className="group p-8 md:p-10 rounded-[3.5rem] border border-black/5 bg-black/[0.01] hover:bg-black hover:text-white transition-all duration-700 shadow-sm">
-                                <div className="p-6 rounded-2xl bg-white shadow-sm border border-black/5 w-fit mb-10 text-black transition-colors">
-                                    <Phone className="h-8 w-8" />
-                                </div>
-                                <h3 className="text-xs font-bold mb-3 tracking-[0.3em] uppercase text-black/40 group-hover:text-white/40">{currentContent.phone}</h3>
-                                <a href="tel:+355693815070" className="text-xl md:text-2xl font-extrabold tracking-tight hover:underline underline-offset-8 whitespace-nowrap">
-                                    +355 69 381 5070
-                                </a>
-                            </div>
-
-                            <div className="group p-8 md:p-10 rounded-[3.5rem] border border-black/5 bg-black/[0.01] hover:bg-black hover:text-white transition-all duration-700 shadow-sm">
-                                <div className="p-6 rounded-2xl bg-white shadow-sm border border-black/5 w-fit mb-10 text-black transition-colors">
-                                    <Mail className="h-8 w-8" />
-                                </div>
-                                <h3 className="text-xs font-bold mb-3 tracking-[0.3em] uppercase text-black/40 group-hover:text-white/40">{currentContent.emailLabel}</h3>
-                                <a href="mailto:info@bluesquare.ai" className="text-xl md:text-2xl font-extrabold tracking-tight hover:underline underline-offset-8 whitespace-nowrap">
-                                    info@bluesquare.ai
-                                </a>
-                            </div>
-
-                            <div className="group p-8 md:p-10 rounded-[3.5rem] border border-black/5 bg-black/[0.01] hover:bg-black hover:text-white transition-all duration-700 shadow-sm sm:col-span-2">
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-12">
-                                    <div>
-                                        <div className="p-6 rounded-2xl bg-white shadow-sm border border-black/5 w-fit mb-10 text-black transition-colors">
-                                            <MapPin className="h-8 w-8" />
-                                        </div>
-                                        <h3 className="text-xs font-bold mb-3 tracking-[0.3em] uppercase text-black/40 group-hover:text-white/40">{currentContent.address}</h3>
-                                        <p className="text-xl md:text-2xl font-extrabold tracking-tight">Tirana, Albania</p>
+                    <div className="space-y-12">
+                        <div className="grid gap-6">
+                            <div className="p-8 rounded-3xl border border-black/5 bg-zinc-50/30 hover:bg-white hover:shadow-2xl transition-all duration-500 group">
+                                <div className="flex items-center gap-6">
+                                    <div className="h-14 w-14 rounded-2xl bg-white border border-black/5 flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-all duration-500">
+                                        <Phone className="h-6 w-6" />
                                     </div>
-                                    <div className="flex gap-6">
+                                    <div>
+                                        <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40 mb-1">{currentContent.phone}</h3>
+                                        <a href="tel:+355693815070" className="text-xl md:text-2xl font-bold tracking-tighter block hover:underline underline-offset-4">+355 69 381 5070</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="p-8 rounded-3xl border border-black/5 bg-zinc-50/30 hover:bg-white hover:shadow-2xl transition-all duration-500 group">
+                                <div className="flex items-center gap-6">
+                                    <div className="h-14 w-14 rounded-2xl bg-white border border-black/5 flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-all duration-500">
+                                        <Mail className="h-6 w-6" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40 mb-1">{currentContent.emailLabel}</h3>
+                                        <a href="mailto:info@bluesquare.ai" className="text-xl md:text-2xl font-bold tracking-tighter block hover:underline underline-offset-4">info@bluesquare.ai</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="p-8 rounded-3xl border border-black/5 bg-zinc-50/30 hover:bg-white hover:shadow-2xl transition-all duration-500 group">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-8">
+                                    <div className="flex items-center gap-6">
+                                        <div className="h-14 w-14 rounded-2xl bg-white border border-black/5 flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-all duration-500">
+                                            <MapPin className="h-6 w-6" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40 mb-1">{currentContent.address}</h3>
+                                            <p className="text-xl md:text-2xl font-bold tracking-tighter">Tirana, Albania</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-3">
                                         {[Instagram, Facebook, Linkedin].map((Icon, i) => (
-                                            <Link key={i} href="#" className="h-16 w-16 rounded-2xl border border-black/10 flex items-center justify-center hover:bg-white hover:text-black transition-all group-hover:bg-white/10 group-hover:border-white/20 group-hover:text-white">
-                                                <Icon className="h-6 w-6" />
+                                            <Link key={i} href="#" className="h-12 w-12 rounded-xl border border-black/5 bg-white flex items-center justify-center hover:bg-black hover:text-white transition-all">
+                                                <Icon className="h-5 w-5" />
                                             </Link>
                                         ))}
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
