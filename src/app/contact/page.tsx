@@ -20,11 +20,7 @@ import { Footer } from '@/components/layout/footer';
 import dynamic from 'next/dynamic';
 import { cn } from '@/lib/utils';
 
-// Dynamically import LeafletMap to ensure it only renders on the client side
-const LeafletMap = dynamic(() => import('@/components/leaflet-map').then(mod => mod.LeafletMap), {
-    ssr: false,
-    loading: () => <div className="w-full h-full bg-black/5 flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-black" /></div>,
-});
+// Leaflet map disabled per user request
 
 
 const formSchema = z.object({
@@ -299,15 +295,15 @@ function ContactContent() {
                             </div>
                         </div>
 
-                        {/* Map Row */}
-                        <div className="mt-8 relative rounded-[2.5rem] overflow-hidden border border-black/5 h-[300px] md:h-[400px] shadow-2xl group transition-all duration-700 hover:scale-[1.005] flex-1">
-                            <LeafletMap 
-                                key={lang}
-                                latitude={mapCoords.lat}
-                                longitude={mapCoords.lng}
-                                zoom={mapCoords.zoom}
-                                popupText={currentContent.mapPopup}
-                            />
+                        {/* Map Row Disabled */}
+                        <div className="mt-8 relative rounded-[2.5rem] overflow-hidden border border-black/5 h-[300px] md:h-[400px] shadow-2xl group transition-all duration-700 hover:scale-[1.005] flex-1 bg-zinc-50 flex items-center justify-center">
+                            <div className="text-center px-10">
+                                <div className="h-20 w-20 rounded-full bg-white border border-black/5 flex items-center justify-center mx-auto mb-6 shadow-xl">
+                                    <MapPin className="h-8 w-8 text-black/20" />
+                                </div>
+                                <h3 className="text-xl font-bold tracking-tight mb-2 text-black">{currentContent.location}</h3>
+                                <p className="text-zinc-500 font-medium max-w-[280px] mx-auto">Tirana, Albania</p>
+                            </div>
                             <div className="absolute top-6 left-6 md:top-10 md:left-10 z-10">
                                 <div className="bg-white/95 backdrop-blur-3xl px-6 py-3 md:px-8 md:py-4 rounded-2xl md:rounded-3xl border border-black/5 text-xs md:text-sm font-black text-black flex items-center gap-3 md:gap-4 shadow-2xl">
                                     <div className="h-3 w-3 bg-primary rounded-full animate-pulse" />
