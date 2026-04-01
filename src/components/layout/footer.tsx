@@ -23,6 +23,7 @@ export function Footer({ lang }: { lang: 'en' | 'sq' }) {
                     title: "Kompania",
                     items: [
                         { label: "Vizioni ynë", href: "/vision" },
+                        { label: "Karriera", href: "/careers" },
                         { label: "Projektet", href: "/#projects" },
                         { label: "Na Kontaktoni", href: "/contact" },
                     ]
@@ -56,6 +57,7 @@ export function Footer({ lang }: { lang: 'en' | 'sq' }) {
                     title: "Company",
                     items: [
                         { label: "Our Vision", href: "/vision" },
+                        { label: "Careers", href: "/careers" },
                         { label: "Projects", href: "/#projects" },
                         { label: "Contact Us", href: "/contact" },
                     ]

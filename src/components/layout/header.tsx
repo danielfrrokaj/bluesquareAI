@@ -31,11 +31,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const navLinksSq = [
   { href: '/vision', label: 'Vizioni' },
+  { href: '/careers', label: 'Karriera' },
   { href: '/contact', label: 'Kontakti' },
 ];
 
 const navLinksEn = [
   { href: '/vision', label: 'Vision' },
+  { href: '/careers', label: 'Careers' },
   { href: '/contact', label: 'Contact' },
 ];
 
