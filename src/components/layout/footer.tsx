@@ -14,9 +14,9 @@ export function Footer({ lang }: { lang: 'en' | 'sq' }) {
                 {
                     title: "Platformat",
                     items: [
-                        { label: "AI Innovation", href: "/services/ai-innovation" },
-                        { label: "Tourism Systems", href: "/services/tourism-systems" },
-                        { label: "Quick Solutions", href: "/services/quick-solutions" },
+                        { label: "ShqipFol", href: "/services/ai-innovation" },
+                        { label: "LuxHotel", href: "/services/tourism-systems" },
+                        { label: "Multisys", href: "/services/quick-solutions" },
                     ]
                 },
                 {
@@ -48,9 +48,9 @@ export function Footer({ lang }: { lang: 'en' | 'sq' }) {
                 {
                     title: "Platforms",
                     items: [
-                        { label: "AI Innovation", href: "/services/ai-innovation" },
-                        { label: "Tourism Systems", href: "/services/tourism-systems" },
-                        { label: "Quick Solutions", href: "/services/quick-solutions" },
+                        { label: "ShqipFol", href: "/services/ai-innovation" },
+                        { label: "LuxHotel", href: "/services/tourism-systems" },
+                        { label: "Multisys", href: "/services/quick-solutions" },
                     ]
                 },
                 {

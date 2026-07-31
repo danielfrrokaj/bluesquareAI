@@ -75,6 +75,18 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.worldvectorlogo.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'luxhotelsystem.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'multisystem.al',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

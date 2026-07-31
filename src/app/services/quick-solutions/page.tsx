@@ -1,172 +1,178 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { 
-  Flashlight, 
-  Rocket, 
-  Monitor, 
-  Search, 
-  Settings2, 
-  Layout, 
-  Code2, 
-  Smartphone, 
-  Zap,
-  Globe,
+import {
+  Database,
+  LayoutGrid,
+  ShieldCheck,
+  KeyRound,
   CheckCircle2,
-  TrendingUp,
-  Clock
+  XCircle,
+  ChevronRight,
+  Clock,
+  FileUp,
+  Users
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { FinalCtaSection } from '@/components/sections/final-cta-section';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 function QuickSolutionsContent() {
   const searchParams = useSearchParams();
   const lang = searchParams.get('lang') === 'sq' ? 'sq' : 'en';
+  const [activeModel, setActiveModel] = useState(0);
 
   const content = {
     sq: {
-      tag: "Zgjidhje të Shpejta",
-      title: "Websajti Juaj në Kohë Rekord, me Cilësi Premium",
-      subtitle: "Nga 300 Euro – Websajte Moderne, të Optimizuara për SEO dhe të Gati për Biznes.",
-      description: "Në Blue Square AI, ne e kuptojmë se koha është para. Prandaj kemi krijuar një proces efikas që ju jep një prezencë online profesionale pa sakrifikuar kualitetin apo performancën.",
-      featuresHeader: "Çfarë Përfitohet?",
+      tag: "Multisystem",
+      title: "Biznesi Yt, Sistemi Yt.",
+      subtitle: "Jo një program i gatshëm ku futesh me forcë. Fillo me një shabllon — qera makinash, dyqan, klinikë dentare — dhe përshtat çdo tabelë, fushë e lidhje sipas mënyrës si punon biznesi yt.",
+      heroPills: ["10 lloje fushash", "5 aplikacione gati", "9 modele biznesi"],
+      ctaPrimary: "Krijo Hapësirën Tënde",
+      ctaSecondary: "Shiko një Shembull",
+      stats: [
+        { label: "Lloje Fushash", value: "10" },
+        { label: "Aplikacione Gati", value: "5" },
+        { label: "Modele Biznesi", value: "9" }
+      ],
+      featuresHeader: "Karakteristikat Kryesore",
       features: [
         {
-          title: "Optimizim full SEO",
-          desc: "Çdo faqe ndërtohet me rregullat më të fundit të SEO për t'u renditur lart në Google.",
-          icon: <Search className="h-6 w-6 text-black" />
+          title: "Themeli: Tabela të Personalizuara",
+          desc: "10 lloje fushash — Tekst, Numër, Po/Jo, Datë, Orë, Linke, Lista, ID Automatike, Formula dhe Skedarë. Lidhje reale mes tabelave dhe formula që llogariten vetë.",
+          icon: <Database className="h-6 w-6 text-black" />
         },
         {
-          title: "Sistem Menaxhimi (CMS)",
-          desc: "Ndryshoni tekstet dhe fotot vetë pa pasur nevojë për programues çdo herë.",
-          icon: <Settings2 className="h-6 w-6 text-black" />
+          title: "5 Aplikacione Gati për Instalim",
+          desc: "Formularë, Kalendar, Grafikë, WhatsApp dhe Shënime — kthe çdo tabelë në mjet të gatshëm pune, pa kod shtesë.",
+          icon: <LayoutGrid className="h-6 w-6 text-black" />
         },
         {
-          title: "Dizajn Responsive",
-          desc: "Websajti juaj do të duket i mrekullueshëm në çdo pajisje: telefon, tablet ose kompjuter.",
-          icon: <Smartphone className="h-6 w-6 text-black" />
+          title: "Kontroll dhe Siguri",
+          desc: "Skemë e veçantë databaze për çdo llogari, hapësira pune sipas dege a aktiviteti, dhe leje të përcaktuara për çdo përdorues në çdo tabelë.",
+          icon: <ShieldCheck className="h-6 w-6 text-black" />
         },
         {
-          title: "Performancë e Lartë",
-          desc: "Kodet tona janë të pastra dhe të shpejta, duke garantuar ngarkim të menjëhershëm.",
-          icon: <Zap className="h-6 w-6 text-black" />
+          title: "API me Çelësa të Sigurt",
+          desc: "Kontrata OpenAPI të gjeneruara automatikisht, shkrime të sigurta pa dublikime, dhe histori e plotë e çdo çelësi API.",
+          icon: <KeyRound className="h-6 w-6 text-black" />
         }
       ],
-      examplesHeader: "Shembuj Suksesi",
-      examples: [
-        { 
-          name: "Discover Albania", 
-          logo: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/logos%2Fdownload.png?alt=media&token=fd453cd6-49c0-46b2-a149-90cd108c9100",
-          description: "Një ekosistem i plotë menaxhimi për operatorët turistikë, duke integruar rezervimet në kohë reale, procesimin e sigurt të pagesave dhe menaxhimin e klientëve në një mjedis Next.js me performancë të lartë.",
-          image: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FScreenshot%202026-03-30%20at%202.20.38%E2%80%AFPM.png?alt=media&token=3f1bc2db-f26d-4b27-9582-e214c7e1f700",
-          url: "https://discoveralbania.al", 
-          category: "Turizëm & Menaxhim",
-          features: ["Interface Admin", "Pagesa", "Rezervime", "Klientë", "Next.js", "SEO Efikas", "AI Chat Bot", "Disponueshmëri", "Email-e", "Fatura"]
-        },
-        { 
-          name: "Tirana Escape Room", 
-          logo: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/logos%2Fdownload%20(1).png?alt=media&token=1acc5700-baeb-46c4-9c70-056fb20df885",
-          description: "Një motor rezervimi dhe disponueshmërie i krijuar për ndërveprim në kohë reale. Ai automatizon menaxhimin e inventarit, konfirmimet me email dhe gjenerimin e faturave duke ruajtur kualitetin më të lartë të SEO-s.",
-          image: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FScreenshot%202026-03-30%20at%202.20.46%E2%80%AFPM.png?alt=media&token=42e63ec4-fe23-4841-bf3f-9a054157b427",
-          url: "https://tiranaescaperoom.com", 
-          category: "Argëtim",
-          features: ["Disponueshmëri Rezervimesh", "Interface Admin", "Email-e", "Fatura", "SEO Efikas", "Analizë Reviews"]
-        },
-        { 
-          name: "CoolestMenu AI", 
-          logo: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/logos%2Fdownload%20(2).png?alt=media&token=8e05591f-9227-4143-8bbd-f449e0978a69",
-          description: "Një SaaS inovativ i fuqizuar nga Inteligjenca Artificiale që transformon menutë fizike në përvoja inteligjente digjitale. Përmban një model vision të personalizuar për gjenerim automatik të menusë dhe algoritme të zgjuara çmimi.",
-          image: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FScreenshot%202026-03-30%20at%202.21.02%E2%80%AFPM.png?alt=media&token=09f5f5b8-a40e-4eb7-bc80-f5289b97db23",
-          url: "#", 
-          category: "SaaS & AI",
-          features: ["SaaS", "Abonime", "AI Vision Model", "Algoritëm Smart", "Sistem Admin", "Monitorim Sistemi"]
-        }
+      whyHeader: "Pse Multisystem?",
+      whyText: "Platformë menaxhimi biznesi, ndërtuar posaçërisht për tregun shqiptar. Sistemi është yti, edhe nën kapak — pa abonim të huaj, pa gjuhë të huaj, pa varësi nga dikush tjetër.",
+      modelsTag: "Modelet e Biznesit",
+      modelsTitle: "Fillo me një Shabllon të Gatshëm",
+      models: [
+        { name: "Qera Makinash", desc: "Ndiq flotën, rezervimet dhe kthimet e makinave në kohë reale.", img: "car-rental.jpg" },
+        { name: "Dyqan", desc: "Menaxho stokun, shitjet dhe klientët nga një tabelë e vetme.", img: "retail-shop.jpg" },
+        { name: "Prona me Qira", desc: "Kontrollo kontratat, qiratë dhe mirëmbajtjen për çdo pronë.", img: "property-rentals.jpg" },
+        { name: "Sallon Bukurie", desc: "Planifiko takimet dhe menaxho klientët me kalendar të integruar.", img: "beauty-salon.jpg" },
+        { name: "Palestër", desc: "Gjurmo abonimet, hyrjet dhe planet e stërvitjes së anëtarëve.", img: "gym.jpg" },
+        { name: "Agjenci Udhëtimi", desc: "Organizo ofertat, rezervimet dhe klientët për çdo destinacion.", img: "agency.jpg" },
+        { name: "Restorant", desc: "Menaxho porositë, tavolinat dhe inventarin e kuzhinës çdo ditë.", img: "restaurant.jpg" },
+        { name: "Klinikë Dentare", desc: "Planifiko pacientët, historikun mjekësor dhe pagesat pa telashe.", img: "dental-clinic.jpg" },
+        { name: "Fillo Bosh", desc: "Ndërto tabelat e tua nga zero, sipas mënyrës si punon.", img: "blank.jpg" },
       ],
-      pricingHeader: "Paketat Tona",
-      pricingTag: "Nga 300 Euro",
-      pricingDesc: "Një investim i zgjuar për një prani që konverton çdo vizitor në klient.",
-      stats: [
-        { label: "Koha e Dorëzimit", value: "7 Ditë" },
-        { label: "Rezultati SEO", value: "A+" },
-        { label: "Mbështetje", value: "Lifetime" }
-      ]
+      comparisonTag: "Krahasim",
+      comparisonTitle: "Multisystem kundrejt Excel, Airtable, Podio",
+      comparisonColumns: ["Multisystem", "Excel", "Airtable", "Podio"],
+      comparisonRows: [
+        { label: "Databazë e veçantë për çdo klient", values: [true, false, false, false] },
+        { label: "Integrim WhatsApp pa shtesa", values: [true, false, false, false] },
+        { label: "Mbështetje e plotë në Shqip", values: [true, true, false, false] },
+        { label: "Suport dhe faturim vendas", values: [true, false, false, false] },
+      ],
+      summaryTag: "Ndërtim i Personalizuar",
+      summaryCards: [
+        { title: "1 Ditë Pune", desc: "Sistemi ndërtohet brenda një dite pune biznesi.", icon: <Clock className="h-5 w-5 md:h-6 md:w-6 text-black" /> },
+        { title: "Import nga Excel", desc: "Importo direkt të dhënat ekzistuese nga Excel.", icon: <FileUp className="h-5 w-5 md:h-6 md:w-6 text-black" /> },
+        { title: "Ekip i Konfiguruar", desc: "Vendosim ekipin tënd me leje të gatshme për çdo anëtar.", icon: <Users className="h-5 w-5 md:h-6 md:w-6 text-black" /> },
+        { title: "Pa Varësi të Vazhdueshme", desc: "Nuk ke nevojë të mbështetesh vazhdimisht te ekipi ynë i suportit.", icon: <CheckCircle2 className="h-5 w-5 md:h-6 md:w-6 text-black" /> },
+      ],
+      summaryHeading: "Sistemi është yti, edhe nën kapak.",
+      summaryHeadingHighlight: "yti",
+      summaryText: "Ndërtuam Multisystem për t'iu përshtatur çdo biznesi shqiptar — nga qera makinash te klinika dentare — pa qenë kurrë i kyçur në një zgjidhje të ngurtë.",
+      summaryCta: "Fol me Ne",
+      summaryCtaSecondary: "Ose Fillo Vetë Falas",
     },
     en: {
-      tag: "Quick Solutions",
-      title: "Your Website in Record Time, Premium Quality",
-      subtitle: "Starting from 300 Euro – Modern, SEO-optimized, Business-ready Websites.",
-      description: "At Blue Square AI, we understand that time is money. That's why we've created an efficient process that gives you a professional online presence without sacrificing quality or performance.",
-      featuresHeader: "What's Included?",
+      tag: "Multisystem",
+      title: "Your Business, Your System.",
+      subtitle: "Not a pre-made program you have to force your business into. Start with a template — car rental, retail shop, dental clinic — and customize every table, field, and relationship the way your business actually works.",
+      heroPills: ["10 field types", "5 ready apps", "9 business models"],
+      ctaPrimary: "Create Your Space",
+      ctaSecondary: "See an Example",
+      stats: [
+        { label: "Field Types", value: "10" },
+        { label: "Ready Apps", value: "5" },
+        { label: "Business Models", value: "9" }
+      ],
+      featuresHeader: "Key Features",
       features: [
         {
-          title: "Full SEO Optimization",
-          desc: "Every page is built with the latest SEO rules to rank high on Google.",
-          icon: <Search className="h-6 w-6 text-black" />
+          title: "Foundation: Custom Tables",
+          desc: "10 field types — Text, Number, Yes/No, Date, Time, Links, Lists, Auto ID, Formula, and Files. Real relationships between tables and formulas that self-calculate.",
+          icon: <Database className="h-6 w-6 text-black" />
         },
         {
-          title: "CMS Management",
-          desc: "Change texts and photos yourself without needing a programmer every time.",
-          icon: <Settings2 className="h-10 w-10 text-black" />
+          title: "5 Ready-to-Install Applications",
+          desc: "Forms, Calendar, Charts, WhatsApp, and Notes — turn any table into a ready-made work tool, with no extra code.",
+          icon: <LayoutGrid className="h-6 w-6 text-black" />
         },
         {
-          title: "Responsive Design",
-          desc: "Your website will look amazing on every device: phone, tablet, or desktop.",
-          icon: <Smartphone className="h-6 w-6 text-black" />
+          title: "Control and Security",
+          desc: "A separate database schema for every account, workspaces by branch or activity, and defined permissions for every user on every table.",
+          icon: <ShieldCheck className="h-6 w-6 text-black" />
         },
         {
-          title: "High Performance",
-          desc: "Our code is clean and fast, guaranteeing instant loading times.",
-          icon: <Zap className="h-6 w-6 text-black" />
+          title: "API with Secure Keys",
+          desc: "Auto-generated OpenAPI contracts, safe writes without duplicates, and a complete history of every API key.",
+          icon: <KeyRound className="h-6 w-6 text-black" />
         }
       ],
-      whyHeader: "Why Choose Quick Solutions?",
-      whyText: "In a world that moves fast, we help your business keep up. Our quick solutions are designed to get you online in record time, with a focus on results and style.",
-      stats: [
-        { label: "Delivery Time", value: "7 Days" },
-        { label: "SEO Result", value: "A+" },
-        { label: "Support", value: "Lifetime" }
+      whyHeader: "Why Multisystem?",
+      whyText: "A business management platform built specifically for the Albanian market. The system is yours, even under the hood — no foreign subscription, no foreign language, no dependency on anyone else.",
+      modelsTag: "Business Models",
+      modelsTitle: "Start With a Ready-Made Template",
+      models: [
+        { name: "Car Rental", desc: "Track your fleet, bookings, and returns in real time.", img: "car-rental.jpg" },
+        { name: "Retail Shop", desc: "Manage inventory, sales, and customers from a single table.", img: "retail-shop.jpg" },
+        { name: "Property Rentals", desc: "Control leases, rent collection, and maintenance for every property.", img: "property-rentals.jpg" },
+        { name: "Beauty Salon", desc: "Schedule appointments and manage clients with a built-in calendar.", img: "beauty-salon.jpg" },
+        { name: "Gym", desc: "Track memberships, check-ins, and member training plans.", img: "gym.jpg" },
+        { name: "Travel Agency", desc: "Organize packages, bookings, and clients for every destination.", img: "agency.jpg" },
+        { name: "Restaurant", desc: "Manage orders, tables, and kitchen inventory every single day.", img: "restaurant.jpg" },
+        { name: "Dental Clinic", desc: "Schedule patients, medical history, and payments without the hassle.", img: "dental-clinic.jpg" },
+        { name: "Start Blank", desc: "Build your own tables from scratch, your way.", img: "blank.jpg" },
       ],
-      examplesHeader: "Success Examples",
-      examples: [
-        { 
-          name: "Discover Albania", 
-          logo: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/logos%2Fdownload.png?alt=media&token=fd453cd6-49c0-46b2-a149-90cd108c9100",
-          description: "A complete management ecosystem for tourism operators, integrating real-time bookings, secure payment processing, and customer relationship management in a high-performance Next.js environment.",
-          image: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FScreenshot%202026-03-30%20at%202.20.38%E2%80%AFPM.png?alt=media&token=3f1bc2db-f26d-4b27-9582-e214c7e1f700",
-          url: "https://discoveralbania.al", 
-          category: "Tourism & Management",
-          features: ["Admin Interface", "Payments", "Bookings", "Customers", "Next.js", "SEO Efficient", "AI Chat Bot", "Availability", "Emails", "Invoices"]
-        },
-        { 
-          name: "Tirana Escape Room", 
-          logo: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/logos%2Fdownload%20(1).png?alt=media&token=1acc5700-baeb-46c4-9c70-056fb20df885",
-          description: "A seamless booking and availability engine designed for real-time interaction. It automates inventory management, email confirmations, and invoice generation while maintaining top-tier SEO performance.",
-          image: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FScreenshot%202026-03-30%20at%202.20.46%E2%80%AFPM.png?alt=media&token=42e63ec4-fe23-4841-bf3f-9a054157b427",
-          url: "https://tiranaescaperoom.com", 
-          category: "Entertainment",
-          features: ["Booking Availability", "Admin Interface", "Emails", "Invoices", "SEO Efficient", "Review Analysis"]
-        },
-        { 
-          name: "CoolestMenu AI", 
-          logo: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/logos%2Fdownload%20(2).png?alt=media&token=8e05591f-9227-4143-8bbd-f449e0978a69",
-          description: "A disruptive AI-powered SaaS that transforms physical menus into intelligent digital experiences. It features a custom vision model for automatic menu generation, smart pricing algorithms, and comprehensive monitoring.",
-          image: "https://firebasestorage.googleapis.com/v0/b/studio-3380920138-3317b.firebasestorage.app/o/bluesquare%20AI%20website%2FScreenshot%202026-03-30%20at%202.21.02%E2%80%AFPM.png?alt=media&token=09f5f5b8-a40e-4eb7-bc80-f5289b97db23",
-          url: "#", 
-          category: "SaaS & AI",
-          features: ["SaaS", "Subscriptions", "AI Vision Model", "Smart Algorithm", "Admin System", "Monitoring"]
-        }
+      comparisonTag: "Comparison",
+      comparisonTitle: "Multisystem vs. Excel, Airtable, Podio",
+      comparisonColumns: ["Multisystem", "Excel", "Airtable", "Podio"],
+      comparisonRows: [
+        { label: "Separate database per client", values: [true, false, false, false] },
+        { label: "WhatsApp integration, no add-ons", values: [true, false, false, false] },
+        { label: "Full Albanian language support", values: [true, true, false, false] },
+        { label: "Local support & billing", values: [true, false, false, false] },
       ],
-      pricingHeader: "Our Packages",
-      pricingTag: "From 300 Euro",
-      pricingDesc: "A smart investment for a presence that converts every visitor into a customer.",
+      summaryTag: "Custom Build",
+      summaryCards: [
+        { title: "1 Business Day", desc: "The system is built within one business day.", icon: <Clock className="h-5 w-5 md:h-6 md:w-6 text-black" /> },
+        { title: "Import from Excel", desc: "Import your existing data directly from Excel.", icon: <FileUp className="h-5 w-5 md:h-6 md:w-6 text-black" /> },
+        { title: "Configured Team", desc: "We set up your team with permissions ready for every member.", icon: <Users className="h-5 w-5 md:h-6 md:w-6 text-black" /> },
+        { title: "No Ongoing Dependency", desc: "No need to keep relying on our support team afterward.", icon: <CheckCircle2 className="h-5 w-5 md:h-6 md:w-6 text-black" /> },
+      ],
+      summaryHeading: "The system is yours, even under the hood.",
+      summaryHeadingHighlight: "yours",
+      summaryText: "We built Multisystem to adapt to any Albanian business — from car rentals to dental clinics — without ever locking you into a rigid solution.",
+      summaryCta: "Talk to Us",
+      summaryCtaSecondary: "Or Start Free Yourself",
     }
   };
 
@@ -179,15 +185,15 @@ function QuickSolutionsContent() {
         {/* Hero Section */}
         <section className="relative pt-32 pb-48 overflow-hidden bg-black text-white">
           {/* Background Wallpaper */}
-          <motion.div 
+          <motion.div
             initial={{ scale: 1.1, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 2, ease: "easeOut" }}
             className="absolute inset-0 z-0"
           >
-             <Image 
+             <Image
                 src="/background/wallpaper-dark1.jpg"
-                alt="Quick Solutions Wallpaper"
+                alt="Multisystem Wallpaper"
                 fill
                 className="object-cover scale-110"
                 priority
@@ -198,8 +204,8 @@ function QuickSolutionsContent() {
 
           <div className="container px-4 mx-auto relative z-10">
             <div className="grid lg:grid-cols-2 gap-20 items-center">
-              <div className="text-left flex flex-col items-start translate-z-0">
-                <motion.div 
+              <div className="text-left flex flex-col items-start text-white">
+                <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
@@ -208,8 +214,8 @@ function QuickSolutionsContent() {
                   <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
                   {c.tag}
                 </motion.div>
-                
-                <motion.h1 
+
+                <motion.h1
                   initial={{ filter: 'blur(20px)', opacity: 0, y: 20 }}
                   animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
                   transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
@@ -217,8 +223,8 @@ function QuickSolutionsContent() {
                 >
                   {c.title}
                 </motion.h1>
-                
-                <motion.p 
+
+                <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
@@ -226,194 +232,267 @@ function QuickSolutionsContent() {
                 >
                   {c.subtitle}
                 </motion.p>
-                <div className="flex flex-col sm:flex-row gap-6 md:gap-8">
-                  <Button size="lg" asChild className="h-16 md:h-20 px-10 md:px-12 w-full sm:w-auto rounded-full font-bold text-xl bg-white text-black hover:bg-zinc-100 shadow-2xl transition-all hover:scale-105 active:scale-95">
-                    <Link href={`/contact?lang=${lang}`}>{lang === 'sq' ? 'Fillo Projektin Tënd' : 'Start Your Project'}</Link>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-10"
+                >
+                  <Button asChild size="lg" className="h-14 md:h-16 px-8 md:px-10 rounded-full font-bold text-base md:text-lg bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl hover:scale-105 active:scale-95 w-full sm:w-auto">
+                    <Link href="https://multisystem.al/signup" target="_blank" rel="noopener noreferrer">
+                      {c.ctaPrimary}
+                      <ChevronRight className="ml-1 h-5 w-5" />
+                    </Link>
                   </Button>
-                  <div className="flex items-center gap-3 text-zinc-400 font-bold uppercase tracking-[0.2em] text-[10px] group transition-all">
-                     <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-blue-50 group-hover:text-blue-600 transition-all shadow-sm">
-                        <Clock className="h-5 w-5" />
-                     </div>
-                     <span className="group-hover:text-white transition-colors">{c.stats[0].value} {lang === 'sq' ? 'Dorëzim' : 'Delivery'}</span>
-                  </div>
-                </div>
+                  <Button asChild size="lg" variant="outline" className="h-14 md:h-16 px-8 md:px-10 rounded-full font-bold text-base md:text-lg bg-white/5 text-white border-white/20 hover:bg-white/10 hover:text-white transition-all w-full sm:w-auto">
+                    <Link href="https://multisystem.al" target="_blank" rel="noopener noreferrer">{c.ctaSecondary}</Link>
+                  </Button>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="flex flex-wrap items-center gap-3"
+                >
+                  {c.heroPills.map((pill, i) => (
+                    <span key={i} className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white/80 bg-white/5 border border-white/10 rounded-full">
+                      {pill}
+                    </span>
+                  ))}
+                </motion.div>
               </div>
               <div className="relative group">
-                <div className="relative z-10 aspect-square md:aspect-video rounded-[2.5rem] md:rounded-[4rem] overflow-hidden border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl transition-all duration-700 group-hover:bg-white/10 group-hover:border-white/20 group-hover:shadow-[0_60px_100px_-20px_rgba(255,255,255,0.05)]">
-                   <Image 
-                      src="https://static.vecteezy.com/system/resources/previews/041/306/253/non_2x/ai-generated-3d-abstract-colorful-glass-3d-rendering-free-png.png"
-                      alt="Quick Solutions Illustration"
-                      fill
-                      className="object-contain p-8 md:p-12 transition-transform duration-1000 group-hover:scale-105"
-                      priority
-                   />
+                <div className="relative z-10 p-6 md:p-10 bg-white/5 border border-white/10 rounded-[2.5rem] md:rounded-[4rem] backdrop-blur-xl shadow-2xl transition-all duration-700 group-hover:bg-white/10 group-hover:border-white/20 group-hover:shadow-[0_60px_100px_-20px_rgba(255,255,255,0.05)] overflow-hidden">
+                    <div className="aspect-[1024/555] flex items-center justify-center overflow-hidden relative rounded-[1.5rem] md:rounded-[2.5rem]">
+                       <Image
+                          src="https://multisystem.al/opengraph-image.jpeg"
+                          alt="Multisystem Platform Preview"
+                          fill
+                          className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                          priority
+                       />
+                    </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Features Grid */}
-        <section className="py-24 bg-white text-black relative overflow-hidden border-y border-black/5">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-blue-500/[0.02] rounded-full blur-[150px] pointer-events-none" />
+        {/* Stats Section */}
+        <section className="py-16 bg-white border-y border-black/5 relative overflow-hidden">
+          <div className="absolute top-1/2 left-0 w-full h-[1px] bg-blue-500/5 -z-0" />
           <div className="container px-4 mx-auto relative z-10">
-             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-16 mb-24">
-                <div className="max-w-3xl">
-                   <div className="inline-flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 mb-6">
-                     {lang === 'sq' ? 'Përfitimet' : 'Benefits'}
-                   </div>
-                   <h2 className="text-3xl md:text-5xl font-extrabold font-headline mb-8 tracking-tighter text-black">
-                     {c.featuresHeader}
-                   </h2>
-                   <p className="text-2xl text-zinc-500 leading-relaxed font-medium tracking-tight">
-                     {c.description}
-                   </p>
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-12 text-center">
+              {c.stats.map((s, i) => (
+                <div key={i} className="flex flex-col items-center group">
+                  <span className="text-3xl md:text-6xl font-extrabold font-headline text-black mb-2 md:mb-3 tracking-tighter group-hover:text-blue-600 transition-colors duration-500">{s.value}</span>
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.3em] group-hover:text-black transition-colors duration-500">{s.label}</span>
                 </div>
-                <div className="p-8 md:p-10 bg-black text-white rounded-[2.5rem] md:rounded-[3rem] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.3)] transform hover:scale-105 transition-all duration-500 border border-white/10 w-full lg:w-auto text-center">
-                   <span className="text-white font-extrabold text-4xl md:text-5xl block mb-2 md:mb-3 tracking-tighter">{c.pricingTag}</span>
-                   <span className="text-zinc-500 uppercase tracking-[0.2em] font-bold text-[10px]">Starting Price</span>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Business Models Showcase */}
+        <section className="py-24 bg-zinc-50/50 border-b border-black/5">
+           <div className="container px-4 mx-auto">
+             <div className="max-w-6xl mx-auto space-y-16">
+                <div className="flex flex-col items-center text-center">
+                   <div className="inline-flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 mb-6">
+                     {c.modelsTag}
+                   </div>
+                   <h2 className="text-3xl md:text-5xl font-extrabold font-headline text-black tracking-tighter">
+                     {c.modelsTitle}
+                   </h2>
+                </div>
+                <div className="grid lg:grid-cols-[300px_1fr] gap-4 lg:gap-8 items-stretch">
+                    {/* Model selector */}
+                    <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0">
+                        {c.models.map((m, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setActiveModel(i)}
+                            className={cn(
+                              "flex-shrink-0 lg:flex-shrink lg:w-full text-left px-5 py-4 rounded-2xl border transition-all duration-300 whitespace-nowrap lg:whitespace-normal",
+                              activeModel === i
+                                ? "bg-black text-white border-black shadow-lg"
+                                : "bg-white text-black/60 border-black/5 hover:border-blue-200 hover:bg-blue-50/40 hover:text-black"
+                            )}
+                          >
+                            <span className="font-bold text-sm md:text-base tracking-tight">{m.name}</span>
+                          </button>
+                        ))}
+                    </div>
+
+                    {/* Live preview */}
+                    <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border border-black/5 min-h-[380px] md:min-h-[480px]">
+                        <AnimatePresence mode="wait">
+                          <motion.div
+                            key={activeModel}
+                            initial={{ opacity: 0, scale: 1.04 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                            className="absolute inset-0"
+                          >
+                            <Image
+                                src={`https://multisystem.al/templates/${c.models[activeModel].img}`}
+                                alt={c.models[activeModel].name}
+                                fill
+                                className="object-cover"
+                                priority
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
+                            <div className="absolute bottom-0 left-0 right-0 p-8 md:p-14">
+                               <span className="inline-block px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white/70 text-[10px] font-bold uppercase tracking-widest mb-5 backdrop-blur-sm">
+                                 {String(activeModel + 1).padStart(2, '0')} / {String(c.models.length).padStart(2, '0')}
+                               </span>
+                               <h3 className="text-3xl md:text-5xl font-extrabold font-headline text-white tracking-tighter mb-3 leading-tight">
+                                 {c.models[activeModel].name}
+                               </h3>
+                               <p className="text-white/70 text-base md:text-lg max-w-lg font-medium leading-relaxed">
+                                 {c.models[activeModel].desc}
+                               </p>
+                            </div>
+                          </motion.div>
+                        </AnimatePresence>
+                    </div>
                 </div>
              </div>
+           </div>
+        </section>
 
-             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {/* Experience Description */}
+        <section className="py-32 bg-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-500/[0.02] rounded-full blur-[150px] pointer-events-none" />
+          <div className="container px-4 mx-auto relative z-10">
+             <div className="max-w-5xl mx-auto text-center mb-16 md:mb-32">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 mb-8 md:mb-10">
+                   {lang === 'sq' ? 'Ndërtimi i Ekselencës' : 'Building Excellence'}
+                </div>
+                <h3 className="text-2xl md:text-5xl font-extrabold font-headline text-black mb-6 md:mb-12 tracking-tighter max-w-4xl mx-auto leading-tight">
+                  {c.whyHeader}
+                </h3>
+                <div className="w-20 md:w-24 h-1 md:h-1.5 bg-gradient-to-r from-blue-500 to-lime-500 rounded-full mx-auto" />
+                <p className="text-lg md:text-3xl lg:text-4xl text-zinc-600 leading-snug font-normal tracking-tight max-w-4xl mx-auto mt-8 md:mt-16 italic">
+                  "{c.whyText}"
+                </p>
+             </div>
+
+             <div className="grid md:grid-cols-2 gap-6 lg:gap-12">
                 {c.features.map((f, i) => (
-                   <div key={i} className="group p-10 md:p-12 bg-zinc-50/50 border border-black/[0.03] rounded-[2.5rem] md:rounded-[3.5rem] hover:bg-white hover:border-blue-200 transition-all duration-500 hover:shadow-[0_40px_80px_-20px_rgba(59,130,246,0.1)] hover:-translate-y-2">
-                     <div className="h-16 w-16 bg-white rounded-2xl flex items-center justify-center text-black mb-10 group-hover:bg-blue-50 group-hover:text-blue-600 transition-all duration-500 shadow-sm border border-black/5">
+                  <div key={i} className="flex flex-col sm:flex-row items-start gap-6 md:gap-8 p-8 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] bg-zinc-50/50 border border-black/[0.03] hover:bg-white hover:border-blue-200 hover:shadow-[0_40px_80px_-20px_rgba(59,130,246,0.1)] transition-all duration-500 group hover:-translate-y-2">
+                     <div className="flex-shrink-0 p-4 md:p-5 bg-white rounded-2xl shadow-sm group-hover:bg-blue-50 group-hover:text-blue-600 transition-all duration-500 flex items-center justify-center border border-black/[0.03]">
                         {f.icon}
                      </div>
-                     <h3 className="text-2xl font-bold mb-4 font-headline tracking-tight text-black">{f.title}</h3>
-                     <p className="text-zinc-500 font-medium leading-relaxed tracking-tight">{f.desc}</p>
+                     <div>
+                        <h3 className="text-xl md:text-2xl font-bold font-headline mb-3 md:mb-4 text-black tracking-tight">
+                          {f.title}
+                        </h3>
+                        <p className="text-zinc-500 leading-relaxed text-base md:text-lg font-medium tracking-tight">
+                          {f.desc}
+                        </p>
+                     </div>
                   </div>
                 ))}
              </div>
           </div>
         </section>
 
-        {/* Examples Section */}
-        <section className="py-32 bg-white relative overflow-hidden">
-           <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-lime-400/[0.03] rounded-full blur-[120px] pointer-events-none" />
-           <div className="container px-4 mx-auto relative z-10">
-              <div className="text-center mb-24 max-w-2xl mx-auto">
-                 <div className="inline-flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 mb-6">
-                    {lang === 'sq' ? 'Projekte Live' : 'Live Projects'}
-                 </div>
-                  <h2 className="text-3xl md:text-6xl font-extrabold font-headline text-black mb-8 md:mb-10 tracking-tighter leading-tight">
-                    {c.examplesHeader}
-                  </h2>
-                 <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-lime-500 rounded-full mx-auto" />
+        {/* Comparison Table */}
+        <section className="py-24 bg-zinc-50/50 border-y border-black/5">
+          <div className="container px-4 mx-auto">
+            <div className="flex flex-col items-center text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 mb-6">
+                {c.comparisonTag}
               </div>
-
-              <div className="flex flex-col gap-32 md:gap-40 max-w-7xl mx-auto">
-                 {c.examples.map((ex, i) => (
-                    <div key={i} className="flex flex-col gap-12 lg:gap-16 transition-all duration-1000">
-                      {/* Image Preview Container - Expanded for Visual Impact */}
-                      <div className="w-full group relative px-4 md:px-0">
-                        <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/5 to-lime-500/5 rounded-[3.5rem] md:rounded-[5rem] blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                        <Card className="relative aspect-[21/9] md:aspect-[21/10] overflow-hidden rounded-[2.5rem] md:rounded-[4rem] border-black/[0.05] shadow-2xl transition-all duration-700 group-hover:shadow-blue-500/10 group-hover:-translate-y-3 bg-zinc-50">
-                           <Image 
-                              src={ex.image}
-                              alt={ex.name}
-                              fill
-                              className="object-cover object-top transition-transform duration-1000 group-hover:scale-[1.03]"
-                              priority={i === 0}
-                           />
-                           <div className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-[2.5rem] md:rounded-[4rem]" />
-                           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex flex-col justify-end p-8 md:p-16">
-                              <p className="text-white/60 font-black uppercase tracking-[0.3em] text-[10px] mb-3">{ex.category}</p>
-                              <h3 className="text-white text-3xl md:text-5xl font-extrabold font-headline tracking-tighter">{ex.name}</h3>
-                           </div>
-                        </Card>
-                      </div>
-
-                      {/* Content Block - Centered and Refined */}
-                      <div className="w-full max-w-4xl mx-auto flex flex-col items-center text-center px-6">
-                         <div className="inline-flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 mb-8">
-                            {ex.category}
-                         </div>
-                         <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-10 mb-8 w-full">
-                            {ex.logo && (
-                               <div className="relative h-20 w-48 md:h-24 md:w-56 flex-shrink-0">
-                                  <Image 
-                                     src={ex.logo}
-                                     alt={`${ex.name} Logo`}
-                                     fill
-                                     className="object-contain"
-                                  />
-                               </div>
+              <h2 className="text-3xl md:text-5xl font-extrabold font-headline text-black tracking-tighter max-w-3xl">
+                {c.comparisonTitle}
+              </h2>
+            </div>
+            <div className="max-w-4xl mx-auto overflow-x-auto">
+              <Card className="border-black/5 rounded-[2rem] shadow-sm overflow-hidden bg-white min-w-[560px]">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="border-b border-black/5">
+                      <th className="p-5 md:p-6 text-xs font-bold text-zinc-400 uppercase tracking-widest"></th>
+                      {c.comparisonColumns.map((col, i) => (
+                        <th key={i} className={`p-5 md:p-6 text-center text-sm md:text-base font-extrabold tracking-tight ${i === 0 ? 'text-blue-600' : 'text-zinc-500'}`}>
+                          {col}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {c.comparisonRows.map((row, i) => (
+                      <tr key={i} className={i % 2 === 0 ? "bg-zinc-50/50" : ""}>
+                        <td className="p-5 md:p-6 text-sm md:text-base font-semibold text-black/80">{row.label}</td>
+                        {row.values.map((val, j) => (
+                          <td key={j} className="p-5 md:p-6 text-center">
+                            {val ? (
+                              <CheckCircle2 className={`h-5 w-5 md:h-6 md:w-6 inline-block ${j === 0 ? 'text-blue-600' : 'text-lime-500'}`} />
+                            ) : (
+                              <XCircle className="h-5 w-5 md:h-6 md:w-6 inline-block text-zinc-300" />
                             )}
-                            <h3 className="text-3xl md:text-5xl lg:text-7xl font-extrabold font-headline text-black tracking-tighter leading-[1.1]">
-                               {ex.name}
-                            </h3>
-                         </div>
-                         <p className="text-xl md:text-2xl text-zinc-500 leading-relaxed mb-12 font-medium tracking-tight">
-                            {ex.description}
-                         </p>
-                         
-                         <div className="flex flex-wrap justify-center gap-2 mb-14">
-                            {ex.features.map((feature, idx) => (
-                               <span 
-                                  key={idx} 
-                                  className="px-5 py-2.5 bg-zinc-50 border border-black/[0.03] rounded-full text-[10px] md:text-xs font-bold text-zinc-600 hover:border-blue-100 hover:text-blue-600 transition-colors shadow-sm"
-                               >
-                                  {feature}
-                               </span>
-                            ))}
-                         </div>
-
-                      </div>
-                    </div>
-                 ))}
-              </div>
-           </div>
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Card>
+            </div>
+          </div>
         </section>
 
-        {/* Closing Pricing Section */}
-        <section className="py-32 bg-white">
-           <div className="container px-4 mx-auto">
-              <div className="grid lg:grid-cols-2 gap-16 md:gap-24 items-center bg-black rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-32 relative overflow-hidden shadow-[0_60px_100px_-20px_rgba(0,0,0,0.3)]">
-                 <div className="relative z-10">
-                    <h2 className="text-3xl md:text-6xl font-extrabold font-headline mb-8 md:mb-12 tracking-tighter text-white leading-tight">
-                       {c.pricingHeader}
-                    </h2>
-                    <p className="text-lg md:text-2xl text-zinc-400 mb-10 md:mb-14 max-w-lg leading-relaxed font-medium tracking-tight">
-                       {c.pricingDesc}
-                    </p>
-                    <div className="space-y-4 md:space-y-6 mb-12 md:mb-16">
-                       <div className="flex items-center gap-4 md:gap-6 group">
-                          <div className="h-10 w-10 md:h-12 md:w-12 bg-white/5 rounded-full flex items-center justify-center border border-white/10 group-hover:bg-blue-500 transition-colors">
-                             <CheckCircle2 className="h-5 w-5 md:h-6 md:w-6 text-white group-hover:text-black" />
-                          </div>
-                          <span className="font-bold text-white text-base md:text-lg tracking-tight">Lifetime Technical Support</span>
-                       </div>
-                       <div className="flex items-center gap-4 md:gap-6 group">
-                          <div className="h-10 w-10 md:h-12 md:w-12 bg-white/5 rounded-full flex items-center justify-center border border-white/10 group-hover:bg-lime-400 transition-colors">
-                             <CheckCircle2 className="h-5 w-5 md:h-6 md:w-6 text-white group-hover:text-black" />
-                          </div>
-                          <span className="font-bold text-white text-base md:text-lg tracking-tight">High-Speed Cloud Hosting</span>
-                       </div>
-                    </div>
-                    <Button size="lg" asChild className="h-16 md:h-20 px-10 md:px-16 w-full sm:w-auto rounded-full font-bold text-xl md:text-2xl bg-white text-black hover:bg-zinc-100 transition-all hover:scale-105 active:scale-95 shadow-xl hover:shadow-white/10">
-                      <Link href={`/contact?lang=${lang}`}>{lang === 'sq' ? 'Merr një Ofertë' : 'Get a Free Quote'}</Link>
-                    </Button>
-                 </div>
-                 <div className="relative z-10">
-                    <div className="grid grid-cols-2 gap-8 text-center bg-white/[0.03] backdrop-blur-2xl p-16 rounded-[3.5rem] border border-white/10 shadow-inner">
-                       {c.stats.map((s, i) => (
-                         <div key={i} className="flex flex-col items-center">
-                            <span className="text-4xl md:text-5xl font-extrabold text-white mb-4 font-headline tracking-tighter text-blue-400">{s.value}</span>
-                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.3em] leading-tight">{s.label}</span>
-                         </div>
+        {/* Systems Summary */}
+        <section className="py-32 bg-white text-black overflow-hidden relative border-t border-black/5">
+          <div className="container px-4 mx-auto relative z-10">
+             <div className="grid lg:grid-cols-2 gap-24 items-center">
+                <div className="order-2 lg:order-1 relative">
+                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                       {c.summaryCards.map((card, i) => (
+                         <Card key={i} className={`p-8 md:p-10 bg-zinc-50/50 border-black/[0.03] hover:bg-white transition-all duration-500 rounded-[2.5rem] md:rounded-[3rem] group shadow-sm hover:-translate-y-2 ${i % 2 === 0 ? 'hover:border-blue-200 hover:shadow-[0_40px_80px_-20px_rgba(59,130,246,0.1)]' : 'hover:border-lime-200 hover:shadow-[0_40px_80px_-20px_rgba(163,230,81,0.1)] sm:mt-8'}`}>
+                            <div className={`h-10 w-10 md:h-12 md:w-12 rounded-xl bg-white flex items-center justify-center mb-6 md:mb-8 border border-black/5 transition-all shadow-sm ${i % 2 === 0 ? 'group-hover:bg-blue-50 group-hover:text-blue-600' : 'group-hover:bg-lime-50 group-hover:text-lime-600'}`}>
+                               {card.icon}
+                            </div>
+                            <h4 className="font-bold text-xl md:text-2xl mb-2 md:mb-3 text-black tracking-tight">{card.title}</h4>
+                            <p className="text-zinc-500 text-xs md:text-sm font-medium">{card.desc}</p>
+                         </Card>
                        ))}
-                    </div>
-                 </div>
-                 
-                 {/* Decorative elements */}
-                 <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
-                 <div className="absolute bottom-0 left-0 w-96 h-96 bg-lime-400/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />
-              </div>
-           </div>
+                   </div>
+                </div>
+                <div className="order-1 lg:order-2 flex flex-col items-center lg:items-start text-center lg:text-left">
+                   <div className="inline-flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase bg-blue-50/50 rounded-full border border-blue-100 mb-8">
+                      {c.summaryTag}
+                   </div>
+                   <h2 className="text-3xl sm:text-4xl md:text-6xl font-extrabold font-headline mb-8 md:mb-10 tracking-tighter leading-[1.15] text-black">
+                      {c.summaryHeading.split(c.summaryHeadingHighlight).map((part, i, arr) => (
+                        <span key={i}>
+                          {part}
+                          {i < arr.length - 1 && <span className="text-blue-600">{c.summaryHeadingHighlight}</span>}
+                        </span>
+                      ))}
+                   </h2>
+                   <p className="text-lg md:text-2xl text-zinc-500 leading-relaxed mb-10 md:mb-12 font-medium tracking-tight">
+                      {c.summaryText}
+                   </p>
+                   <div className="flex flex-col sm:flex-row items-center gap-6 w-full sm:w-auto">
+                     <Button asChild size="lg" className="h-16 md:h-20 px-10 md:px-12 rounded-full font-bold text-lg md:text-xl bg-black text-white hover:bg-zinc-800 transition-all shadow-xl hover:scale-105 active:scale-95 w-full sm:w-auto">
+                       <Link href={`/contact?lang=${lang}`}>{c.summaryCta}</Link>
+                     </Button>
+                     <Link href="https://multisystem.al/signup" target="_blank" rel="noopener noreferrer" className="font-bold text-black/60 hover:text-blue-600 transition-colors underline underline-offset-4">
+                        {c.summaryCtaSecondary}
+                     </Link>
+                   </div>
+                </div>
+             </div>
+          </div>
         </section>
-        
+
+
         <FinalCtaSection lang={lang} />
       </main>
       <Footer lang={lang} />

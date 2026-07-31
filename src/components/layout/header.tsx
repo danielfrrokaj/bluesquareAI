@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, ChevronDown, Code, MessageCircle, Zap, Plane, Globe } from 'lucide-react';
+import { Menu, ChevronDown, Code, MessageCircle, Zap, Plane, Globe, Hotel } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useState, useEffect } from 'react';
@@ -43,43 +43,43 @@ const navLinksEn = [
 
 const servicesEn = [
     {
-        title: "AI for Innovation",
+        title: "ShqipFol",
         href: "/services/ai-innovation",
-        description: "Mobile Apps like ShqipFol, Chatbots, Openclaw, N8N, and Automations.",
+        description: "Real-time voice translation app for Albanian speakers.",
         icon: <MessageCircle className="h-5 w-5" />
     },
     {
-        title: "Tourism Systems",
+        title: "LuxHotel",
         href: "/services/tourism-systems",
-        description: "Discover Albania PMS, Booking Engine, Channel Manager, and AI Integrations.",
-        icon: <Plane className="h-5 w-5" />
+        description: "Hotel PMS, Booking Engine, and Channel Manager for hospitality.",
+        icon: <Hotel className="h-5 w-5" />
     },
     {
-        title: "Quick Solutions",
+        title: "Multisys",
         href: "/services/quick-solutions",
-        description: "SEO-optimized websites with CMS starting from 300 euro.",
-        icon: <Zap className="h-5 w-5" />
+        description: "SEO-optimized websites and fast digital solutions with CMS.",
+        icon: <Code className="h-5 w-5" />
     },
 ];
 
 const servicesSq = [
     {
-        title: "AI për Inovacion",
+        title: "ShqipFol",
         href: "/services/ai-innovation",
-        description: "Aplikacione Mobile si ShqipFol, Chatbote, Openclaw, N8N dhe Automatizime.",
+        description: "Aplikacion për përkthim zanor në kohë reale për shqipfolësit.",
         icon: <MessageCircle className="h-5 w-5" />
     },
     {
-        title: "Sisteme për Turizëm",
+        title: "LuxHotel",
         href: "/services/tourism-systems",
-        description: "Discover Albania PMS, Booking Engine, Channel Manager dhe integrime AI.",
-        icon: <Plane className="h-5 w-5" />
+        description: "PMS për hotele, Booking Engine dhe Channel Manager për mikpritjen.",
+        icon: <Hotel className="h-5 w-5" />
     },
     {
-        title: "Zgjidhje të Shpejta",
+        title: "Multisys",
         href: "/services/quick-solutions",
-        description: "Website të optimizuar për SEO me CMS duke filluar nga 300 euro.",
-        icon: <Zap className="h-5 w-5" />
+        description: "Website të optimizuara SEO dhe zgjidhje digjitale të shpejta me CMS.",
+        icon: <Code className="h-5 w-5" />
     },
 ];
 
