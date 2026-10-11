@@ -1,0 +1,46 @@
+[
+ {
+  "@type": "SoftwareApplication",
+  "@id": "{{site}}/projects/luxhotel.html#software",
+  "name": "LuxHotel System",
+  "applicationCategory": "BusinessApplication",
+  "applicationSubCategory": "Hotel property management system",
+  "operatingSystem": "Web, iOS, Android",
+  "url": "{{site}}/projects/luxhotel.html",
+  "sameAs": [
+   "https://luxhotelsystem.com"
+  ],
+  "image": "{{site}}/assets/img/luxhotel-mobile.jpg",
+  "description": "Hotel PMS with reservations, channel manager for 100+ OTA channels, direct booking engine and financial reports in one dashboard.",
+  "featureList": [
+   "Reservations, check-in, check-out and room assignment",
+   "Channel manager for Booking.com, Airbnb, Expedia, Agoda, Trip.com and 100+ OTAs",
+   "Direct booking engine with zero OTA commission",
+   "Sync in under 5 seconds with 0% overbooking",
+   "Financial reports",
+   "30-day free trial"
+  ],
+  "offers": {
+   "@type": "Offer",
+   "price": "2",
+   "priceCurrency": "EUR",
+   "priceSpecification": {
+    "@type": "UnitPriceSpecification",
+    "price": 2,
+    "priceCurrency": "EUR",
+    "unitText": "per room per month",
+    "billingIncrement": 1
+   }
+  },
+  "publisher": {
+   "@id": "{{site}}/#organization"
+  },
+  "creator": {
+   "@id": "{{site}}/#organization"
+  },
+  "inLanguage": [
+   "en",
+   "sq"
+  ]
+ }
+]

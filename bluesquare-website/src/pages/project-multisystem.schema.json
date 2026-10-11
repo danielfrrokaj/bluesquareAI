@@ -1,0 +1,32 @@
+[
+ {
+  "@type": "SoftwareApplication",
+  "@id": "{{site}}/projects/multisystem.html#software",
+  "name": "Multisystem",
+  "applicationCategory": "BusinessApplication",
+  "applicationSubCategory": "CRM and business management platform",
+  "operatingSystem": "Web",
+  "url": "{{site}}/projects/multisystem.html",
+  "image": "{{site}}/assets/img/crm.jpg",
+  "description": "Customisable business management platform built for the Albanian market, with templates, custom tables, ready-made apps, WhatsApp and a secure API.",
+  "featureList": [
+   "Custom tables with 10 field types, relations and formulas",
+   "Forms, Calendar, Charts, WhatsApp and Notes apps",
+   "Separate database schema per account",
+   "Role-based permissions",
+   "OpenAPI with secure keys",
+   "Import from Excel",
+   "Set up in one business day"
+  ],
+  "publisher": {
+   "@id": "{{site}}/#organization"
+  },
+  "creator": {
+   "@id": "{{site}}/#organization"
+  },
+  "inLanguage": [
+   "sq",
+   "en"
+  ]
+ }
+]

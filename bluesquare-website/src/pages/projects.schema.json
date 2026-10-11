@@ -1,0 +1,85 @@
+[
+ {
+  "@type": "ItemList",
+  "@id": "{{page}}#products",
+  "name": "Blue Square AI products",
+  "numberOfItems": 5,
+  "itemListElement": [
+   {
+    "@type": "ListItem",
+    "position": 1,
+    "item": {
+     "@id": "{{site}}/projects/luxhotel.html#software"
+    },
+    "name": "LuxHotel System",
+    "url": "{{site}}/projects/luxhotel.html"
+   },
+   {
+    "@type": "ListItem",
+    "position": 2,
+    "item": {
+     "@id": "{{site}}/projects/shqipfol.html#software"
+    },
+    "name": "ShqipFol",
+    "url": "{{site}}/projects/shqipfol.html"
+   },
+   {
+    "@type": "ListItem",
+    "position": 3,
+    "item": {
+     "@id": "{{site}}/projects/multisystem.html#software"
+    },
+    "name": "Multisystem",
+    "url": "{{site}}/projects/multisystem.html"
+   },
+   {
+    "@type": "ListItem",
+    "position": 4,
+    "item": {
+     "@id": "{{site}}/projects.html#bluebar"
+    },
+    "name": "BlueBar",
+    "url": "{{site}}/projects.html#bluebar"
+   },
+   {
+    "@type": "ListItem",
+    "position": 5,
+    "item": {
+     "@id": "{{site}}/projects.html#bluebill"
+    },
+    "name": "BlueBill",
+    "url": "{{site}}/projects.html#bluebill"
+   }
+  ]
+ },
+ {
+  "@type": "SoftwareApplication",
+  "@id": "{{site}}/projects.html#bluebar",
+  "name": "BlueBar",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "url": "{{site}}/projects.html#bluebar",
+  "description": "Order and sales management for bars and cafés.",
+  "publisher": {
+   "@id": "{{site}}/#organization"
+  },
+  "creator": {
+   "@id": "{{site}}/#organization"
+  }
+ },
+ {
+  "@type": "SoftwareApplication",
+  "@id": "{{site}}/projects.html#bluebill",
+  "name": "BlueBill",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web",
+  "url": "{{site}}/projects.html#bluebill",
+  "description": "Invoicing and billing for small and medium businesses.",
+  "publisher": {
+   "@id": "{{site}}/#organization"
+  },
+  "creator": {
+   "@id": "{{site}}/#organization"
+  }
+ }
+]

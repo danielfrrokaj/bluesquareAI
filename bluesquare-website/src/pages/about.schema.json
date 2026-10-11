@@ -1,0 +1,26 @@
+[
+ {
+  "@type": "Person",
+  "@id": "{{site}}/about.html#danjel-frrokaj",
+  "name": "Danjel Frrokaj",
+  "jobTitle": "Co-founder & Lead Engineer",
+  "image": "{{site}}/assets/img/danjel-frrokaj.jpg",
+  "worksFor": {
+   "@id": "{{site}}/#organization"
+  },
+  "knowsAbout": [
+   "Artificial intelligence",
+   "Machine learning",
+   "Full-stack development"
+  ]
+ },
+ {
+  "@type": "Person",
+  "@id": "{{site}}/about.html#endi-cikalleshi",
+  "name": "Endi Cikalleshi",
+  "jobTitle": "Co-founder",
+  "worksFor": {
+   "@id": "{{site}}/#organization"
+  }
+ }
+]

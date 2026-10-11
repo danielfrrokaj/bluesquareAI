@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 278 261" role="img" aria-label="Blue Square AI">
+  <defs>
+    <!-- Upper half; the lower half is the same shape rotated 180° -->
+    <g id="half">
+      <g fill="#4A84D0">
+        <rect x="0" y="0" width="92" height="16" rx="1.5"/>
+        <rect x="0" y="30.6" width="123" height="16" rx="1.5"/>
+        <rect x="107" y="0" width="16" height="46.6" rx="1.5"/>
+        <rect x="0" y="61.2" width="153.6" height="16" rx="1.5"/>
+        <rect x="137.6" y="0" width="16" height="77.2" rx="1.5"/>
+        <rect x="0" y="91.8" width="184.2" height="16" rx="1.5"/>
+        <rect x="168.2" y="0" width="16" height="107.8" rx="1.5"/>
+      </g>
+      <g fill="#061238">
+        <rect x="199" y="0" width="79" height="16" rx="1.5"/>
+        <rect x="199" y="30.6" width="79" height="16" rx="1.5"/>
+        <rect x="199" y="61.2" width="79" height="16" rx="1.5"/>
+        <rect x="199" y="91.8" width="79" height="16" rx="1.5"/>
+      </g>
+    </g>
+  </defs>
+  <use href="#half" xlink:href="#half"/>
+  <rect x="0" y="122.4" width="278" height="16" rx="1.5" fill="#4A84D0"/>
+  <use href="#half" xlink:href="#half" transform="rotate(180 139 130.4)"/>
+</svg>

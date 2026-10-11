@@ -1,0 +1,156 @@
+[
+ {
+  "@type": "OfferCatalog",
+  "@id": "{{page}}#catalog",
+  "name": "Blue Square AI solutions",
+  "itemListElement": [
+   {
+    "@type": "Offer",
+    "itemOffered": {
+     "@id": "{{site}}/solutions.html#hotel-software"
+    }
+   },
+   {
+    "@type": "Offer",
+    "itemOffered": {
+     "@id": "{{site}}/solutions.html#mobile-apps"
+    }
+   },
+   {
+    "@type": "Offer",
+    "itemOffered": {
+     "@id": "{{site}}/solutions.html#dashboards"
+    }
+   },
+   {
+    "@type": "Offer",
+    "itemOffered": {
+     "@id": "{{site}}/solutions.html#crm"
+    }
+   },
+   {
+    "@type": "Offer",
+    "itemOffered": {
+     "@id": "{{site}}/solutions.html#ai-automation"
+    }
+   },
+   {
+    "@type": "Offer",
+    "itemOffered": {
+     "@id": "{{site}}/solutions.html#websites"
+    }
+   }
+  ]
+ },
+ {
+  "@type": "Service",
+  "@id": "{{site}}/solutions.html#hotel-software",
+  "name": "Hotel software",
+  "serviceType": "Hotel property management software",
+  "description": "Property management system, channel manager connected to 100+ OTAs, direct booking engine and AI integrations for hotels, guesthouses and apartments.",
+  "provider": {
+   "@id": "{{site}}/#organization"
+  },
+  "areaServed": [
+   {
+    "@type": "Country",
+    "name": "Albania"
+   }
+  ],
+  "url": "{{site}}/solutions.html#hotel-software"
+ },
+ {
+  "@type": "Service",
+  "@id": "{{site}}/solutions.html#mobile-apps",
+  "name": "Mobile app development",
+  "serviceType": "Mobile application development",
+  "description": "iOS and Android apps with real-time voice and AI features, CarPlay and device integrations.",
+  "provider": {
+   "@id": "{{site}}/#organization"
+  },
+  "areaServed": [
+   {
+    "@type": "Country",
+    "name": "Albania"
+   }
+  ],
+  "url": "{{site}}/solutions.html#mobile-apps"
+ },
+ {
+  "@type": "Service",
+  "@id": "{{site}}/solutions.html#dashboards",
+  "name": "System dashboards",
+  "serviceType": "Business dashboard development",
+  "description": "Operations and finance dashboards with live KPIs, reports and role-based access.",
+  "provider": {
+   "@id": "{{site}}/#organization"
+  },
+  "areaServed": [
+   {
+    "@type": "Country",
+    "name": "Albania"
+   }
+  ],
+  "url": "{{site}}/solutions.html#dashboards"
+ },
+ {
+  "@type": "Service",
+  "@id": "{{site}}/solutions.html#crm",
+  "name": "CRM & business systems",
+  "serviceType": "Custom CRM development",
+  "description": "Custom CRMs and management platforms for pipelines, clients, projects, inventory and WhatsApp notifications.",
+  "provider": {
+   "@id": "{{site}}/#organization"
+  },
+  "areaServed": [
+   {
+    "@type": "Country",
+    "name": "Albania"
+   }
+  ],
+  "url": "{{site}}/solutions.html#crm"
+ },
+ {
+  "@type": "Service",
+  "@id": "{{site}}/solutions.html#ai-automation",
+  "name": "AI & automation",
+  "serviceType": "AI chatbot and workflow automation",
+  "description": "AI assistants and chatbots for websites and WhatsApp, and workflow automation with n8n and OpenClaw.",
+  "provider": {
+   "@id": "{{site}}/#organization"
+  },
+  "areaServed": [
+   {
+    "@type": "Country",
+    "name": "Albania"
+   }
+  ],
+  "url": "{{site}}/solutions.html#ai-automation"
+ },
+ {
+  "@type": "Service",
+  "@id": "{{site}}/solutions.html#websites",
+  "name": "Websites",
+  "serviceType": "Website development and SEO",
+  "description": "SEO-optimised, mobile-first websites with an easy CMS.",
+  "provider": {
+   "@id": "{{site}}/#organization"
+  },
+  "areaServed": [
+   {
+    "@type": "Country",
+    "name": "Albania"
+   }
+  ],
+  "url": "{{site}}/solutions.html#websites",
+  "offers": {
+   "@type": "Offer",
+   "priceCurrency": "EUR",
+   "priceSpecification": {
+    "@type": "PriceSpecification",
+    "minPrice": 300,
+    "priceCurrency": "EUR"
+   }
+  }
+ }
+]

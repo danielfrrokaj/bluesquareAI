@@ -1,0 +1,29 @@
+[
+ {
+  "@type": "MobileApplication",
+  "@id": "{{site}}/projects/shqipfol.html#software",
+  "name": "ShqipFol",
+  "applicationCategory": "UtilitiesApplication",
+  "applicationSubCategory": "Voice translation",
+  "operatingSystem": "iOS, Android",
+  "url": "{{site}}/projects/shqipfol.html",
+  "description": "Real-time voice translation for Albanian speakers with natural human-like voices, automatic language detection and CarPlay support.",
+  "featureList": [
+   "Real-time voice translation",
+   "Human-like voices: Bardha, Dielli, Genti",
+   "CarPlay and steering-wheel controls",
+   "Automatic Albanian / foreign language detection",
+   "Hold-to-Talk"
+  ],
+  "publisher": {
+   "@id": "{{site}}/#organization"
+  },
+  "creator": {
+   "@id": "{{site}}/#organization"
+  },
+  "inLanguage": [
+   "sq",
+   "en"
+  ]
+ }
+]
