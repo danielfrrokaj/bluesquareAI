@@ -22,7 +22,8 @@ export const COMPANY = {
   geo: { lat: 41.3281, lng: 19.8207 },
   mapsUrl: "https://www.google.com/maps/search/?api=1&query=Pallati+i+Kultur%C3%ABs+Tirana",
   team: [
-    { name: "Danjel Frrokaj", slug: "danjel-frrokaj", image: "/images/danjel-frrokaj.jpg" },
-    { name: "Endi Cikalleshi", slug: "endi-cikalleshi", image: null },
+    { name: "Danjel Frrokaj", slug: "danjel-frrokaj", image: "/images/danjel-frrokaj.jpg", founder: true },
+    { name: "Endi Cikalleshi", slug: "endi-cikalleshi", image: null, founder: true },
+    { name: "Antigona Llozhi", slug: "antigona-llozhi", image: null, founder: false },
   ],
 } as const;

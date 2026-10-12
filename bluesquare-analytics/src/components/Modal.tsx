@@ -1,0 +1,71 @@
+"use client";
+
+import { createContext, useCallback, useContext, useEffect, useId, useRef, useState } from "react";
+
+const CloseContext = createContext<((message?: string) => void) | null>(null);
+
+/** Inside a Modal: closes it, optionally showing a confirmation toast. Null outside a modal. */
+export const useModalClose = () => useContext(CloseContext);
+
+/**
+ * Button that opens a native <dialog> (focus trap, Esc to close, backdrop). The content is
+ * mounted fresh on every open, so old errors and inputs don't linger.
+ */
+export function Modal({ trigger, title, triggerClassName = "btn btn--primary", children }: {
+  trigger: React.ReactNode;
+  title: string;
+  triggerClassName?: string;
+  children: React.ReactNode;
+}) {
+  const ref = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
+  const [open, setOpen] = useState(0); // increments per open; 0 = never opened
+  const [toast, setToast] = useState<string | null>(null);
+
+  const close = useCallback((message?: string) => {
+    ref.current?.close();
+    if (message) setToast(message);
+  }, []);
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 3500);
+    return () => clearTimeout(t);
+  }, [toast]);
+
+  useEffect(() => {
+    if (open) ref.current?.showModal();
+  }, [open]);
+
+  return (
+    <>
+      <button type="button" className={triggerClassName} onClick={() => setOpen((n) => n + 1)}>
+        {trigger}
+      </button>
+      <dialog
+        ref={ref}
+        className="modal"
+        aria-labelledby={titleId}
+        // A click on the dialog element itself (not its box) is a click on the backdrop.
+        onClick={(e) => e.target === ref.current && close()}
+      >
+        {open > 0 && (
+          <div className="modal__box" key={open}>
+            <header className="modal__head">
+              <h2 id={titleId}>{title}</h2>
+              <button type="button" className="modal__x" onClick={() => close()} aria-label="Close">
+                ×
+              </button>
+            </header>
+            <CloseContext.Provider value={close}>{children}</CloseContext.Provider>
+          </div>
+        )}
+      </dialog>
+      {toast && (
+        <p className="toast" role="status">
+          {toast}
+        </p>
+      )}
+    </>
+  );
+}

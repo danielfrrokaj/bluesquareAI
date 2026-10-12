@@ -8,8 +8,12 @@ export function LoginForm() {
   return (
     <form action={action} className="form">
       <label className="field">
+        <span>Email</span>
+        <input name="email" autoComplete="username" required autoFocus />
+      </label>
+      <label className="field">
         <span>Password</span>
-        <input type="password" name="password" autoComplete="current-password" required autoFocus />
+        <input type="password" name="password" autoComplete="current-password" required />
       </label>
       {error && (
         <p className="form__error" role="alert">

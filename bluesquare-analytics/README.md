@@ -1,4 +1,59 @@
-# Blue Square Analytics
+# Blue Square Dashboard
+
+Company dashboard with departments: **Finance**, **Analytics**, Marketing, Projects & Tasks (coming) and **Users**.
+
+## Finance
+- **Transactions**: income and expenses with date, virtual account, category, user and client/supplier. Filters, paging and CSV export.
+- **Reports & forecast**: per virtual account and category (compared with the previous period), per user, month by month, and a forecast
+  for this month and the next three (damped-trend smoothing over the last 12 complete months; expense budgets per category).
+- **Fiscal invoices**: fiscalized invoices synced from BlueBill, with IIC/FIC and the tax authority's verification link. Each one is booked
+  as income under the income category that matches its BlueBill category. Sync runs every 15 minutes while Finance is in use, on demand,
+  or from a scheduler (`POST /api/finance/bluebill/sync` with `Authorization: Bearer $CRON_SECRET`).
+- **Settings** (admins only): virtual accounts, categories with optional monthly budgets, currency rates, and the BlueBill connection (paste the token, activate).
+- **Currency**: everything is reported in EUR. Transactions and BlueBill invoices in another currency (e.g. ALL) are converted with the
+  rate set in Settings → Currency rates and keep their original amount and the rate used. A new rate applies to new entries; existing
+  ones are recalculated only when you tick the option.
+
+## Users and roles
+Sign-in is per user (email + password). The first sign-in with `ADMIN_EMAIL` (default `admin`) and `ADMIN_PASSWORD` creates the first admin.
+Admins manage settings and users; members use the dashboards and record their own transactions.
+
+## Google Cloud expense forecast
+
+Finance → Reports includes a Google-branded Cloud spending section. It reads the configured BigQuery billing exports on the server,
+shows net usage cost after credits and costs per project for the selected date range, and keeps all amounts in **USD**, separate from
+the EUR ledger, expense totals, and transaction forecast. No billing rows are inserted as transactions.
+
+Configure `GOOGLE_CLOUD_BILLING_SOURCES` as a JSON array in `.env.local` or the deployment environment:
+
+```dotenv
+GOOGLE_CLOUD_BILLING_SOURCES='[{"name":"Firebase Payment","projectId":"multisys-502623","datasetId":"all_billing_data","billingAccountId":"01D201-C5F2F8-BFE144"},{"name":"My Billing Account","projectId":"extended-pagoda-477512-g1","datasetId":"all_billing_data","billingAccountId":"019B71-684978-5B75EC"}]'
+GOOGLE_CLOUD_BILLING_MAX_BYTES=1073741824
+```
+
+- Authentication uses Application Default Credentials (`gcloud auth application-default login` locally) or the attached Cloud Run service account.
+  The runtime identity needs **BigQuery Job User** on each source project and **BigQuery Data Viewer** on each billing dataset.
+  Do not place access tokens or service-account keys in browser code or commit them.
+- Sources are EU datasets. The standard export table is discovered automatically; detailed export is a fallback when standard is absent.
+  When both exist, only standard is queried so charges are counted once. Each query also filters the billing account ID.
+- Cost and repeated credits are aggregated separately before being combined. Refunds and credits retain their signs; a currency other than
+  USD is shown as an unsupported source rather than silently mixed in. Unallocated account costs remain visible in the project table.
+- Reads are cached per process for 15 minutes, capped at 1 GiB scanned per account by default, and waiting/error states retry after one minute
+  when Reports is opened or refreshed. Missing tables, permission errors, and incomplete accounts are never treated as zero spend.
+- The forecast uses the last seven complete calendar days of net usage and excludes the latest observed day. It waits for continuous
+  month-to-date data and recent usage from **every** account. Current-month estimates add the remaining days at that pace; the next three
+  months use the same daily pace and each month's day count. Future estimates are floored at zero, while actual negative credits stay intact.
+  Forecasts are provisional: service-level delays, promotional credits, and changing usage can change the result. Historical filters affect
+  actual/project costs; the forecast always starts in the current month.
+- Billing is not real-time. The first export/backfill can take up to five days. Per-account usage and export timestamps appear beside the forecast.
+
+Source definitions: [Google billing export schema](https://docs.cloud.google.com/billing/docs/how-to/export-data-bigquery-tables/standard-usage)
+and [export availability](https://docs.cloud.google.com/billing/docs/how-to/export-data-bigquery-setup).
+The local Google mark is from `https://www.gstatic.com/images/branding/googleg/1x/googleg_standard_color_128dp.png`.
+
+Run the billing calculation checks with `npm run test:cloud-billing`.
+
+## Website analytics
 
 Self-hosted, cookieless website analytics for any number of websites.
 Tracks page views, visible **seconds on each page**, **clicks** on links and buttons, **countries**, referrers, devices and browsers, with daily/hourly activity reports and CSV export.
@@ -61,9 +116,12 @@ The tables are created automatically on first start.
 | Name | Purpose |
 |---|---|
 | `DATABASE_URL` | Postgres connection string. Empty means the embedded local database. |
-| `ADMIN_PASSWORD` | Dashboard password (required in production). |
+| `ADMIN_EMAIL` | Email (login name) of the first admin. Default `admin`. |
+| `ADMIN_PASSWORD` | Password of the first admin, used only while no users exist (required in production). |
 | `SESSION_SECRET` | 32+ random characters used to sign the login cookie (required in production). |
 | `REPORT_TIMEZONE` | Time zone for daily/hourly reports. Default `Europe/Tirane`. |
+| `BLUEBILL_API_URL` | BlueBill API base. Default: the production BlueBill API. Locally `http://localhost:3001/api/v1`. |
+| `CRON_SECRET` | Enables the scheduler sync endpoint. |
 | `PUBLIC_URL` | Public address used in the tracking snippet. Default: the request's host. |
 
 ## Licences

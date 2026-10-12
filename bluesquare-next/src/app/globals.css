@@ -296,11 +296,11 @@ address { font-style: normal; }
 .service:first-of-type { border-top: 0; }
 
 /* ---------- Team ---------- */
-.person { display: grid; grid-template-columns: 120px 1fr; gap: 24px; align-items: start; }
+.person { display: grid; grid-template-columns: 1fr; gap: 20px; align-items: start; align-content: start; }
 .person__photo { width: 120px; height: 150px; border-radius: var(--radius); object-fit: cover; background: var(--blue-50); }
 .person__initials { width: 120px; height: 150px; border-radius: var(--radius); display: grid; place-items: center; background: var(--navy-900); color: #fff; font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; }
 .person__role { color: var(--blue-600); font-weight: 650; font-size: 0.94rem; margin-bottom: 8px; }
-@media (max-width: 520px) { .person { grid-template-columns: 1fr; } }
+@media (min-width: 641px) and (max-width: 1000px) { .person { grid-template-columns: 120px 1fr; } }
 
 /* ---------- Definition table ---------- */
 .facts { display: grid; grid-template-columns: max-content 1fr; border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; background: #fff; margin: 0; }

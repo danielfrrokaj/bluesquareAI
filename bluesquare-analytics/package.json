@@ -6,10 +6,12 @@
     "dev": "next dev -p 4400",
     "build": "next build",
     "start": "next start -p ${PORT:-4400}",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:cloud-billing": "tsx --test src/lib/google-cloud-costs.test.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "0.5.8",
+    "@google-cloud/bigquery": "^9.2.0",
     "@ip-location-db/dbip-country-mmdb": "2.3.2026060120",
     "maxmind": "5.0.7",
     "next": "16.4.0",
@@ -23,6 +25,7 @@
     "@types/pg": "^8",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "tsx": "^4.23.15",
     "typescript": "^5.9"
   }
 }

@@ -69,7 +69,7 @@ export function AboutPage({ lang }: { lang: Locale }) {
       <section className="section section--alt" aria-labelledby="team-title">
         <div className="container">
           <SectionHead id="team-title" title={a.teamTitle} />
-          <ul className="grid grid--2">
+          <ul className="grid grid--3">
             {COMPANY.team.map((member, i) => (
               <li key={member.slug} className="card person" id={member.slug}>
                 {member.image ? (

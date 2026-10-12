@@ -417,6 +417,10 @@ const en = {
         role: "Web Developer",
         bio: "Endi builds the websites and web interfaces behind Blue Square AI's products, focusing on fast, accessible pages that work well on every device.",
       },
+      {
+        role: "Software Engineer",
+        bio: "Antigona develops and maintains the software behind Blue Square AI's products, from back-end services to the features clients use every day.",
+      },
     ],
     infraEyebrow: "Infrastructure",
     infraTitle: "We know who to work with to deliver quality",

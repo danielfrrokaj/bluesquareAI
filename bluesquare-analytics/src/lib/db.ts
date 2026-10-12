@@ -5,7 +5,10 @@ import "server-only";
 //  - DATABASE_URL empty -> embedded PGlite in ./data (local development)
 
 type Row = Record<string, unknown>;
-type Queryable = { query<T extends Row>(text: string, params?: unknown[]): Promise<{ rows: T[] }> };
+type Queryable = {
+  query<T extends Row>(text: string, params?: unknown[]): Promise<{ rows: T[] }>;
+  exec(script: string): Promise<unknown>; // several statements, no parameters
+};
 
 const SCHEMA = `
 create table if not exists sites (
@@ -42,31 +45,152 @@ create table if not exists clicks (
 );
 create index if not exists clicks_site_ts on clicks (site_id, ts);
 
+-- A website can have several domains; events record the host they came from.
+alter table sites add column if not exists domains text[] not null default '{}';
+update sites set domains = array[domain] where cardinality(domains) = 0;
+alter table pageviews add column if not exists host text;
+alter table clicks add column if not exists host text;
+update pageviews p set host = s.domain from sites s where p.host is null and p.site_id = s.id;
+update clicks c set host = s.domain from sites s where c.host is null and c.site_id = s.id;
+
 -- Random salt per day for visitor hashes; old salts are deleted so hashes can't be linked across days.
 create table if not exists salts (
   day   date primary key,
   salt  text not null
 );
+
+-- ---------- Users ----------
+create table if not exists users (
+  id             text primary key,
+  email          text not null unique,          -- stored lower-case
+  name           text not null,
+  password_hash  text not null,                 -- scrypt$salt$hash
+  role           text not null default 'member' check (role in ('admin', 'member')),
+  active         boolean not null default true,
+  created_at     timestamptz not null default now(),
+  last_login_at  timestamptz
+);
+
+-- ---------- Finance ----------
+create table if not exists fin_accounts (
+  id               text primary key,
+  name             text not null,
+  description      text,
+  opening_balance  numeric(14,2) not null default 0,
+  archived         boolean not null default false,
+  created_at       timestamptz not null default now()
+);
+
+create table if not exists fin_categories (
+  id              text primary key,
+  name            text not null,
+  kind            text not null check (kind in ('income', 'expense')),
+  monthly_budget  numeric(14,2),                 -- optional, expense categories only
+  archived        boolean not null default false,
+  created_at      timestamptz not null default now()
+);
+create unique index if not exists fin_categories_name on fin_categories (kind, lower(name));
+
+create table if not exists fin_transactions (
+  id            text primary key,
+  type          text not null check (type in ('income', 'expense')),
+  amount        numeric(14,2) not null check (amount > 0),
+  occurred_on   date not null,
+  description   text not null default '',
+  counterparty  text,
+  account_id    text references fin_accounts(id) on delete set null,
+  category_id   text references fin_categories(id) on delete set null,
+  user_id       text references users(id) on delete set null,   -- the person the transaction belongs to
+  source        text not null default 'manual',                 -- manual | bluebill
+  external_id   text unique,                                    -- e.g. bluebill:<invoice id>
+  created_by    text references users(id) on delete set null,
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+create index if not exists fin_transactions_date on fin_transactions (occurred_on);
+create index if not exists fin_transactions_account on fin_transactions (account_id, occurred_on);
+create index if not exists fin_transactions_category on fin_transactions (category_id, occurred_on);
+
+-- Fiscalized invoices pulled from BlueBill. Each one is also booked as a transaction.
+create table if not exists bluebill_invoices (
+  id                text primary key,
+  number            text,
+  type              text,
+  status            text not null,
+  total             numeric(14,2) not null,
+  currency          text,
+  issued_at         timestamptz,
+  fiscalized_at     timestamptz,
+  guest_name        text,
+  buyer_nuis        text,
+  iic               text,
+  fic               text,
+  verification_url  text,
+  lines             jsonb not null default '[]',
+  synced_at         timestamptz not null default now()
+);
+create index if not exists bluebill_invoices_issued on bluebill_invoices (issued_at);
+
+create table if not exists app_settings (
+  key         text primary key,
+  value       jsonb not null,
+  updated_at  timestamptz not null default now()
+);
+
+-- ---------- Currencies ----------
+-- Amounts are in EUR. A transaction in another currency keeps what was entered (original_amount,
+-- currency) and the rate used (fx_rate = units per 1 EUR); amount holds the EUR value.
+-- Rows from before EUR became the base were in ALL, hence the 'ALL' default when the column is added.
+alter table fin_transactions add column if not exists currency text not null default 'ALL';
+alter table fin_transactions alter column currency set default 'EUR';
+alter table fin_transactions add column if not exists original_amount numeric(14,2);
+alter table fin_transactions add column if not exists fx_rate numeric(14,6);
+-- Virtual account logos: the image itself, its type, and a counter that changes its URL on every new upload.
+alter table fin_accounts add column if not exists logo bytea;
+alter table fin_accounts add column if not exists logo_type text;
+alter table fin_accounts add column if not exists logo_version integer not null default 0;
+alter table sites add column if not exists logo bytea;
+alter table sites add column if not exists logo_type text;
+alter table sites add column if not exists logo_version integer not null default 0;
+insert into app_settings (key, value) values ('fx_rates', '{"ALL": 91.77}') on conflict do nothing;
+
+-- One-time switch of the base currency from ALL to EUR, using the ALL rate above.
+update fin_accounts set opening_balance = round(opening_balance / r.rate, 2)
+  from (select (value->>'ALL')::numeric as rate from app_settings where key = 'fx_rates') r
+  where r.rate > 0 and not exists (select 1 from app_settings where key = 'base_currency');
+update fin_categories set monthly_budget = round(monthly_budget / r.rate, 2)
+  from (select (value->>'ALL')::numeric as rate from app_settings where key = 'fx_rates') r
+  where monthly_budget is not null and r.rate > 0 and not exists (select 1 from app_settings where key = 'base_currency');
+update fin_transactions set original_amount = amount, fx_rate = r.rate, amount = greatest(round(amount / r.rate, 2), 0.01)
+  from (select (value->>'ALL')::numeric as rate from app_settings where key = 'fx_rates') r
+  where currency = 'ALL' and original_amount is null and r.rate > 0
+    and not exists (select 1 from app_settings where key = 'base_currency');
+insert into app_settings (key, value) values ('base_currency', '"EUR"') on conflict do nothing;
 `;
 
 // Kept on globalThis: Next.js bundles each route separately, and every bundle must share one
 // connection. Two PGlite instances on the same folder would each see (and write) a different copy.
-const shared = globalThis as typeof globalThis & { __bsaDb?: Promise<Queryable> | null };
+// The schema is re-applied when its text changes, so a running dev server picks up new tables.
+const shared = globalThis as typeof globalThis & {
+  __bsaDb?: Promise<Queryable> | null;
+  __bsaReady?: { schema: string; ready: Promise<Queryable> } | null;
+};
 
 async function connect(): Promise<Queryable> {
   if (process.env.DATABASE_URL) {
     const { Pool } = await import("pg");
     const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 5 });
-    await pool.query(SCHEMA); // simple-protocol query: multiple statements are allowed
-    return { query: (text, params) => pool.query(text, params as unknown[]) as never };
+    return {
+      query: (text, params) => pool.query(text, params as unknown[]) as never,
+      exec: (script) => pool.query(script), // simple-protocol query: multiple statements are allowed
+    };
   }
   const { PGlite } = await import("@electric-sql/pglite");
   const { mkdirSync } = await import("node:fs");
   const dir = process.env.PGLITE_DIR ?? "./data/pglite";
   mkdirSync(dir, { recursive: true });
   const lite = new PGlite(dir);
-  await lite.exec(SCHEMA);
-  return { query: (text, params) => lite.query(text, params) as never };
+  return { query: (text, params) => lite.query(text, params) as never, exec: (script) => lite.exec(script) };
 }
 
 export function getDb(): Promise<Queryable> {
@@ -74,7 +198,19 @@ export function getDb(): Promise<Queryable> {
     shared.__bsaDb = null;
     throw err;
   });
-  return shared.__bsaDb;
+  if (shared.__bsaReady?.schema !== SCHEMA) {
+    const ready = shared.__bsaDb.then(async (db) => {
+      // A connection made by an older build of this file (still alive in a dev server) has no exec.
+      if (!db.exec) throw new Error("The database schema changed: restart the server.");
+      await db.exec(SCHEMA);
+      return db;
+    });
+    shared.__bsaReady = { schema: SCHEMA, ready };
+    ready.catch(() => {
+      if (shared.__bsaReady?.ready === ready) shared.__bsaReady = null;
+    });
+  }
+  return shared.__bsaReady!.ready;
 }
 
 export async function query<T extends Row = Row>(text: string, params: unknown[] = []): Promise<T[]> {

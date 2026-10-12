@@ -41,7 +41,7 @@ export function organizationSchema(lang: Locale): Thing {
     taxID: COMPANY.nuis,
     foundingDate: COMPANY.foundingYear,
     foundingLocation: { "@type": "Place", name: "Tirana, Albania" },
-    founder: people,
+    founder: people.filter((_, i) => COMPANY.team[i].founder),
     employee: people,
     address: {
       "@type": "PostalAddress",

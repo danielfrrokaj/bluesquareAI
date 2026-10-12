@@ -383,6 +383,10 @@ const sq: Dictionary = {
         role: "Zhvillues Web",
         bio: "Endi ndërton faqet dhe ndërfaqet web të produkteve të Blue Square AI, me fokus te faqe të shpejta, të aksesueshme dhe që funksionojnë mirë në çdo pajisje.",
       },
+      {
+        role: "Inxhiniere Software",
+        bio: "Antigona zhvillon dhe mirëmban software-in e produkteve të Blue Square AI, nga shërbimet back-end deri te funksionet që klientët përdorin çdo ditë.",
+      },
     ],
     infraEyebrow: "Infrastruktura",
     infraTitle: "Ne dimë me kë të punojmë për të dhënë cilësi",

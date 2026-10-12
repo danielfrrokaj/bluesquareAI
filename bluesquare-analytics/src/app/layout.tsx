@@ -10,7 +10,7 @@ const jakarta = localFont({
 });
 
 export const metadata: Metadata = {
-  title: { default: "Blue Square Analytics", template: "%s | Blue Square Analytics" },
+  title: { default: "Blue Square Dashboard", template: "%s | Blue Square Dashboard" },
   robots: { index: false, follow: false },
   icons: { icon: [{ url: "/favicon.ico" }, { url: "/logo-mark.svg", type: "image/svg+xml" }] },
 };

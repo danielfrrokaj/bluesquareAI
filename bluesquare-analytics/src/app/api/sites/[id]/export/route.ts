@@ -1,16 +1,10 @@
 import { isAuthenticated } from "@/lib/auth";
 import { getSite } from "@/lib/sites";
-import { activity, countries, parseRange, topClicks, topPages } from "@/lib/stats";
+import { activity, countries, parseFilters, parseRange, topClicks, topPages } from "@/lib/stats";
 import { countryName } from "@/lib/format";
+import { csv } from "@/lib/csv";
 
 export const dynamic = "force-dynamic";
-
-const cell = (v: unknown) => {
-  const s = v == null ? "" : String(v);
-  // Quote fields and neutralise spreadsheet formulas (CSV injection).
-  return `"${(/^[=+\-@]/.test(s) ? `'${s}` : s).replace(/"/g, '""')}"`;
-};
-const csv = (header: string[], rows: unknown[][]) => [header, ...rows].map((r) => r.map(cell).join(",")).join("\r\n");
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!(await isAuthenticated())) return new Response("Unauthorized", { status: 401 });
@@ -21,19 +15,20 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const url = new URL(req.url);
   const range = parseRange(url.searchParams.get("range") ?? undefined);
   const type = url.searchParams.get("type") ?? "activity";
+  const f = parseFilters(Object.fromEntries(url.searchParams));
 
   let body: string;
   if (type === "pages") {
-    const rows = await topPages(id, range, 1000);
+    const rows = await topPages(id, range, 1000, f);
     body = csv(["page", "views", "visitors", "avg_seconds", "total_seconds"], rows.map((r) => [r.path, r.views, r.visitors, r.avgSeconds, r.totalSeconds]));
   } else if (type === "countries") {
-    const rows = await countries(id, range);
+    const rows = await countries(id, range, f);
     body = csv(["country_code", "country", "visitors", "views"], rows.map((r) => [r.key, countryName(r.key), r.visitors, r.views]));
   } else if (type === "clicks") {
-    const rows = await topClicks(id, range, 1000);
+    const rows = await topClicks(id, range, 1000, f);
     body = csv(["label", "link", "clicks", "visitors"], rows.map((r) => [r.label, r.href, r.clicks, r.visitors]));
   } else {
-    const rows = await activity(id, range);
+    const rows = await activity(id, range, f);
     body = csv(["period", "visitors", "page_views", "clicks", "avg_seconds"], rows.map((r) => [r.bucket, r.visitors, r.views, r.clicks, r.avgSeconds]));
   }
 

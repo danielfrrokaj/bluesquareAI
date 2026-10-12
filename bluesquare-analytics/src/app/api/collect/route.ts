@@ -1,6 +1,6 @@
 import { query } from "@/lib/db";
 import { clientIp, countryFor } from "@/lib/geo";
-import { originAllowed, siteDomain } from "@/lib/sites";
+import { matchOrigin, siteDomains } from "@/lib/sites";
 import { BOT_RE, deviceFor, parseUserAgent } from "@/lib/ua";
 import { visitorId } from "@/lib/visitor";
 
@@ -36,9 +36,10 @@ export async function POST(req: Request) {
   if (!ua || BOT_RE.test(ua)) return done();
 
   const siteId = str(data.s, 64);
-  const domain = siteId ? await siteDomain(siteId) : null;
-  if (!siteId || !domain) return done(404);
-  if (!originAllowed(req.headers.get("origin"), domain)) return done(403);
+  const domains = siteId ? await siteDomains(siteId) : null;
+  if (!siteId || !domains) return done(404);
+  const host = matchOrigin(req.headers.get("origin"), domains);
+  if (!host) return done(403);
 
   // Time on page only updates an existing view; keep the highest value, cap at 1 hour.
   if (data.t === "dur") {
@@ -61,21 +62,22 @@ export async function POST(req: Request) {
     const { browser, os } = parseUserAgent(ua);
     const referrer = str(data.r, 255) || null;
     await query(
-      `insert into pageviews (id, site_id, path, referrer, country, device, browser, os, visitor)
-       values ($1, $2, $3, $4, $5, $6, $7, $8, $9) on conflict (id) do nothing`,
-      [data.id, siteId, path, referrer, country, deviceFor(data.w, ua), browser, os, visitor],
+      `insert into pageviews (id, site_id, path, referrer, country, device, browser, os, visitor, host)
+       values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) on conflict (id) do nothing`,
+      [data.id, siteId, path, referrer, country, deviceFor(data.w, ua), browser, os, visitor, host],
     );
     return done();
   }
 
   if (data.t === "click") {
-    await query("insert into clicks (site_id, path, label, href, country, visitor) values ($1, $2, $3, $4, $5, $6)", [
+    await query("insert into clicks (site_id, path, label, href, country, visitor, host) values ($1, $2, $3, $4, $5, $6, $7)", [
       siteId,
       path,
       str(data.l, 100),
       str(data.h, 300),
       country,
       visitor,
+      host,
     ]);
     return done();
   }

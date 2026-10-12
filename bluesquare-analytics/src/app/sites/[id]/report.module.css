@@ -1,0 +1,86 @@
+/* Website report: modern cards, clickable rows that filter the report, filter chips. */
+.report { display: grid; gap: 20px; }
+
+/* ---------- Header ---------- */
+.head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; }
+.title { display: flex; align-items: center; gap: 14px; }
+.favicon { width: 48px; height: 48px; flex: none; display: grid; place-items: center; border-radius: 14px; background: linear-gradient(135deg, var(--navy-900), #2b5aa0); color: #fff; font-weight: 800; font-size: 1.2rem; box-shadow: 0 10px 24px -14px rgb(6 18 56 / 0.7); }
+.faviconImg { background: #fff; border: 1px solid var(--line); overflow: hidden; }
+.faviconImg img { width: 100%; height: 100%; object-fit: contain; padding: 5px; }
+.title h1 { line-height: 1.1; }
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
+.domain { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 999px; background: #fff; border: 1px solid var(--line); font-size: 0.8rem; font-weight: 600; color: var(--body); }
+.livepill { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px; background: #e7f6ec; color: #157f3b; font-size: 0.8rem; font-weight: 700; }
+.livepill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #22a55a; box-shadow: 0 0 0 0 rgb(34 165 90 / 0.6); animation: pulse 2s infinite; }
+@keyframes pulse { 70% { box-shadow: 0 0 0 7px rgb(34 165 90 / 0); } 100% { box-shadow: 0 0 0 0 rgb(34 165 90 / 0); } }
+
+/* ---------- Filter chips ---------- */
+.filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 14px; background: var(--blue-50); border: 1px solid var(--blue-100); }
+.filters > span { font-size: 0.82rem; font-weight: 700; color: var(--muted); margin-right: 2px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; padding: 4px 6px 4px 12px; border-radius: 999px; background: #fff; border: 1px solid var(--blue-100); color: var(--ink); font-size: 0.85rem; font-weight: 600; }
+.chip small { color: var(--muted); font-weight: 600; }
+.chip:hover { text-decoration: none; border-color: var(--blue-500); }
+.chip i { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--bg); font-style: normal; color: var(--muted); }
+.chip:hover i { background: var(--blue-500); color: #fff; }
+.clear { margin-left: auto; font-size: 0.84rem; font-weight: 600; }
+
+/* ---------- KPI cards ---------- */
+.kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; list-style: none; margin: 0; padding: 0; }
+.kpis li { position: relative; overflow: hidden; padding: 18px 20px; border-radius: 16px; color: #fff; box-shadow: 0 14px 30px -18px rgb(6 18 56 / 0.55); }
+.kpis li::after { content: ""; position: absolute; right: -36px; top: -36px; width: 120px; height: 120px; border-radius: 50%; background: rgb(255 255 255 / 0.12); }
+.kpis span { display: block; font-size: 0.82rem; font-weight: 600; color: rgb(255 255 255 / 0.85); }
+.kpis strong { display: block; margin-top: 4px; font-size: clamp(1.35rem, 2.4vw, 1.8rem); letter-spacing: -0.03em; }
+.k1 { background: linear-gradient(135deg, #061238, #1b2f6b 60%, #34529c); }
+.k2 { background: linear-gradient(135deg, #2a5ca6, #4a84d0 60%, #5d95db); }
+.k3 { background: linear-gradient(135deg, #0e6a72, #1a8c95 60%, #2aa5ad); }
+.k4 { background: linear-gradient(135deg, #4b3aa8, #6b58cf 60%, #8070dc); }
+.k5 { background: linear-gradient(135deg, #b5531a, #d97a2b 60%, #e2893a); }
+
+/* ---------- Panels & grid ---------- */
+.report :global(.panel) { border: 0; border-radius: 18px; box-shadow: 0 1px 2px rgb(6 18 56 / 0.06), 0 10px 30px -22px rgb(6 18 56 / 0.35); }
+.grid2 { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.half { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+/* Clickable breakdown rows (rendered by <Breakdown>) */
+.report :global(.breakdown li) { padding: 0; }
+.report :global(.breakdown li:not(:has(.breakdown__link))) { padding: 8px 12px; }
+.report :global(.breakdown__link) { position: relative; display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 12px; border-radius: 10px; color: inherit; }
+.report :global(.breakdown__link:hover) { text-decoration: none; background: var(--bg); }
+.report :global(.breakdown__link:hover .breakdown__bar) { background: var(--blue-100); }
+.report :global(.breakdown__bar) { border-radius: 10px; transition: width 0.4s ease; }
+.report :global(.breakdown li.is-active .breakdown__bar) { width: 100% !important; background: var(--blue-500); }
+.report :global(.breakdown li.is-active .breakdown__label),
+.report :global(.breakdown li.is-active .breakdown__value),
+.report :global(.breakdown li.is-active .breakdown__extra),
+.report :global(.breakdown li.is-active small) { color: #fff; }
+.report :global(.breakdown li.is-active .breakdown__label)::after { content: " ✓"; }
+
+/* Pages table */
+.pagelink { color: var(--ink); font-weight: 600; }
+.pagelink:hover { color: var(--blue-600); }
+.rowactive td { background: var(--blue-50); }
+.rowactive .pagelink { color: var(--blue-600); }
+.device { display: inline-flex; align-items: center; gap: 8px; }
+.device svg { color: var(--blue-600); }
+
+@media (max-width: 1100px) {
+  .kpis { grid-template-columns: repeat(3, 1fr); }
+  .grid2, .grid3 { grid-template-columns: 1fr 1fr; }
+  .grid2 > :first-child { grid-column: 1 / -1; }
+}
+@media (max-width: 720px) {
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  .grid2, .grid3, .half { grid-template-columns: 1fr; }
+  .favicon { width: 40px; height: 40px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .livepill::before { animation: none; }
+  .report :global(.breakdown__bar) { transition: none; }
+}
+
+/* Domains textarea in the edit dialog, matching the global inputs */
+.report :global(.field textarea) {
+  font: inherit; color: var(--ink); border: 1px solid #cdd5e3; border-radius: 10px; padding: 10px 12px; background: #fff; width: 100%; resize: vertical;
+}
+.report :global(.field textarea:focus) { outline: none; border-color: var(--blue-500); box-shadow: 0 0 0 3px rgb(74 132 208 / 0.25); }

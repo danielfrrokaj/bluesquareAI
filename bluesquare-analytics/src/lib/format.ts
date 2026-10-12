@@ -29,3 +29,29 @@ export function flag(code: string): string {
 }
 
 export const pct = (part: number, total: number) => (total ? Math.round((part / total) * 100) : 0);
+
+const moneyFormats = new Map<string, Intl.NumberFormat>();
+
+/** 12000 -> "EUR 12,000"; 12.5 -> "EUR 12.50" */
+export function money(n: number, currency = "EUR"): string {
+  const whole = Number.isInteger(Math.round(n * 100) / 100);
+  const key = `${currency}|${whole}`;
+  let f = moneyFormats.get(key);
+  if (!f) {
+    f = new Intl.NumberFormat("en-US", { style: "currency", currency, currencyDisplay: "code", minimumFractionDigits: whole ? 0 : 2, maximumFractionDigits: 2 });
+    moneyFormats.set(key, f);
+  }
+  return f.format(n).replace(/ /g, " ");
+}
+
+/** Short form for chart axes: 1250000 -> "1.3M" */
+export function compact(n: number): string {
+  return new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(n);
+}
+
+/** Signed percentage change, or null when there's no base: (120, 100) -> "+20%" */
+export function change(current: number, previous: number): string | null {
+  if (!previous) return null;
+  const p = Math.round(((current - previous) / previous) * 100);
+  return `${p > 0 ? "+" : ""}${p}%`;
+}
