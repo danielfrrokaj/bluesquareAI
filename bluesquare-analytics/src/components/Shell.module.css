@@ -20,6 +20,16 @@
   position: relative; display: flex; align-items: center; gap: 12px; padding: 7px 10px; border-radius: 12px;
   color: #c9d6ee; font-weight: 600; font-size: 0.92rem; transition: background 0.15s, color 0.15s;
 }
+/* Projects listed under their department */
+.group { display: grid; gap: 2px; }
+.subitems { list-style: none; margin: 2px 0 6px 26px; padding: 0 0 0 12px; display: grid; gap: 1px; border-left: 1px solid rgb(255 255 255 / 0.12); }
+.subitem { display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 9px; color: #b4c3e0; font-size: 0.84rem; font-weight: 600; }
+.subname { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.subitem:hover { color: #fff; text-decoration: none; background: rgb(255 255 255 / 0.06); }
+.subitem[aria-current="page"] { color: #fff; background: rgb(74 132 208 / 0.25); box-shadow: inset 0 0 0 1px rgb(74 132 208 / 0.4); }
+.subitem :global(.accmark) { border-radius: 6px; }
+.subitem :global(.accmark--img) { padding: 1px; border: 0; }
+.count { min-width: 22px; padding: 1px 7px; border-radius: 999px; background: var(--blue-500); color: #fff; font-size: 0.7rem; font-weight: 800; text-align: center; }
 .item img { width: 34px; height: 34px; flex: none; transition: transform 0.2s; filter: drop-shadow(0 4px 8px rgb(0 0 0 / 0.25)); }
 .item:hover { color: #fff; text-decoration: none; background: rgb(255 255 255 / 0.06); }
 .item:hover img { transform: translateY(-1px) scale(1.06); }

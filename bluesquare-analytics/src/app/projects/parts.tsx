@@ -7,6 +7,7 @@ import { listUsers } from "@/lib/users";
 import { addProject, addTask } from "./actions";
 import { TaskFields, type Option } from "./TaskFields";
 import { ProjectFields } from "./ProjectFields";
+import { LogoMark, projectLogoUrl } from "@/components/AccountMark";
 import s from "./projects.module.css";
 
 // Pieces shared by the Projects & Tasks pages.
@@ -79,4 +80,9 @@ export function ViewToggle({ view, href }: { view: "board" | "list"; href: (v: "
       ))}
     </nav>
   );
+}
+
+/** A project's logo, or its initials on a colour. */
+export function ProjectMark({ project: p, size = 40 }: { project: Pick<Project, "id" | "name" | "logo_version">; size?: number }) {
+  return <LogoMark src={projectLogoUrl(p.id, p.logo_version)} name={p.name} size={size} />;
 }

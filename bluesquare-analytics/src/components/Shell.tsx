@@ -2,6 +2,8 @@ import Link from "next/link";
 import { logout } from "@/app/actions";
 import { currentUser, isAdmin } from "@/lib/auth";
 import { avatarUrl, ROLES } from "@/lib/users";
+import { sidebarProjects } from "@/lib/projects";
+import { LogoMark, projectLogoUrl } from "./AccountMark";
 import { NavIcon, type NavIconName } from "./NavIcon";
 import s from "./Shell.module.css";
 
@@ -35,9 +37,14 @@ function Brand() {
 }
 
 /** Dashboard frame: sidebar with departments and account, an optional section bar, and the page. */
-export async function Shell({ department, subnav, children }: { department: Department; subnav?: SubLink[]; children: React.ReactNode }) {
+/** `current` marks the open item under a department in the sidebar (e.g. the project being viewed). */
+export async function Shell({ department, subnav, current, children }: {
+  department: Department; subnav?: SubLink[]; current?: string; children: React.ReactNode;
+}) {
   const user = await currentUser();
   const admin = isAdmin(user);
+  // Inside Projects & Tasks, its projects are listed under it with their open task counts.
+  const projects = department === "projects" ? await sidebarProjects() : [];
   return (
     <div className={s.frame}>
       {/* Drawer toggle for small screens; a checkbox keeps this a server component. */}
@@ -58,11 +65,27 @@ export async function Shell({ department, subnav, children }: { department: Depa
         <div className={s.label}>Workspace</div>
         <nav className={s.nav} aria-label="Departments">
           {DEPARTMENTS.filter((d) => admin || !d.adminOnly).map((d) => (
-            <Link key={d.key} href={d.href} className={s.item} aria-current={d.key === department ? "page" : undefined}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={`/icons/${d.key}.png`} alt="" width={34} height={34} />
-              {d.label}
-            </Link>
+            <div key={d.key} className={s.group}>
+              <Link href={d.href} className={s.item} aria-current={d.key === department && !(d.key === "projects" && current) ? "page" : undefined}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={`/icons/${d.key}.png`} alt="" width={34} height={34} />
+                {d.label}
+              </Link>
+              {d.key === "projects" && projects.length > 0 && (
+                <ul className={s.subitems} aria-label="Projects">
+                  {projects.map((p) => (
+                    <li key={p.id}>
+                      <Link href={`/projects/${p.id}`} className={s.subitem} aria-current={current === p.id ? "page" : undefined}
+                        title={`${p.name} · ${p.open} open ${p.open === 1 ? "task" : "tasks"}`}>
+                        <LogoMark src={projectLogoUrl(p.id, p.logo_version)} name={p.name} size={22} />
+                        <span className={s.subname}>{p.name}</span>
+                        {p.open > 0 && <b className={s.count}>{p.open}</b>}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           ))}
         </nav>
         <Link href="/settings" className={`${s.item} ${s.settingsLink}`} aria-current={department === "settings" ? "page" : undefined}>

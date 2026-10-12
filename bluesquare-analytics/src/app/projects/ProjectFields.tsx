@@ -1,5 +1,7 @@
 import { AUTH_PROVIDERS, DEPLOYMENTS, HOSTINGS, PROJECT_STATUSES, PROJECT_TYPES } from "@/lib/project-options";
 import type { Project } from "@/lib/projects";
+import { LogoField } from "@/components/LogoField";
+import { projectLogoUrl } from "@/components/AccountMark";
 import s from "./projects.module.css";
 
 function Select({ name, label, options, value, blank }: { name: string; label: string; options: readonly string[]; value?: string | null; blank?: string }) {
@@ -20,6 +22,9 @@ export function ProjectFields({ project }: { project?: Project }) {
   return (
     <div className={s.formgrid}>
       {p && <input type="hidden" name="id" value={p.id} />}
+      <div className={s.wide}>
+        <LogoField current={p ? projectLogoUrl(p.id, p.logo_version) : null} name={p?.name ?? ""} />
+      </div>
       <label className={`field ${s.wide}`}>
         <span>Project name</span>
         <input name="name" defaultValue={p?.name} required maxLength={120} placeholder="LuxHotel PMS" autoFocus={!p} />

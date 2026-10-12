@@ -5,9 +5,10 @@ import { revalidatePath } from "next/cache";
 import { isAdmin, requireAuth } from "@/lib/auth";
 import {
   createProject, createTask, deleteProject, deleteTask, getProject, getTask, moveTask as move, readProject, readTask,
-  TASK_STATUSES, updateProject, updateTask, type TaskStatus,
+  setProjectLogo, TASK_STATUSES, updateProject, updateTask, type TaskStatus,
 } from "@/lib/projects";
 import { removeMedia } from "@/lib/media-store";
+import { readLogo } from "@/lib/logo";
 import type { FormState } from "@/components/ActionForm";
 
 const refresh = () => revalidatePath("/projects", "layout");
@@ -19,7 +20,10 @@ export async function addProject(_: FormState, form: FormData): Promise<FormStat
   const user = await requireAuth();
   const input = readProject(form);
   if (typeof input === "string") return { error: input };
+  const logo = await readLogo(form);
+  if (typeof logo === "string") return { error: logo };
   const id = await createProject(input, user.id);
+  if (logo) await setProjectLogo(id, logo);
   refresh();
   redirect(`/projects/${id}`);
 }
@@ -30,7 +34,11 @@ export async function saveProject(_: FormState, form: FormData): Promise<FormSta
   if (!(await getProject(id))) return { error: "This project no longer exists." };
   const input = readProject(form);
   if (typeof input === "string") return { error: input };
+  const logo = await readLogo(form);
+  if (typeof logo === "string") return { error: logo };
   await updateProject(id, input);
+  if (logo) await setProjectLogo(id, logo);
+  else if (form.get("remove_logo") === "on") await setProjectLogo(id, null);
   refresh();
   return { ok: "Project saved." };
 }

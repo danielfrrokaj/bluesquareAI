@@ -4,7 +4,7 @@ import { listProjects } from "@/lib/projects";
 import { money } from "@/lib/format";
 import { Shell } from "@/components/Shell";
 import { projectsNav } from "@/components/nav";
-import { longDate, NewProjectButton, Progress, StatusPill, TechChips, today } from "../parts";
+import { longDate, NewProjectButton, Progress, ProjectMark, StatusPill, TechChips, today } from "../parts";
 import s from "../projects.module.css";
 
 export const dynamic = "force-dynamic";
@@ -25,7 +25,10 @@ export default async function ProjectsList() {
             <StatusPill status={p.status} />
             {p.type && <span className={s.ptype}>{p.type}</span>}
           </div>
-          <h2><Link href={`/projects/${p.id}`} className="stretched">{p.name}</Link></h2>
+          <div className={s.ptitle}>
+            <ProjectMark project={p} size={40} />
+            <h2><Link href={`/projects/${p.id}`} className="stretched">{p.name}</Link></h2>
+          </div>
           <Progress project={p} />
           <dl className={s.pfacts}>
             <div>

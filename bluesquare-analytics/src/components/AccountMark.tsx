@@ -18,6 +18,7 @@ export function LogoMark({ src, name, size = 26, round }: { src: string | null; 
 }
 
 export const accountLogoUrl = (id: string, version: number | null) => (version === null ? null : `/api/finance/accounts/${id}/logo?v=${version}`);
+export const projectLogoUrl = (id: string, version: number | null) => (version === null ? null : `/api/projects/${id}/logo?v=${version}`);
 export const siteLogoUrl = (id: string, version: number | null) => (version === null ? null : `/api/sites/${id}/logo?v=${version}`);
 
 /** A virtual account's logo or initials. */

@@ -16,12 +16,14 @@ export type Project = {
   id: string; name: string; type: string | null; status: ProjectStatus;
   start_date: string | null; deadline: string | null; budget: number | null;
   notes: string; database: string; github_url: string; hosting: string | null; auth: string | null; deployment: string | null;
+  logo_version: number | null; // null: no logo
   tasks_total: number; tasks_done: number; tasks_open: number; tasks_overdue: number;
 };
 
 const PROJECT_SELECT = `
   select p.id, p.name, p.type, p.status, to_char(p.start_date, 'YYYY-MM-DD') as start_date, to_char(p.deadline, 'YYYY-MM-DD') as deadline,
          p.budget::float8 as budget, p.notes, p.database, p.github_url, p.hosting, p.auth, p.deployment,
+         case when p.logo is null then null else p.logo_version end as logo_version,
          count(t.id)::int as tasks_total,
          count(t.id) filter (where t.status = 'done')::int as tasks_done,
          count(t.id) filter (where t.status <> 'done')::int as tasks_open,
@@ -42,7 +44,7 @@ export async function getProject(id: string): Promise<Project | null> {
   return row ?? null;
 }
 
-export type ProjectInput = Omit<Project, "id" | "tasks_total" | "tasks_done" | "tasks_open" | "tasks_overdue">;
+export type ProjectInput = Omit<Project, "id" | "logo_version" | "tasks_total" | "tasks_done" | "tasks_open" | "tasks_overdue">;
 
 const pick = <T extends string>(v: unknown, allowed: readonly T[]) => (allowed as readonly string[]).includes(String(v)) ? (String(v) as T) : null;
 const date = (v: unknown) => (typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null);
@@ -84,6 +86,26 @@ export const updateProject = (id: string, p: ProjectInput) =>
   ]);
 
 export const deleteProject = (id: string) => query("delete from pm_projects where id = $1", [id]);
+
+/** Replaces the logo (null removes it); the version bump gives the image a new URL. */
+export const setProjectLogo = (id: string, logo: { data: Buffer; type: string } | null) =>
+  query("update pm_projects set logo = $2, logo_type = $3, logo_version = logo_version + 1 where id = $1", [id, logo?.data ?? null, logo?.type ?? null]);
+
+export async function getProjectLogo(id: string): Promise<{ data: Uint8Array; type: string } | null> {
+  const [row] = await query<{ logo: Uint8Array | null; logo_type: string | null }>("select logo, logo_type from pm_projects where id = $1", [id]);
+  return row?.logo && row.logo_type ? { data: row.logo, type: row.logo_type } : null;
+}
+
+/** Projects for the sidebar: not completed, active first, with their open task count. */
+export const sidebarProjects = () =>
+  query<{ id: string; name: string; logo_version: number | null; open: number }>(
+    `select p.id, p.name, case when p.logo is null then null else p.logo_version end as logo_version,
+            count(t.id) filter (where t.status <> 'done')::int as open
+     from pm_projects p left join pm_tasks t on t.project_id = p.id
+     where p.status <> 'Completed'
+     group by p.id
+     order by case p.status when 'In Progress' then 0 when 'Testing' then 1 when 'Not Started' then 2 else 3 end, lower(p.name)`,
+  );
 
 // ---------- Tasks ----------
 

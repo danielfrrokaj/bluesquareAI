@@ -294,6 +294,10 @@ create table if not exists pm_tasks (
 );
 create index if not exists pm_tasks_board on pm_tasks (status, position);
 create index if not exists pm_tasks_project on pm_tasks (project_id);
+-- Project logos, like account and site logos: the image, its type, and a version for its URL.
+alter table pm_projects add column if not exists logo bytea;
+alter table pm_projects add column if not exists logo_type text;
+alter table pm_projects add column if not exists logo_version integer not null default 0;
 
 -- Follow-ups live in Sales (leads with a due date); this short-lived table is gone.
 drop table if exists pm_followups;

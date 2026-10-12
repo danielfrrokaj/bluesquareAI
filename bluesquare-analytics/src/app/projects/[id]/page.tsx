@@ -12,7 +12,7 @@ import { removeProject, saveProject } from "../actions";
 import { Board } from "../Board";
 import { TaskList } from "../TaskList";
 import { ProjectFields } from "../ProjectFields";
-import { longDate, NewTaskButton, pickLists, Progress, StatusPill, TechChips, today, ViewToggle } from "../parts";
+import { longDate, NewTaskButton, pickLists, Progress, ProjectMark, StatusPill, TechChips, today, ViewToggle } from "../parts";
 import s from "../projects.module.css";
 
 export const dynamic = "force-dynamic";
@@ -34,12 +34,15 @@ export default async function ProjectPage({ params, searchParams }: Props) {
   const view = (await searchParams).view === "list" ? "list" : "board";
 
   return (
-    <Shell department="projects" subnav={projectsNav(null)}>
+    <Shell department="projects" subnav={projectsNav(null)} current={p.id}>
       <div className={s.page}>
         <div className="pagehead">
           <div>
             <p className="muted"><Link href="/projects/list">← Projects</Link></p>
-            <h1>{p.name}</h1>
+            <div className={s.ptitle}>
+              <ProjectMark project={p} size={52} />
+              <h1>{p.name}</h1>
+            </div>
             <div className={s.projecttop}>
               <StatusPill status={p.status} />
               {p.type && <span className={s.ptype}>{p.type}</span>}
