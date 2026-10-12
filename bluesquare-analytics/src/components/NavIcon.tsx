@@ -1,4 +1,4 @@
-export type NavIconName = "overview" | "transactions" | "reports" | "invoices" | "settings" | "ideas" | "calendar" | "leads" | "customers" | "archive" | "import" | "board" | "folder" | "ads" | "phone";
+export type NavIconName = "overview" | "transactions" | "reports" | "invoices" | "settings" | "ideas" | "calendar" | "leads" | "customers" | "archive" | "import" | "board" | "folder" | "ads" | "phone" | "files" | "vault";
 
 const paths = {
   leads: <path d="M3 5h18l-7 8v6l-4 2v-8z" />,
@@ -14,6 +14,8 @@ const paths = {
   calendar: <path d="M4 5h16v16H4zM4 10h16M8 3v4M16 3v4M8 14h3v3H8z" />,
   board: <path d="M4 4h4v16H4zM10 4h4v10h-4zM16 4h4v6h-4z" />,
   phone: <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2" />,
+  files: <path d="M7 3h7l5 5v13H7zM14 3v5h5M4 7v14h11" />,
+  vault: <path d="M5 11h14v10H5zM8 11V7a4 4 0 0 1 8 0v4M12 15v2" />,
   folder: <path d="M3 6a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6Z" />,
   settings: <>
     <path d="m9.5 3-.6 2.2-1.6.9-2.2-.6-2.5 4.3L4.2 11v2l-1.6 1.2 2.5 4.3 2.2-.6 1.6.9.6 2.2h5l.6-2.2 1.6-.9 2.2.6 2.5-4.3-1.6-1.2v-2l1.6-1.2-2.5-4.3-2.2.6-1.6-.9L14.5 3Z" />

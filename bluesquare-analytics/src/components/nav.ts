@@ -45,6 +45,13 @@ export const salesNav = (current: SalesTab): SubLink[] =>
 export type ProjectsTab = "board" | "projects";
 
 export const projectsNav = (current: ProjectsTab | null): SubLink[] => [
-  { href: "/projects", label: "Tasks board", icon: "board", current: current === "board" },
+  { href: "/projects", label: "Tasks", icon: "board", current: current === "board" },
   { href: "/projects/list", label: "Projects", icon: "folder", current: current === "projects" },
+];
+
+export type ArchiveTab = "files" | "vault";
+
+export const archiveNav = (current: ArchiveTab): SubLink[] => [
+  { href: "/archive", label: "Files", icon: "files", current: current === "files" },
+  { href: "/archive/vault", label: "Vault", icon: "vault", current: current === "vault" },
 ];

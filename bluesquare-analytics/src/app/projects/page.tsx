@@ -4,13 +4,14 @@ import { listTasks, PRIORITIES, PRIORITY_LABEL, type Priority } from "@/lib/proj
 import { Shell } from "@/components/Shell";
 import { projectsNav } from "@/components/nav";
 import { Board } from "./Board";
-import { NewTaskButton, pickLists, today } from "./parts";
+import { TaskList } from "./TaskList";
+import { NewTaskButton, pickLists, today, ViewToggle } from "./parts";
 import s from "./projects.module.css";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Tasks board" };
+export const metadata = { title: "Tasks" };
 
-type SP = { project?: string; who?: string; priority?: string };
+type SP = { project?: string; who?: string; priority?: string; view?: string };
 
 export default async function TasksBoard({ searchParams }: { searchParams: Promise<SP> }) {
   const user = await requireAuth();
@@ -26,6 +27,7 @@ export default async function TasksBoard({ searchParams }: { searchParams: Promi
     { label: "Overdue", value: open.filter((t) => t.overdue).length, tone: s.stat_overdue },
     { label: "High priority open", value: open.filter((t) => t.priority === "high").length, tone: s.stat_high },
   ];
+  const view = sp.view === "list" ? "list" : "board";
   const filtered = !!(sp.project || sp.who || priority);
   const link = (patch: Partial<SP>) => {
     const p = new URLSearchParams(Object.entries({ ...sp, ...patch }).filter(([, v]) => v) as [string, string][]);
@@ -37,8 +39,12 @@ export default async function TasksBoard({ searchParams }: { searchParams: Promi
       <div className={s.page}>
         <div className="pagehead">
           <div>
-            <h1>Tasks board</h1>
-            <p className="muted">Drag cards between columns to change their status. Click a card to edit it.</p>
+            <h1>Tasks</h1>
+            <p className="muted">
+              {view === "board"
+                ? "Drag cards between columns to change their status. Click a card to edit it."
+                : "Click a column to sort, tick a task to complete it, or click it to edit."}
+            </p>
           </div>
           <NewTaskButton projects={projects} users={users} />
         </div>
@@ -48,6 +54,8 @@ export default async function TasksBoard({ searchParams }: { searchParams: Promi
         </ul>
 
         <form className={s.filters} action="/projects">
+          <ViewToggle view={view} href={(v) => link({ view: v === "list" ? "list" : undefined })} />
+          {view === "list" && <input type="hidden" name="view" value="list" />}
           <Link href={link({ who: sp.who === "me" ? undefined : "me" })} className={`${s.filterchip}${sp.who === "me" ? ` ${s.on}` : ""}`}>
             My tasks
           </Link>
@@ -68,7 +76,9 @@ export default async function TasksBoard({ searchParams }: { searchParams: Promi
           {filtered && <Link href="/projects" className={s.clear}>Clear</Link>}
         </form>
 
-        <Board tasks={tasks} projects={projects} users={users} today={today()} />
+        {view === "list"
+          ? <TaskList tasks={tasks} projects={projects} users={users} today={today()} />
+          : <Board tasks={tasks} projects={projects} users={users} today={today()} />}
       </div>
     </Shell>
   );

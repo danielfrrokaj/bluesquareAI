@@ -298,6 +298,49 @@ create index if not exists pm_tasks_project on pm_tasks (project_id);
 -- Follow-ups live in Sales (leads with a due date); this short-lived table is gone.
 drop table if exists pm_followups;
 
+-- ---------- Archive ----------
+-- Files of any kind, in folders ("Contracts/2026"); the bytes live in the media store.
+create table if not exists ar_files (
+  id          text primary key,
+  name        text not null,
+  folder      text not null default '',
+  note        text not null default '',
+  mime        text not null,
+  size        bigint not null,
+  media_key   text not null,
+  status      text not null default 'uploading' check (status in ('uploading', 'ready')),
+  created_by  text references users(id) on delete set null,
+  created_at  timestamptz not null default now()
+);
+create index if not exists ar_files_folder on ar_files (folder, created_at);
+
+-- Vault: passwords, API keys and internal notes. secret and notes are AES-256-GCM sealed (VAULT_KEY).
+create table if not exists ar_vault (
+  id           text primary key,
+  title        text not null,
+  kind         text not null default 'password' check (kind in ('password', 'api_key', 'note', 'other')),
+  username     text not null default '',
+  url          text not null default '',
+  tags         text[] not null default '{}',
+  admins_only  boolean not null default false,
+  secret       text,
+  notes        text,
+  created_by   text references users(id) on delete set null,
+  updated_by   text references users(id) on delete set null,
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now()
+);
+
+-- Who created, edited or revealed what, and when.
+create table if not exists ar_vault_log (
+  id        bigserial primary key,
+  entry_id  text not null references ar_vault(id) on delete cascade,
+  user_id   text references users(id) on delete set null,
+  action    text not null,            -- create | edit | reveal | notes
+  at        timestamptz not null default now()
+);
+create index if not exists ar_vault_log_entry on ar_vault_log (entry_id, at desc);
+
 -- Meta ads, filled in by hand from Ads Manager (there is no API connection).
 create table if not exists mk_ads (
   id               text primary key,

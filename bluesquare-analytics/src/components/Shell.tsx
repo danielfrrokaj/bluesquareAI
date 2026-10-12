@@ -5,7 +5,7 @@ import { avatarUrl, ROLES } from "@/lib/users";
 import { NavIcon, type NavIconName } from "./NavIcon";
 import s from "./Shell.module.css";
 
-export type Department = "overview" | "finance" | "analytics" | "marketing" | "sales" | "projects" | "users" | "settings";
+export type Department = "overview" | "finance" | "analytics" | "marketing" | "archive" | "sales" | "projects" | "users" | "settings";
 /** `external` links (another app) open in a new browser tab. */
 export type SubLink = { href: string; label: string; icon?: NavIconName; current?: boolean; external?: boolean };
 
@@ -15,6 +15,7 @@ const DEPARTMENTS: { key: Department; href: string; label: string; adminOnly?: b
   { key: "finance", href: "/finance", label: "Finance" },
   { key: "analytics", href: "/analytics", label: "Analytics" },
   { key: "marketing", href: "/marketing", label: "Marketing & Ads" },
+  { key: "archive", href: "/archive", label: "Archive" },
   { key: "sales", href: "/sales", label: "Sales" },
   { key: "projects", href: "/projects", label: "Projects & Tasks" },
   { key: "users", href: "/users", label: "Users", adminOnly: true },

@@ -3,12 +3,11 @@
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/components/Modal";
-import { ActionForm } from "@/components/ActionForm";
 import { PRIORITY_LABEL, TASK_STATUSES, TASK_STATUS_LABEL, type TaskStatus } from "@/lib/project-options";
 import type { Task } from "@/lib/projects";
-import { moveTask, removeTask, saveTask } from "./actions";
-import { TaskFields, type Option } from "./TaskFields";
-import { ScreenshotField } from "./ScreenshotField";
+import { moveTask } from "./actions";
+import type { Option } from "./TaskFields";
+import { TaskEditor } from "./TaskEditor";
 import s from "./projects.module.css";
 
 const COLUMN_HINT: Record<TaskStatus, string> = { pending: "Nothing waiting", in_progress: "Nothing in progress", done: "Nothing finished yet" };
@@ -112,16 +111,7 @@ export function Board({ tasks, projects, users, today, showProject = true }: {
                   }}
                 >
                   <Modal title={`Task #${t.id}`} triggerClassName={s.cardbtn} trigger={<CardBody task={t} showProject={showProject} />}>
-                    <ActionForm action={saveTask} submit="Save task" className={`form ${s.dialogform}`}>
-                      <TaskFields task={t} projects={projects} users={users} today={today} />
-                    </ActionForm>
-                    <ScreenshotField taskId={t.id} has={t.screenshot} version={t.screenshot_version} />
-                    {/* The server allows it for whoever created the task, or an admin. */}
-                    <div className="danger">
-                      <ActionForm action={removeTask} submit="Delete task" pending="Deleting…" danger className="form form--row">
-                        <input type="hidden" name="id" value={t.id} />
-                      </ActionForm>
-                    </div>
+                    <TaskEditor task={t} projects={projects} users={users} today={today} />
                   </Modal>
                   {status !== "done" && (
                     <button type="button" className={s.quickdone} title="Mark as done" aria-label={`Mark task #${t.id} as done`}

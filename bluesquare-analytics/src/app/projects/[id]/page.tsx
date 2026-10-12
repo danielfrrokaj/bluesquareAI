@@ -10,19 +10,20 @@ import { Modal } from "@/components/Modal";
 import { ActionForm } from "@/components/ActionForm";
 import { removeProject, saveProject } from "../actions";
 import { Board } from "../Board";
+import { TaskList } from "../TaskList";
 import { ProjectFields } from "../ProjectFields";
-import { longDate, NewTaskButton, pickLists, Progress, StatusPill, TechChips, today } from "../parts";
+import { longDate, NewTaskButton, pickLists, Progress, StatusPill, TechChips, today, ViewToggle } from "../parts";
 import s from "../projects.module.css";
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ id: string }> };
+type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ view?: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: (await getProject((await params).id))?.name ?? "Project" };
 }
 
-export default async function ProjectPage({ params }: Props) {
+export default async function ProjectPage({ params, searchParams }: Props) {
   const user = await requireAuth();
   const { id } = await params;
   const project = await getProject(id);
@@ -30,6 +31,7 @@ export default async function ProjectPage({ params }: Props) {
   const [tasks, { projects, users }] = await Promise.all([listTasks({ projectId: id }), pickLists()]);
   const now = today();
   const p = project;
+  const view = (await searchParams).view === "list" ? "list" : "board";
 
   return (
     <Shell department="projects" subnav={projectsNav(null)}>
@@ -80,7 +82,13 @@ export default async function ProjectPage({ params }: Props) {
           {p.notes && <p className={s.notes}>{p.notes}</p>}
         </section>
 
-        <Board tasks={tasks} projects={projects} users={users} today={now} showProject={false} />
+        <div className={s.filters}>
+          <h2 className={s.sectiontitle}>Tasks</h2>
+          <ViewToggle view={view} href={(v) => `/projects/${p.id}${v === "list" ? "?view=list" : ""}`} />
+        </div>
+        {view === "list"
+          ? <TaskList tasks={tasks} projects={projects} users={users} today={now} showProject={false} />
+          : <Board tasks={tasks} projects={projects} users={users} today={now} showProject={false} />}
       </div>
     </Shell>
   );

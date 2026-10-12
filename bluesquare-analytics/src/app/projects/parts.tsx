@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Modal } from "@/components/Modal";
 import { ActionForm } from "@/components/ActionForm";
 import { PROJECT_STATUS_TONE, type ProjectStatus } from "@/lib/project-options";
@@ -62,4 +63,20 @@ export function TechChips({ project: p }: { project: Project }) {
   const chips = [p.hosting, p.auth, p.deployment].filter(Boolean) as string[];
   if (!chips.length) return null;
   return <span className={s.chips}>{chips.map((c) => <span key={c} className={s.techchip}>{c}</span>)}</span>;
+}
+
+/** Board / List switch; `href(view)` builds the link keeping the page's other parameters. */
+export function ViewToggle({ view, href }: { view: "board" | "list"; href: (v: "board" | "list") => string }) {
+  return (
+    <nav className={s.viewtoggle} aria-label="View">
+      {(["board", "list"] as const).map((v) => (
+        <Link key={v} href={href(v)} aria-current={view === v ? "page" : undefined} scroll={false}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <path d={v === "board" ? "M4 4h4v16H4zM10 4h4v10h-4zM16 4h4v6h-4z" : "M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"} />
+          </svg>
+          {v === "board" ? "Board" : "List"}
+        </Link>
+      ))}
+    </nav>
+  );
 }

@@ -112,6 +112,34 @@
 .overview .pfacts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .notes { margin: 0; padding: 12px 14px; border-radius: 12px; background: var(--bg); white-space: pre-wrap; font-size: 0.9rem; }
 
+/* ---------- View toggle & list ---------- */
+.viewtoggle { display: inline-flex; padding: 3px; border-radius: 999px; background: #fff; border: 1px solid var(--line); margin-right: 4px; }
+.viewtoggle a { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; font-size: 0.84rem; font-weight: 700; color: var(--muted); }
+.viewtoggle a:hover { text-decoration: none; color: var(--ink); }
+.viewtoggle a[aria-current="page"] { background: var(--navy-900); color: #fff; }
+.sectiontitle { font-size: 1.05rem; margin-right: auto; }
+
+.listwrap { background: #fff; border-radius: 18px; padding: 6px 10px; box-shadow: 0 1px 2px rgb(6 18 56 / 0.06), 0 10px 30px -22px rgb(6 18 56 / 0.35); }
+.tasktable th, .tasktable td { text-align: left !important; vertical-align: middle; }
+.tasktable th { padding: 0; }
+.sortbtn { display: inline-flex; align-items: center; gap: 4px; width: 100%; padding: 10px; border: 0; background: none; font: inherit; font-size: 0.8rem; font-weight: 700; color: var(--muted); cursor: pointer; white-space: nowrap; }
+.sortbtn:hover { color: var(--ink); }
+.sortbtn span { color: var(--blue-500); }
+.taskrow { position: relative; }
+.taskrow:hover td { background: #f7f9fd; }
+.tick { width: 36px; }
+.tick input { width: 18px; height: 18px; accent-color: #22a55a; cursor: pointer; position: relative; z-index: 1; }
+.titlecell { white-space: normal !important; min-width: 260px; }
+.rowbtn { display: grid; gap: 2px; padding: 0; border: 0; background: none; font: inherit; font-weight: 600; color: var(--ink); text-align: left; cursor: pointer; }
+.rowbtn::after { content: ""; position: absolute; inset: 0; }
+.rowbtn small { font-weight: 500; font-size: 0.74rem; color: var(--muted); }
+.rowbtn:hover { color: var(--blue-600); }
+.statussel { position: relative; z-index: 1; font: inherit; font-size: 0.8rem; font-weight: 700; padding: 4px 8px; border-radius: 999px; border: 0; cursor: pointer; }
+.st_pending { background: #eef1f6; color: #4a5672; }
+.st_in_progress { background: var(--blue-50); color: var(--blue-600); }
+.st_done { background: #e4f5ea; color: #157f3b; }
+.rowdone .rowbtn { color: var(--muted); text-decoration: line-through; }
+
 @media (max-width: 1000px) {
   .board { grid-template-columns: 1fr; }
   .stats { grid-template-columns: repeat(2, 1fr); }
