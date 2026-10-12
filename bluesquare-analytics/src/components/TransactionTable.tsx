@@ -49,7 +49,7 @@ export function TransactionTable({ rows, highlight }: { rows: Transaction[]; hig
           <ul>
             {d.rows.map((t) => {
               const income = t.type === "income";
-              const who = t.user_name ?? (t.source === "bluebill" ? "BlueBill" : null);
+              const who = t.user_name ?? (t.source === "bluebill" ? "BlueBill" : t.source === "meta_ads" ? "Meta Ads" : null);
               return (
                 <li key={t.id} className={`txrow${t.id === highlight ? " is-new" : ""}`}>
                   <span className={`txrow__icon ${income ? "txrow__icon--in" : "txrow__icon--out"}`} aria-hidden="true">
@@ -63,6 +63,7 @@ export function TransactionTable({ rows, highlight }: { rows: Transaction[]; hig
                     </Link>
                     <small>
                       {t.source === "bluebill" && <span className="txrow__fiscal">Fiscal</span>}
+                      {t.source === "meta_ads" && <span className="txrow__fiscal">Meta Ads</span>}
                       {t.counterparty ?? (t.source === "bluebill" ? null : <span className="muted">No client / supplier</span>)}
                     </small>
                   </div>

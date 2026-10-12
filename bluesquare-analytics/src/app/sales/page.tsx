@@ -1,14 +1,8 @@
-import { requireAuth } from "@/lib/auth";
-import { Shell } from "@/components/Shell";
+import { SalesList, type SalesSearch } from "@/components/SalesList";
 
-export const metadata = { title: "Sales" };
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Leads" };
 
-export default async function Page() {
-  await requireAuth();
-  return (
-    <Shell department="sales">
-      <h1>Sales</h1>
-      <p className="empty empty--big">This department is coming soon.</p>
-    </Shell>
-  );
+export default async function Page({ searchParams }: { searchParams: Promise<SalesSearch> }) {
+  return <SalesList view="leads" sp={await searchParams} />;
 }

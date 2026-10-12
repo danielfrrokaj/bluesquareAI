@@ -31,6 +31,8 @@ GOOGLE_CLOUD_BILLING_SOURCES='[{"name":"Firebase Payment","projectId":"multisys-
 GOOGLE_CLOUD_BILLING_MAX_BYTES=1073741824
 ```
 
+- `.env.local` is not part of the Docker image: on Cloud Run set the variables on the service (the JSON contains commas, so use a custom delimiter):
+  `gcloud run services update bs-analytics --region europe-west1 --update-env-vars="^@^GOOGLE_CLOUD_BILLING_SOURCES=[...]@GOOGLE_CLOUD_BILLING_MAX_BYTES=1073741824"`
 - Authentication uses Application Default Credentials (`gcloud auth application-default login` locally) or the attached Cloud Run service account.
   The runtime identity needs **BigQuery Job User** on each source project and **BigQuery Data Viewer** on each billing dataset.
   Do not place access tokens or service-account keys in browser code or commit them.

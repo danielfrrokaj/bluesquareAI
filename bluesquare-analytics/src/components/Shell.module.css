@@ -27,8 +27,14 @@
 .item[aria-current="page"]::before { content: ""; position: absolute; left: -14px; top: 10px; bottom: 10px; width: 4px; border-radius: 0 4px 4px 0; background: var(--blue-500); }
 
 /* ---------- Account card ---------- */
-.account { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 14px; background: rgb(255 255 255 / 0.05); border: 1px solid rgb(255 255 255 / 0.07); }
-.avatar { width: 36px; height: 36px; flex: none; display: grid; place-items: center; border-radius: 50%; background: linear-gradient(135deg, var(--blue-500), #2b5aa0); color: #fff; font-weight: 800; font-size: 0.82rem; }
+.settingsLink { margin-top: auto; margin-bottom: 8px; }
+.gear { width: 34px; height: 34px; flex: none; display: grid; place-items: center; border-radius: 10px; background: rgb(255 255 255 / 0.08); color: #c9d6ee; }
+.settingsLink[aria-current="page"] .gear { background: var(--blue-500); color: #fff; }
+.me { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; color: inherit; border-radius: 10px; }
+.me:hover { text-decoration: none; }
+.me:hover strong { text-decoration: underline; }
+.account { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 14px; background: rgb(255 255 255 / 0.05); border: 1px solid rgb(255 255 255 / 0.07); }
+.avatar { width: 36px; height: 36px; flex: none; object-fit: cover; display: grid; place-items: center; border-radius: 50%; background: linear-gradient(135deg, var(--blue-500), #2b5aa0); color: #fff; font-weight: 800; font-size: 0.82rem; }
 .who { min-width: 0; flex: 1; line-height: 1.25; }
 .who strong { display: block; color: #fff; font-size: 0.86rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .who small { color: #8fa3c8; font-size: 0.75rem; font-weight: 600; }

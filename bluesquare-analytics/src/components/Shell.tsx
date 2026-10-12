@@ -1,19 +1,20 @@
 import Link from "next/link";
 import { logout } from "@/app/actions";
 import { currentUser, isAdmin } from "@/lib/auth";
-import { ROLES } from "@/lib/users";
+import { avatarUrl, ROLES } from "@/lib/users";
 import { NavIcon, type NavIconName } from "./NavIcon";
 import s from "./Shell.module.css";
 
-export type Department = "overview" | "finance" | "analytics" | "marketing" | "sales" | "projects" | "users";
-export type SubLink = { href: string; label: string; icon?: NavIconName; current?: boolean };
+export type Department = "overview" | "finance" | "analytics" | "marketing" | "sales" | "projects" | "users" | "settings";
+/** `external` links (another app) open in a new browser tab. */
+export type SubLink = { href: string; label: string; icon?: NavIconName; current?: boolean; external?: boolean };
 
 // Icons in public/icons, generated with Gemini in the website's 3D style (see bluesquare-next/tools).
 const DEPARTMENTS: { key: Department; href: string; label: string; adminOnly?: boolean }[] = [
   { key: "overview", href: "/", label: "Overview" },
   { key: "finance", href: "/finance", label: "Finance" },
   { key: "analytics", href: "/analytics", label: "Analytics" },
-  { key: "marketing", href: "/marketing", label: "Marketing" },
+  { key: "marketing", href: "/marketing", label: "Marketing & Ads" },
   { key: "sales", href: "/sales", label: "Sales" },
   { key: "projects", href: "/projects", label: "Projects & Tasks" },
   { key: "users", href: "/users", label: "Users", adminOnly: true },
@@ -63,13 +64,29 @@ export async function Shell({ department, subnav, children }: { department: Depa
             </Link>
           ))}
         </nav>
+        <Link href="/settings" className={`${s.item} ${s.settingsLink}`} aria-current={department === "settings" ? "page" : undefined}>
+          <span className={s.gear} aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+          </span>
+          Settings
+        </Link>
         {user && (
           <div className={s.account}>
-            <span className={s.avatar} aria-hidden="true">{initials(user.name)}</span>
-            <span className={s.who} title={user.email}>
-              <strong>{user.name}</strong>
-              <small>{ROLES[user.role]}</small>
-            </span>
+            <Link href="/settings" className={s.me} title={`${user.email} · Profile settings`}>
+              {avatarUrl(user) ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img className={s.avatar} src={avatarUrl(user)!} alt="" width={36} height={36} />
+              ) : (
+                <span className={s.avatar} aria-hidden="true">{initials(user.name)}</span>
+              )}
+              <span className={s.who}>
+                <strong>{user.name}</strong>
+                <small>{ROLES[user.role]}</small>
+              </span>
+            </Link>
             <form action={logout}>
               <button className={s.signout} title="Sign out" aria-label="Sign out">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -91,12 +108,19 @@ export async function Shell({ department, subnav, children }: { department: Depa
         {subnav && subnav.length > 0 && (
           <div className={s.subnav}>
             <nav className="wrap" aria-label="Section">
-              {subnav.map((l) => (
-                <Link key={l.href} href={l.href} aria-current={l.current ? "page" : undefined}>
-                  {l.icon && <NavIcon name={l.icon} />}
-                  {l.label}
-                </Link>
-              ))}
+              {subnav.map((l) =>
+                l.external ? (
+                  <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer" title={`Opens ${l.label} in a new tab`}>
+                    {l.icon && <NavIcon name={l.icon} />}
+                    {l.label} <span aria-hidden="true">↗</span>
+                  </a>
+                ) : (
+                  <Link key={l.href} href={l.href} aria-current={l.current ? "page" : undefined}>
+                    {l.icon && <NavIcon name={l.icon} />}
+                    {l.label}
+                  </Link>
+                ),
+              )}
             </nav>
           </div>
         )}

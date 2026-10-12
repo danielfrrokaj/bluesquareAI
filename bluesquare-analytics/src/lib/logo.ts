@@ -20,10 +20,10 @@ function sniff(data: Buffer): string | null {
  * The logo sent in a form's "logo" field: undefined when none was sent, a message when it isn't
  * a usable image, otherwise the image.
  */
-export async function readLogo(form: FormData): Promise<Logo | undefined | string> {
-  const file = form.get("logo");
+export async function readLogo(form: FormData, field = "logo"): Promise<Logo | undefined | string> {
+  const file = form.get(field);
   if (!(file instanceof File) || file.size === 0) return undefined;
-  if (file.size > LOGO_MAX_BYTES) return "The logo is too large: up to 300 KB.";
+  if (file.size > LOGO_MAX_BYTES) return "The image is too large: up to 300 KB.";
   const data = Buffer.from(await file.arrayBuffer());
   const type = sniff(data);
   return type ? { data, type } : "Upload a PNG, JPG, WebP or SVG image.";

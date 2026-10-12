@@ -103,6 +103,7 @@ export async function saveTransaction(_: FormState, form: FormData): Promise<For
 
 export async function removeTransaction(_: FormState, form: FormData): Promise<FormState> {
   const { tx } = await editableTransaction(str(form, "id"));
+  if (tx.source === "meta_ads") return { error: "This expense comes from Marketing & Ads → Meta Ads; change or delete the results there." };
   if (tx.source !== "manual") return { error: "Synced transactions can't be deleted here; they mirror a fiscalized invoice." };
   await deleteTransaction(tx.id);
   refresh();

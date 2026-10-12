@@ -1,7 +1,8 @@
 "use client";
 
-import { startTransition, useActionState, useEffect, useRef } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useModalClose } from "./Modal";
+import { toast } from "./Toaster";
 
 export type FormState = { error?: string; ok?: string } | null;
 export type FormAction = (state: FormState, form: FormData) => Promise<FormState>;
@@ -17,25 +18,30 @@ export function ActionForm({
   danger?: boolean;
   children?: React.ReactNode;
 }) {
-  const [state, run, pending] = useActionState(action, null);
+  const [state, setState] = useState<FormState>(null);
+  const [pending, startTransition] = useTransition();
   const closeModal = useModalClose();
   const ref = useRef<HTMLFormElement>(null);
-  // On success: in a modal, close it (the message shows as a toast); otherwise clear the form.
-  useEffect(() => {
-    if (!state?.ok) return;
-    if (closeModal) closeModal(state.ok);
-    else ref.current?.reset();
-  }, [state, closeModal]);
   return (
     <form
       ref={ref}
       className={className}
-      // Submitted by hand rather than with action={run}: React resets an action form after every
-      // submit, which would wipe what the user typed whenever the server returns an error.
+      // The action is called by hand rather than with action={…}: React resets an action form after
+      // every submit (wiping what was typed when the server answers with an error), and the result is
+      // handled right here, before the refreshed page may have replaced this form (e.g. "Win" turning
+      // into "Reopen"), so the confirmation toast is never lost.
       onSubmit={(e) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
-        startTransition(() => run(data));
+        startTransition(async () => {
+          const result = await action(state, data);
+          if (result?.ok) {
+            // In a modal: close it and confirm with a toast. Otherwise clear the form.
+            if (closeModal) closeModal(result.ok);
+            else ref.current?.reset();
+          }
+          setState(result);
+        });
       }}
     >
       {children}

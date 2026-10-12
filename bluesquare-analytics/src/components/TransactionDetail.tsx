@@ -1,6 +1,8 @@
 import { getRates, getTransaction, listAccounts, listCategories } from "@/lib/finance";
 import { query } from "@/lib/db";
 import { invoiceDocumentUrl } from "@/lib/bluebill";
+import { adForTransaction } from "@/lib/ads";
+import Link from "next/link";
 import { isAdmin } from "@/lib/auth";
 import { listUsers, type User } from "@/lib/users";
 import { today } from "@/lib/period";
@@ -21,7 +23,8 @@ export async function TransactionDetail({ id, user }: { id: string; user: User }
   const admin = isAdmin(user);
   const canEdit = admin || tx.created_by === user.id || tx.user_id === user.id;
   const synced = tx.source !== "manual";
-  const [accounts, categories, users, rates, invoice] = await Promise.all([
+  const fromAds = tx.source === "meta_ads";
+  const [accounts, categories, users, rates, invoice, ad] = await Promise.all([
     listAccounts(true),
     listCategories(true),
     listUsers(),
@@ -32,6 +35,7 @@ export async function TransactionDetail({ id, user }: { id: string; user: User }
           [tx.external_id.slice("bluebill:".length)],
         ).then((r) => r[0] ?? null)
       : null,
+    fromAds && tx.external_id ? adForTransaction(tx.external_id) : null,
   ]);
   const income = tx.type === "income";
 
@@ -41,7 +45,7 @@ export async function TransactionDetail({ id, user }: { id: string; user: User }
         <div className="txhero__main">
           <div className="txhero__badges">
             <span className="txhero__badge">{income ? "↓ Income" : "↑ Expense"}</span>
-            {synced && <span className="txhero__badge">✓ Fiscalized</span>}
+            {synced && <span className="txhero__badge">{fromAds ? "Meta Ads" : "✓ Fiscalized"}</span>}
           </div>
           <h1>{tx.description || "Transaction"}</h1>
           <p>
@@ -63,7 +67,15 @@ export async function TransactionDetail({ id, user }: { id: string; user: User }
         {canEdit && (
           <div className="txhero__actions">
             <Modal trigger="Edit" title="Edit transaction" triggerClassName="btn btn--small btn--glass">
-              {synced && <p className="muted note-top">Amount, date and type come from the fiscalized invoice. You can change where it&apos;s booked.</p>}
+              {synced && (
+                <p className="muted note-top">
+                  {fromAds ? (
+                    <>Amount and date come from the ad&apos;s results{ad && <> in <Link href={`/marketing/ads#ad-${ad.id}`}>{ad.name}</Link></>}; change them in Marketing &amp; Ads. You can change where it&apos;s booked.</>
+                  ) : (
+                    <>Amount, date and type come from the fiscalized invoice. You can change where it&apos;s booked.</>
+                  )}
+                </p>
+              )}
               <ActionForm action={saveTransaction} submit="Save changes">
                 <TransactionFields
                   accounts={accounts} categories={categories} users={users} currencies={Object.keys(rates)} tx={tx} today={today()}
@@ -91,11 +103,26 @@ export async function TransactionDetail({ id, user }: { id: string; user: User }
           label="Virtual account" value={tx.account_name} empty="No account"
           mark={tx.account_id && tx.account_name ? <AccountMark id={tx.account_id} name={tx.account_name} logo={tx.account_logo} size={24} /> : null}
         />
-        <Tile label="User" value={tx.user_name} empty={synced ? "BlueBill" : "Nobody"} />
+        <Tile label="User" value={tx.user_name} empty={fromAds ? "Meta Ads" : synced ? "BlueBill" : "Nobody"} />
         <Tile label="Client / supplier" value={tx.counterparty} empty="–" />
         <Tile label="Currency" value={tx.currency} empty="EUR" />
-        <Tile label="Source" value={synced ? "BlueBill sync" : "Entered here"} empty="" />
+        <Tile label="Source" value={fromAds ? "Meta Ads (Marketing & Ads)" : synced ? "BlueBill sync" : "Entered here"} empty="" />
       </ul>
+
+      {fromAds && (
+        <section className="panel">
+          <header className="panel__head">
+            <div>
+              <h2>Meta Ads</h2>
+              <p className="muted panel__sub">
+                {ad ? <>Spend of the ad “{ad.name}”.</> : <>Spend booked from Marketing &amp; Ads.</>} The amount and date follow its
+                results; change or delete them there.
+              </p>
+            </div>
+            {ad && <Link href={`/marketing/ads#ad-${ad.id}`} className="btn btn--small">Open the ad</Link>}
+          </header>
+        </section>
+      )}
 
       {invoice && (
         <section className="panel fiscal">

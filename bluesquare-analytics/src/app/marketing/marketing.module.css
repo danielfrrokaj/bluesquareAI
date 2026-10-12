@@ -1,0 +1,103 @@
+/* Marketing: pinned idea notes, planning calendar, media gallery and the upload dialog. */
+.page { display: grid; gap: 22px; }
+.page :global(.panel) { border: 0; border-radius: 18px; box-shadow: 0 1px 2px rgb(6 18 56 / 0.06), 0 10px 30px -22px rgb(6 18 56 / 0.35); }
+
+/* ---------- Ideas ---------- */
+.ideas { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; list-style: none; margin: 0; padding: 0; }
+.note {
+  position: relative; display: flex; flex-direction: column; gap: 10px; min-height: 130px; padding: 16px 16px 12px; border-radius: 4px 4px 14px 4px;
+  box-shadow: 0 1px 1px rgb(0 0 0 / 0.06), 0 10px 18px -12px rgb(6 18 56 / 0.45); transform: rotate(-0.6deg); transition: transform 0.15s;
+}
+.note:nth-child(even) { transform: rotate(0.6deg); }
+.note:hover { transform: rotate(0) translateY(-2px); }
+.note p { margin: 0; flex: 1; color: #1e2433; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.93rem; line-height: 1.45; }
+.note footer { display: flex; align-items: center; gap: 6px; font-size: 0.74rem; color: rgb(30 36 51 / 0.65); }
+.note footer span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.note form { margin: 0; }
+.yellow { background: #fff4b8; }
+.blue { background: #dcebff; }
+.green { background: #d8f5e1; }
+.pink { background: #ffe0ec; }
+.pinned::before { content: "📌"; position: absolute; top: -10px; right: 12px; font-size: 1.15rem; filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.25)); }
+.iconbtn { display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 8px; background: rgb(255 255 255 / 0.55); color: #1e2433; cursor: pointer; font-size: 0.85rem; }
+.iconbtn:hover { background: #fff; }
+
+.addidea__row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 0.86rem; color: var(--muted); }
+.swatches { display: inline-flex; gap: 6px; }
+.swatches label { position: relative; cursor: pointer; }
+.swatches input { position: absolute; opacity: 0; }
+.swatches i { display: block; width: 24px; height: 24px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgb(6 18 56 / 0.15); }
+.swatches input:checked + i { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--blue-500); }
+.swatches input:focus-visible + i { outline: 3px solid var(--blue-500); outline-offset: 2px; }
+
+/* ---------- Calendar ---------- */
+.calhead { display: flex; align-items: center; gap: 8px; }
+.calhead h2 { min-width: 150px; text-align: center; }
+.navbtn { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--line); color: var(--ink); background: #fff; }
+.navbtn:hover { text-decoration: none; border-color: var(--blue-500); }
+.cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.dow { padding: 8px 10px; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--bg); border-bottom: 1px solid var(--line); }
+.day { min-height: 112px; padding: 6px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.day:nth-child(7n) { border-right: 0; }
+.daynum { font-size: 0.8rem; font-weight: 700; color: var(--ink); padding: 2px 4px; }
+.out { background: #fafbfd; }
+.out .daynum { color: #b3bccd; }
+.today .daynum { display: inline-grid; place-items: center; width: 26px; height: 26px; padding: 0; border-radius: 50%; background: var(--blue-500); color: #fff; }
+.chip {
+  display: flex; align-items: center; gap: 6px; width: 100%; padding: 4px; border: 0; border-radius: 8px; background: var(--blue-50);
+  font: inherit; font-size: 0.76rem; color: var(--ink); text-align: left; cursor: pointer; min-width: 0;
+}
+.chip:hover { background: var(--blue-100); }
+.chip img, .chip video { width: 26px; height: 26px; flex: none; border-radius: 6px; object-fit: cover; background: #dfe6f1; }
+.chip span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chip b { font-weight: 700; color: var(--blue-600); }
+
+/* ---------- Network badges ---------- */
+.badges { display: inline-flex; flex-wrap: wrap; gap: 3px; }
+.badge { display: inline-grid; place-items: center; min-width: 22px; height: 18px; padding: 0 5px; border-radius: 5px; color: #fff; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.02em; }
+
+/* ---------- Gallery ---------- */
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; list-style: none; margin: 0; padding: 0; }
+.card { display: block; width: 100%; padding: 0; border: 0; border-radius: 16px; overflow: hidden; background: #fff; text-align: left; font: inherit; cursor: pointer; box-shadow: 0 1px 2px rgb(6 18 56 / 0.06), 0 12px 26px -20px rgb(6 18 56 / 0.5); transition: transform 0.15s, box-shadow 0.15s; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 1px 2px rgb(6 18 56 / 0.06), 0 22px 36px -22px rgb(6 18 56 / 0.55); }
+.thumb { position: relative; aspect-ratio: 4 / 3; background: linear-gradient(135deg, #e6ecf6, #f4f7fb); }
+.thumb img, .thumb video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.play { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.play i { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: rgb(6 18 56 / 0.55); color: #fff; font-style: normal; backdrop-filter: blur(4px); }
+.when { position: absolute; left: 10px; top: 10px; padding: 3px 9px; border-radius: 999px; background: rgb(255 255 255 / 0.92); font-size: 0.74rem; font-weight: 700; color: var(--ink); }
+.when--none { color: var(--muted); }
+.cardbody { display: grid; gap: 6px; padding: 12px 14px 14px; }
+.cardbody strong { color: var(--ink); font-size: 0.93rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cardbody small { color: var(--muted); font-size: 0.78rem; }
+
+/* ---------- Post detail & upload ---------- */
+.viewer { border-radius: 12px; overflow: hidden; background: #0b1530; margin-bottom: 14px; }
+.viewer img, .viewer video { display: block; width: 100%; max-height: 60vh; object-fit: contain; }
+.platforms { display: flex; flex-wrap: wrap; gap: 6px; border: 0; padding: 0; margin: 0; }
+.platforms legend { padding: 0; margin-bottom: 6px; font-weight: 600; font-size: 0.9rem; color: var(--ink); }
+.platforms label { position: relative; cursor: pointer; }
+.platforms input { position: absolute; opacity: 0; }
+.platforms span { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: #fff; font-size: 0.85rem; font-weight: 600; color: var(--body); }
+.platforms span i { width: 10px; height: 10px; border-radius: 50%; }
+.platforms input:checked + span { border-color: var(--blue-500); background: var(--blue-50); color: var(--ink); box-shadow: inset 0 0 0 1px var(--blue-500); }
+.platforms input:focus-visible + span { outline: 3px solid var(--blue-500); outline-offset: 2px; }
+
+.drop { display: grid; place-items: center; gap: 6px; min-height: 170px; padding: 18px; border: 2px dashed #c3cee0; border-radius: 14px; background: var(--bg); text-align: center; color: var(--muted); cursor: pointer; transition: border-color 0.15s, background 0.15s; overflow: hidden; }
+.drop:hover, .dragging { border-color: var(--blue-500); background: var(--blue-50); }
+.drop strong { color: var(--ink); }
+.drop img, .drop video { max-width: 100%; max-height: 220px; border-radius: 10px; }
+.progress { height: 8px; border-radius: 999px; background: var(--blue-50); overflow: hidden; }
+.progress i { display: block; height: 100%; background: linear-gradient(90deg, var(--blue-500), #6aa1e6); transition: width 0.2s; }
+
+.page :global(.field textarea), .modalform :global(.field textarea) {
+  font: inherit; color: var(--ink); border: 1px solid #cdd5e3; border-radius: 10px; padding: 10px 12px; background: #fff; width: 100%; resize: vertical;
+}
+
+@media (max-width: 760px) {
+  .cal { grid-template-columns: repeat(7, minmax(44px, 1fr)); overflow-x: auto; }
+  .day { min-height: 76px; padding: 4px; }
+  .chip span { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .note, .card { transition: none; transform: none; }
+}

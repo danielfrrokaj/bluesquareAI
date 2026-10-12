@@ -33,7 +33,7 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
     accountId: sp.account || undefined,
     categoryId: sp.category || undefined,
     userId: sp.user || undefined,
-    source: sp.source === "bluebill" || sp.source === "manual" ? sp.source : undefined,
+    source: sp.source === "bluebill" || sp.source === "manual" || sp.source === "meta_ads" ? sp.source : undefined,
     q: sp.q?.trim().slice(0, 100) || undefined,
   };
   const [rows, totals, accounts, categories, users] = await Promise.all([
@@ -119,6 +119,7 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
               <option value="">All</option>
               <option value="manual">Entered here</option>
               <option value="bluebill">Fiscal invoices</option>
+              <option value="meta_ads">Meta Ads</option>
             </select>
           </label>
           <div className="btnrow">

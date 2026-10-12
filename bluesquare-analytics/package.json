@@ -12,6 +12,7 @@
   "dependencies": {
     "@electric-sql/pglite": "0.5.8",
     "@google-cloud/bigquery": "^9.2.0",
+    "@google/genai": "2.24.0",
     "@ip-location-db/dbip-country-mmdb": "2.3.2026060120",
     "maxmind": "5.0.7",
     "next": "16.4.0",

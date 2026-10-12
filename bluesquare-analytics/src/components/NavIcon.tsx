@@ -1,10 +1,20 @@
-export type NavIconName = "overview" | "transactions" | "reports" | "invoices" | "settings";
+export type NavIconName = "overview" | "transactions" | "reports" | "invoices" | "settings" | "ideas" | "calendar" | "leads" | "customers" | "archive" | "import" | "board" | "folder" | "ads" | "phone";
 
 const paths = {
+  leads: <path d="M3 5h18l-7 8v6l-4 2v-8z" />,
+  customers: <path d="M16 11a4 4 0 1 0-8 0M4 21a8 8 0 0 1 16 0M17 3l1.5 1.5L21 2" />,
+  archive: <path d="M3 4h18v4H3zM5 8v12h14V8M10 12h4" />,
+  import: <path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4" />,
+  ads: <path d="M3 10v4a1 1 0 0 0 1 1h3l6 4V5L7 9H4a1 1 0 0 0-1 1ZM17 9a4 4 0 0 1 0 6M7 15l1 5h3l-1-5" />,
   overview: <path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z" />,
   transactions: <path d="M4 7h16m-4-4 4 4-4 4M20 17H4m4-4-4 4 4 4" />,
   reports: <path d="M3 3v18h18M7 14l4-4 4 3 6-8M16 5h5v5" />,
   invoices: <path d="M6 3h9l4 4v14H5V3h1Zm8 0v5h5M9 12h6M9 16h6" />,
+  ideas: <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3Z" />,
+  calendar: <path d="M4 5h16v16H4zM4 10h16M8 3v4M16 3v4M8 14h3v3H8z" />,
+  board: <path d="M4 4h4v16H4zM10 4h4v10h-4zM16 4h4v6h-4z" />,
+  phone: <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2" />,
+  folder: <path d="M3 6a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6Z" />,
   settings: <>
     <path d="m9.5 3-.6 2.2-1.6.9-2.2-.6-2.5 4.3L4.2 11v2l-1.6 1.2 2.5 4.3 2.2-.6 1.6.9.6 2.2h5l.6-2.2 1.6-.9 2.2.6 2.5-4.3-1.6-1.2v-2l1.6-1.2-2.5-4.3-2.2.6-1.6-.9L14.5 3Z" />
     <circle cx="12" cy="12" r="3" />

@@ -5,9 +5,14 @@ import { query } from "./db";
 export type Role = "admin" | "member";
 export const ROLES: Record<Role, string> = { admin: "Admin", member: "Member" };
 
-export type User = { id: string; email: string; name: string; role: Role; active: boolean; created_at: string; last_login_at: string | null };
+export type User = {
+  id: string; email: string; name: string; role: Role; active: boolean; created_at: string; last_login_at: string | null;
+  avatar_version: number | null; // null: no photo
+};
 
-const COLS = "id, email, name, role, active, created_at::text, last_login_at::text";
+const COLS = "id, email, name, role, active, created_at::text, last_login_at::text, case when avatar is null then null else avatar_version end as avatar_version";
+
+export const avatarUrl = (u: Pick<User, "id" | "avatar_version">) => (u.avatar_version === null ? null : `/api/users/${u.id}/avatar?v=${u.avatar_version}`);
 
 export function hashPassword(password: string): string {
   const salt = randomBytes(16).toString("hex");
@@ -72,4 +77,23 @@ export const setPassword = (id: string, password: string) =>
 export async function countActiveAdmins(exceptId = ""): Promise<number> {
   const [{ n }] = await query<{ n: number }>("select count(*)::int as n from users where role = 'admin' and active and id <> $1", [exceptId]);
   return n;
+}
+
+/** True when the password is this user's current one (for changes that need re-confirmation). */
+export async function checkPassword(id: string, password: string): Promise<boolean> {
+  const [row] = await query<{ password_hash: string }>("select password_hash from users where id = $1", [id]);
+  return !!row && verifyPassword(password, row.password_hash);
+}
+
+export const setName = (id: string, name: string) => query("update users set name = $2 where id = $1", [id, name.trim()]);
+
+export const setEmail = (id: string, email: string) => query("update users set email = $2 where id = $1", [id, normalizeEmail(email)]);
+
+/** Replaces the profile photo (null removes it); the version bump gives it a new URL. */
+export const setAvatar = (id: string, image: { data: Buffer; type: string } | null) =>
+  query("update users set avatar = $2, avatar_type = $3, avatar_version = avatar_version + 1 where id = $1", [id, image?.data ?? null, image?.type ?? null]);
+
+export async function getAvatar(id: string): Promise<{ data: Uint8Array; type: string } | null> {
+  const [row] = await query<{ avatar: Uint8Array | null; avatar_type: string | null }>("select avatar, avatar_type from users where id = $1", [id]);
+  return row?.avatar && row.avatar_type ? { data: row.avatar, type: row.avatar_type } : null;
 }

@@ -4,12 +4,15 @@ import { useEffect, useRef, useState } from "react";
 
 const TYPES = ["image/png", "image/jpeg", "image/webp", "image/svg+xml"];
 const MAX = 300 * 1024;
+const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]!.toUpperCase()).join("");
 
 /**
  * Logo picker: upload, paste an image (Cmd/Ctrl+V while the form is open, or the Paste button) or
  * drop one on it. Shows a live preview; with a current logo, it can also be removed.
  */
-export function LogoField({ current, name = "" }: { current?: string | null; name?: string }) {
+export function LogoField({ current, name = "", label = "Logo", field = "logo", round }: {
+  current?: string | null; name?: string; label?: string; field?: string; round?: boolean;
+}) {
   const input = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [remove, setRemove] = useState(false);
@@ -62,7 +65,7 @@ export function LogoField({ current, name = "" }: { current?: string | null; nam
   const shown = preview ?? (remove ? null : (current ?? null));
   return (
     <div
-      className={`logofield${dragging ? " is-dragging" : ""}`}
+      className={`logofield${dragging ? " is-dragging" : ""}${round ? " logofield--round" : ""}`}
       onDragOver={(e) => {
         e.preventDefault();
         setDragging(true);
@@ -76,16 +79,16 @@ export function LogoField({ current, name = "" }: { current?: string | null; nam
     >
       <span className="logofield__preview">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        {shown ? <img src={shown} alt="" /> : <span>{name.trim().slice(0, 2).toUpperCase() || "Logo"}</span>}
+        {shown ? <img src={shown} alt="" /> : <span>{initials(name) || label}</span>}
       </span>
       <div className="logofield__controls">
-        <span className="logofield__label">Logo</span>
+        <span className="logofield__label">{label}</span>
         <label className="btn btn--small">
           {shown ? "Upload new" : "Upload"}
           <input
             ref={input}
             type="file"
-            name="logo"
+            name={field}
             accept={TYPES.join(",")}
             className="sr-only"
             onChange={(e) => {
@@ -106,7 +109,7 @@ export function LogoField({ current, name = "" }: { current?: string | null; nam
         </button>
         {current && !preview && (
           <label className="check check--small">
-            <input type="checkbox" name="remove_logo" checked={remove} onChange={(e) => setRemove(e.target.checked)} /> Remove
+            <input type="checkbox" name={`remove_${field}`} checked={remove} onChange={(e) => setRemove(e.target.checked)} /> Remove
           </label>
         )}
         <small className={problem ? "logofield__problem" : "muted"} role={problem ? "alert" : undefined}>

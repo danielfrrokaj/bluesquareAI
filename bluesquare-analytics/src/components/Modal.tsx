@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useId, useRef, useState } from "react";
+import { toast } from "./Toaster";
 
 const CloseContext = createContext<((message?: string) => void) | null>(null);
 
@@ -20,18 +21,11 @@ export function Modal({ trigger, title, triggerClassName = "btn btn--primary", c
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const [open, setOpen] = useState(0); // increments per open; 0 = never opened
-  const [toast, setToast] = useState<string | null>(null);
 
   const close = useCallback((message?: string) => {
     ref.current?.close();
-    if (message) setToast(message);
+    if (message) toast(message);
   }, []);
-
-  useEffect(() => {
-    if (!toast) return;
-    const t = setTimeout(() => setToast(null), 3500);
-    return () => clearTimeout(t);
-  }, [toast]);
 
   useEffect(() => {
     if (open) ref.current?.showModal();
@@ -61,11 +55,6 @@ export function Modal({ trigger, title, triggerClassName = "btn btn--primary", c
           </div>
         )}
       </dialog>
-      {toast && (
-        <p className="toast" role="status">
-          {toast}
-        </p>
-      )}
     </>
   );
 }

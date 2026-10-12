@@ -101,7 +101,7 @@ create table if not exists fin_transactions (
   account_id    text references fin_accounts(id) on delete set null,
   category_id   text references fin_categories(id) on delete set null,
   user_id       text references users(id) on delete set null,   -- the person the transaction belongs to
-  source        text not null default 'manual',                 -- manual | bluebill
+  source        text not null default 'manual',                 -- manual | bluebill | meta_ads
   external_id   text unique,                                    -- e.g. bluebill:<invoice id>
   created_by    text references users(id) on delete set null,
   created_at    timestamptz not null default now(),
@@ -152,6 +152,63 @@ alter table fin_accounts add column if not exists logo_version integer not null 
 alter table sites add column if not exists logo bytea;
 alter table sites add column if not exists logo_type text;
 alter table sites add column if not exists logo_version integer not null default 0;
+alter table users add column if not exists avatar bytea;
+alter table users add column if not exists avatar_type text;
+alter table users add column if not exists avatar_version integer not null default 0;
+
+-- ---------- Sales ----------
+create table if not exists sales_leads (
+  id              text primary key,
+  ref             text,                          -- id in the source system, e.g. a spreadsheet's "ID"
+  hotel           text,                          -- property name
+  contact         text,
+  phone           text,
+  phone_key       text,                          -- last 9 digits, to find duplicates
+  email           text,
+  city            text,
+  property_type   text,
+  rooms           integer,
+  current_system  text,                          -- PMS / channel manager they use today
+  source          text,
+  due_date        date,                          -- next follow-up
+  called          boolean not null default false,
+  interested      boolean not null default false,
+  demo_sent       boolean not null default false,
+  lr_sent         boolean not null default false,
+  status          text not null default 'open' check (status in ('open', 'won', 'lost')),
+  products        text[] not null default '{}',  -- sold, once won
+  monthly_value   numeric(12,2),                 -- EUR per month, once won
+  lost_reason     text,
+  owner_id        text references users(id) on delete set null,
+  extra           jsonb not null default '{}',   -- imported columns without a field of their own
+  created_by      text references users(id) on delete set null,
+  created_at      timestamptz not null default now(),
+  updated_at      timestamptz not null default now(),
+  closed_at       timestamptz                    -- when won or lost
+);
+create index if not exists sales_leads_status on sales_leads (status, due_date);
+create index if not exists sales_leads_phone on sales_leads (phone_key);
+
+-- Notes and the activity timeline (kind: note, call, meeting, or system events).
+create table if not exists sales_notes (
+  id          text primary key,
+  lead_id     text not null references sales_leads(id) on delete cascade,
+  user_id     text references users(id) on delete set null,
+  kind        text not null default 'note',
+  body        text not null,
+  created_at  timestamptz not null default now()
+);
+create index if not exists sales_notes_lead on sales_notes (lead_id, created_at);
+
+-- An import between "analyze" and "import": the parsed rows wait here, so they're sent only once.
+create table if not exists sales_imports (
+  id          text primary key,
+  created_by  text references users(id) on delete cascade,
+  mode        text not null,                     -- table | extracted
+  headers     jsonb not null,
+  rows        jsonb not null,
+  created_at  timestamptz not null default now()
+);
 insert into app_settings (key, value) values ('fx_rates', '{"ALL": 91.77}') on conflict do nothing;
 
 -- One-time switch of the base currency from ALL to EUR, using the ALL rate above.
@@ -166,6 +223,119 @@ update fin_transactions set original_amount = amount, fx_rate = r.rate, amount =
   where currency = 'ALL' and original_amount is null and r.rate > 0
     and not exists (select 1 from app_settings where key = 'base_currency');
 insert into app_settings (key, value) values ('base_currency', '"EUR"') on conflict do nothing;
+
+-- ---------- Marketing ----------
+create table if not exists mk_ideas (
+  id          text primary key,
+  body        text not null,
+  color       text not null default 'yellow',
+  pinned      boolean not null default false,
+  created_by  text references users(id) on delete set null,
+  created_at  timestamptz not null default now()
+);
+
+-- One uploaded image or video, optionally planned for publishing on some networks.
+-- The file lives in the media store (a GCS bucket in production, ./data/media locally) under media_key.
+create table if not exists mk_posts (
+  id             text primary key,
+  title          text not null default '',
+  caption        text not null default '',
+  platforms      text[] not null default '{}',
+  publish_at     timestamptz,                       -- null: not scheduled yet
+  kind           text not null check (kind in ('image', 'video')),
+  mime           text not null,
+  size           bigint not null,
+  original_name  text not null default '',
+  media_key      text not null,
+  status         text not null default 'uploading' check (status in ('uploading', 'ready')),
+  created_by     text references users(id) on delete set null,
+  created_at     timestamptz not null default now()
+);
+create index if not exists mk_posts_publish on mk_posts (publish_at);
+
+-- ---------- Projects & tasks ----------
+create table if not exists pm_projects (
+  id           text primary key,
+  name         text not null,
+  type         text,
+  status       text not null default 'Not Started',
+  start_date   date,
+  deadline     date,
+  budget       numeric(14,2),                 -- EUR
+  notes        text not null default '',
+  database     text not null default '',
+  github_url   text not null default '',
+  hosting      text,
+  auth         text,
+  deployment   text,
+  created_by   text references users(id) on delete set null,
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now()
+);
+
+create table if not exists pm_tasks (
+  id                  bigserial primary key,     -- shown as #id
+  title               text not null,
+  notes               text not null default '',
+  status              text not null default 'pending' check (status in ('pending', 'in_progress', 'done')),
+  priority            text not null default 'medium' check (priority in ('high', 'medium', 'low')),
+  project_id          text references pm_projects(id) on delete set null,
+  assignee_id         text references users(id) on delete set null,
+  added_on            date not null default current_date,
+  due_date            date,
+  position            double precision not null default 0,   -- order within its column
+  done_at             timestamptz,
+  screenshot_key      text,                       -- in the media store
+  screenshot_mime     text,
+  screenshot_version  integer not null default 0,
+  created_by          text references users(id) on delete set null,
+  created_at          timestamptz not null default now(),
+  updated_at          timestamptz not null default now()
+);
+create index if not exists pm_tasks_board on pm_tasks (status, position);
+create index if not exists pm_tasks_project on pm_tasks (project_id);
+
+-- Follow-ups live in Sales (leads with a due date); this short-lived table is gone.
+drop table if exists pm_followups;
+
+-- Meta ads, filled in by hand from Ads Manager (there is no API connection).
+create table if not exists mk_ads (
+  id               text primary key,
+  name             text not null,
+  campaign         text not null default '',
+  objective        text not null default 'traffic'
+                   check (objective in ('awareness', 'traffic', 'engagement', 'leads', 'app', 'sales')),
+  placements       text[] not null default '{}',     -- facebook | instagram | messenger | audience_network
+  status           text not null default 'active' check (status in ('draft', 'active', 'paused', 'completed')),
+  start_on         date,
+  end_on           date,
+  budget_type      text not null default 'daily' check (budget_type in ('daily', 'lifetime')),
+  budget           numeric(14,2),                     -- in the ad's currency
+  currency         text not null default 'EUR',
+  ads_manager_url  text,
+  notes            text not null default '',
+  account_id       text references fin_accounts(id) on delete set null,  -- Finance account that pays for it
+  created_by       text references users(id) on delete set null,
+  created_at       timestamptz not null default now()
+);
+
+-- Results for one period of an ad, typed from Ads Manager. The spend of each row is booked
+-- as a Finance expense (source 'meta_ads', external_id 'meta_ads:<row id>').
+create table if not exists mk_ad_results (
+  id           text primary key,
+  ad_id        text not null references mk_ads(id) on delete cascade,
+  period_from  date not null,
+  period_to    date not null,
+  spend        numeric(14,2) not null,               -- in the ad's currency
+  currency     text not null,
+  impressions  integer not null default 0,
+  reach        integer not null default 0,
+  clicks       integer not null default 0,
+  results      integer not null default 0,            -- leads, purchases, messages… per the objective
+  created_by   text references users(id) on delete set null,
+  created_at   timestamptz not null default now()
+);
+create index if not exists mk_ad_results_ad on mk_ad_results (ad_id, period_to);
 `;
 
 // Kept on globalThis: Next.js bundles each route separately, and every bundle must share one

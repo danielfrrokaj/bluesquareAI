@@ -1,5 +1,6 @@
 import { requireRole } from "@/lib/auth";
-import { listUsers, ROLES } from "@/lib/users";
+import { avatarUrl, listUsers, ROLES } from "@/lib/users";
+import { LogoMark } from "@/components/AccountMark";
 import { addUser, saveUser } from "./actions";
 import { Shell } from "@/components/Shell";
 import { ActionForm } from "@/components/ActionForm";
@@ -41,6 +42,7 @@ export default async function UsersPage() {
             <li key={u.id} className={u.active ? undefined : "is-archived"}>
               <details>
                 <summary>
+                  <LogoMark src={avatarUrl(u)} name={u.name} size={30} round />
                   <strong>{u.name}</strong>
                   {u.id === me.id && <span className="tag">You</span>}
                   {!u.active && <span className="tag tag--muted">Inactive</span>}

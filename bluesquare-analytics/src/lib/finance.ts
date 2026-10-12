@@ -144,15 +144,16 @@ export async function deleteOrArchiveCategory(id: string): Promise<"deleted" | "
   return "deleted";
 }
 
-/** Income category by name, created when missing (used to map BlueBill invoice categories). */
-export async function ensureIncomeCategory(name: string): Promise<string> {
-  const [found] = await query<{ id: string }>("select id from fin_categories where kind = 'income' and lower(name) = lower($1)", [name]);
+/** Category of a type by name, created when missing (BlueBill invoice categories, "Advertising" for ad spend). */
+export async function ensureCategory(kind: TxType, name: string): Promise<string> {
+  const find = () => query<{ id: string }>("select id from fin_categories where kind = $1 and lower(name) = lower($2)", [kind, name]);
+  const [found] = await find();
   if (found) return found.id;
-  const id = randomUUID();
-  await query("insert into fin_categories (id, name, kind) values ($1, $2, 'income') on conflict do nothing", [id, name]);
-  const [row] = await query<{ id: string }>("select id from fin_categories where kind = 'income' and lower(name) = lower($1)", [name]);
-  return row.id;
+  await query("insert into fin_categories (id, name, kind) values ($1, $2, $3) on conflict do nothing", [randomUUID(), name, kind]);
+  return (await find())[0].id;
 }
+
+export const ensureIncomeCategory = (name: string) => ensureCategory("income", name);
 
 // ---------- Transactions ----------
 

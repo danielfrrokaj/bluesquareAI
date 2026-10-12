@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
   output: "standalone",
   turbopack: { root: path.resolve(__dirname) },
   poweredByHeader: false,
+  // Lead imports send up to ~2 MB of pasted text or CSV.
+  experimental: { serverActions: { bodySizeLimit: "4mb" } },
   // Native/WASM and data-file packages are loaded from node_modules at runtime.
   serverExternalPackages: ["@electric-sql/pglite", "maxmind", "pg"],
   outputFileTracingIncludes: {
