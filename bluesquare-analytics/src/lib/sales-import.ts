@@ -49,11 +49,11 @@ function splitRows(text: string, delimiter: string): string[][] {
 
 /** A table when most lines split into the same number (2+) of cells by tab, semicolon or comma. */
 export function parseTable(text: string): { headers: string[]; rows: string[][] } | null {
-  const lines = text.split(/\r?\n/).filter((l) => l.trim()).slice(0, 20);
-  if (lines.length < 2) return null;
+  if (text.split(/\r?\n/).filter((l) => l.trim()).length < 2) return null;
   for (const d of ["\t", ";", ","]) {
-    const counts = lines.map((l) => l.split(d).length);
-    if (counts[0] < 2) continue;
+    // Count cells the way they'll be read: a delimiter inside "quotes" (e.g. a comma in a note) isn't a column break.
+    const counts = splitRows(text.slice(0, 20_000), d).slice(0, 20).map((r) => r.length);
+    if (counts.length < 2 || counts[0] < 2) continue;
     if (counts.filter((n) => n === counts[0]).length / counts.length < 0.6 && d !== "\t") continue;
     const all = splitRows(text, d);
     const width = all[0].length;
