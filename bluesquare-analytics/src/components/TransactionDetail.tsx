@@ -12,6 +12,7 @@ import { ActionForm } from "./ActionForm";
 import { Modal } from "./Modal";
 import { CopyButton } from "./CopyButton";
 import { TransactionFields } from "./TransactionFields";
+import { TransferFields } from "./TransferFields";
 import { AccountMark } from "./AccountMark";
 
 const longDate = new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
@@ -38,13 +39,15 @@ export async function TransactionDetail({ id, user }: { id: string; user: User }
     fromAds && tx.external_id ? adForTransaction(tx.external_id) : null,
   ]);
   const income = tx.type === "income";
+  const transfer = tx.type === "transfer";
+  const sign = transfer ? "" : income ? "+" : "−";
 
   return (
     <>
-      <section className={`txhero ${income ? "txhero--income" : "txhero--expense"}`}>
+      <section className={`txhero ${transfer ? "txhero--transfer" : income ? "txhero--income" : "txhero--expense"}`}>
         <div className="txhero__main">
           <div className="txhero__badges">
-            <span className="txhero__badge">{income ? "↓ Income" : "↑ Expense"}</span>
+            <span className="txhero__badge">{transfer ? "⇄ Transfer" : income ? "↓ Income" : "↑ Expense"}</span>
             {synced && <span className="txhero__badge">{fromAds ? "Meta Ads" : "✓ Fiscalized"}</span>}
           </div>
           <h1>{tx.description || "Transaction"}</h1>
@@ -55,7 +58,7 @@ export async function TransactionDetail({ id, user }: { id: string; user: User }
         </div>
         <div className="txhero__amount">
           <strong>
-            {income ? "+" : "−"}
+            {sign}
             {money(tx.amount)}
           </strong>
           {tx.original_amount !== null && (
@@ -66,7 +69,7 @@ export async function TransactionDetail({ id, user }: { id: string; user: User }
         </div>
         {canEdit && (
           <div className="txhero__actions">
-            <Modal trigger="Edit" title="Edit transaction" triggerClassName="btn btn--small btn--glass">
+            <Modal trigger="Edit" title={transfer ? "Edit transfer" : "Edit transaction"} triggerClassName="btn btn--small btn--glass">
               {synced && (
                 <p className="muted note-top">
                   {fromAds ? (
@@ -77,16 +80,20 @@ export async function TransactionDetail({ id, user }: { id: string; user: User }
                 </p>
               )}
               <ActionForm action={saveTransaction} submit="Save changes">
-                <TransactionFields
-                  accounts={accounts} categories={categories} users={users} currencies={Object.keys(rates)} tx={tx} today={today()}
-                  currentUserId={user.id} canPickUser={admin}
-                />
+                {transfer ? (
+                  <TransferFields accounts={accounts} currencies={Object.keys(rates)} tx={tx} today={today()} />
+                ) : (
+                  <TransactionFields
+                    accounts={accounts} categories={categories} users={users} currencies={Object.keys(rates)} tx={tx} today={today()}
+                    currentUserId={user.id} canPickUser={admin}
+                  />
+                )}
               </ActionForm>
             </Modal>
             {!synced && (
               <Modal trigger="Delete" title="Delete this transaction?" triggerClassName="btn btn--small btn--glass">
                 <p className="muted">
-                  “{tx.description}” ({income ? "+" : "−"}{money(tx.amount)}) will be removed from all reports. This can&apos;t be undone.
+                  “{tx.description}” ({sign}{money(tx.amount)}) will be removed{transfer ? ", and both account balances restored" : " from all reports"}. This can&apos;t be undone.
                 </p>
                 <ActionForm action={removeTransaction} submit="Delete transaction" pending="Deleting…" danger className="form form--row">
                   <input type="hidden" name="id" value={tx.id} />
@@ -98,13 +105,19 @@ export async function TransactionDetail({ id, user }: { id: string; user: User }
       </section>
 
       <ul className="tiles">
-        <Tile label="Category" value={tx.category_name} empty="Uncategorised" />
+        {!transfer && <Tile label="Category" value={tx.category_name} empty="Uncategorised" />}
         <Tile
-          label="Virtual account" value={tx.account_name} empty="No account"
+          label={transfer ? "From account" : "Virtual account"} value={tx.account_name} empty="No account"
           mark={tx.account_id && tx.account_name ? <AccountMark id={tx.account_id} name={tx.account_name} logo={tx.account_logo} size={24} /> : null}
         />
+        {transfer && (
+          <Tile
+            label="To account" value={tx.to_account_name} empty="No account"
+            mark={tx.to_account_id && tx.to_account_name ? <AccountMark id={tx.to_account_id} name={tx.to_account_name} logo={tx.to_account_logo} size={24} /> : null}
+          />
+        )}
         <Tile label="User" value={tx.user_name} empty={fromAds ? "Meta Ads" : synced ? "BlueBill" : "Nobody"} />
-        <Tile label="Client / supplier" value={tx.counterparty} empty="–" />
+        {!transfer && <Tile label="Client / supplier" value={tx.counterparty} empty="–" />}
         <Tile label="Currency" value={tx.currency} empty="EUR" />
         <Tile label="Source" value={fromAds ? "Meta Ads (Marketing & Ads)" : synced ? "BlueBill sync" : "Entered here"} empty="" />
       </ul>

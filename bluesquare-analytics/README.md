@@ -55,6 +55,59 @@ The local Google mark is from `https://www.gstatic.com/images/branding/googleg/1
 
 Run the billing calculation checks with `npm run test:cloud-billing`.
 
+## Channex costs
+
+Finance → **Channex** (`/finance/channex`) estimates what Channex charges for the WhiteLabel plan
+([channex.io/pricing](https://channex.io/pricing)), in **USD excluding VAT**, separate from the EUR ledger. Nothing is booked as a transaction.
+
+- The properties come from the LuxHotel API (`LUXHOTEL_API_KEY`, see below), read **at most once every 24 hours**. The attempt is claimed in the
+  database (`app_settings` key `channex_sync`) before calling, so concurrent page loads and instances never call twice, and a failed attempt
+  also waits 24 hours. Each read is kept in `channex_snapshots` with only what billing needs: id, name, units, active channels and the
+  messages module (no owner details). A response with no channel connections at all, after a snapshot that had some, is treated as LuxHotel
+  failing to reach the channel manager: it's not stored and the previous snapshot stays in use.
+- The read happens when someone opens the page. To take a snapshot every day regardless, schedule `POST /api/finance/channex/sync` with
+  `Authorization: Bearer $CRON_SECRET` **hourly** (calls within the 24 hours do nothing; a daily job could fire just early and skip a day).
+- Pricing: $130 platform fee; properties with at least one active channel connection pay $7 each as hotels, or $0.50 per physical unit
+  (rooms across all room types) as vacation rentals; Chat & Reviews adds the same again where LuxHotel's Messages module is on; each extra
+  connection of a property to the same OTA costs $1. Volume tiers (500+ hotels, 2,000+ units…) reprice the whole count.
+- **Hotel or vacation rental** follows each property's `property_type` in Channex, which the LuxHotel API doesn't report. Admins set it per
+  property on the page (`channex_categories`); a property without one is counted as a hotel, as Channex does when the type is unset.
+- Channex charges on the 1st, in advance, for the properties live then; changes during the month reach the next invoice. A month's invoice
+  therefore uses the last snapshot taken by the end of its 1st (UTC); before the first snapshot ever, the month's first snapshot.
+  The next invoice uses the latest snapshot. Categories apply to past months too, so correcting one corrects the history.
+- Not included: Stripe tokenisation, room-type/rate-plan overage, the first month's pro rata and VAT.
+
+Run the pricing checks with `npm run test:channex`. The local mark is from `https://channex.io/lovable-uploads/channex-logo-mark.webp`.
+
+## LuxHotel System
+
+The **LuxHotel System** sidebar tab (`/luxhotel`) monitors live property registrations, rooms, all-time reservations,
+subscriptions, channel-manager connections and module adoption. Search by property, owner or location; filter by
+subscription or connection status; open a property for its room types, rate plans, booking channels and onboarding details.
+Property names link to authenticated, server-rendered `/luxhotel/{id}` pages, which can be bookmarked or opened in a new tab
+and render details without waiting for client-side JavaScript. These links do not prefetch property data.
+
+Set `LUXHOTEL_API_KEY` in `.env.local` for development and in the deployment's server environment or secret manager.
+The supplied key is configured locally; `.env.local` is ignored by Git and excluded from the Docker image.
+Never use a `NEXT_PUBLIC_` variable for this key. The browser calls authenticated, read-only application routes;
+only the server contacts the fixed LuxHotel API host. The logo is hosted locally from `https://luxhotelsystem.com/logo.png`.
+
+- Successful and failed reads are cached for 60 seconds per endpoint and server process. Concurrent reads share one request.
+  Auto-refresh runs once per minute while the tab is visible, can be paused, and manual refresh respects the same interval.
+  Detail reads happen only when opening a property. Multiple deployment instances have independent caches.
+- Temporary errors retain the last successful snapshot and clearly label it as stale. Rejected credentials and missing
+  properties clear the cached data. Missing configuration and invalid API responses show an error rather than zero totals.
+- Reservations include **all statuses, all time**; they are not occupancy, revenue, or current bookings. Rooms are physical
+  inventory. Active subscriptions exclude suspended properties. Business accounts are deduplicated by `vendor_id`;
+  staff counts in property details apply to the account and are not summed across properties.
+- “Needs attention” includes missing/expired subscriptions, suspensions, paid periods ending within seven days (or already
+  ended), missing room inventory, and a disconnected channel manager when the property's plan includes it.
+  An empty channel list alone is not considered a connection failure, because the API may temporarily omit channels.
+- Dates and the six-month registration chart use UTC and the displayed snapshot time; the current month is incomplete.
+  All portfolio summaries use the complete property list; search and filters affect the directory only.
+
+API contract: [LuxHotel Hotels API](docs/hotels-api.md). Run `npm run test:luxhotel` for contract, monitoring and cache checks.
+
 ## Website analytics
 
 Self-hosted, cookieless website analytics for any number of websites.

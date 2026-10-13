@@ -1,6 +1,6 @@
 import "server-only";
 import { query } from "./db";
-import type { TxType } from "./finance";
+import type { AccountGroup, TxType } from "./finance";
 import { addMonths, daysInMonth, monthOf, monthRange, today, type Period } from "./period";
 import { forecast, projectMonth, recentAverage, shareByDay } from "./forecast";
 
@@ -20,17 +20,28 @@ export async function monthlyTotals(from: string, to: string): Promise<MonthRow[
   return monthRange(from, to).map((month) => byMonth.get(month) ?? { month, income: 0, expense: 0 });
 }
 
-export type AccountReport = { id: string; name: string; logo: number | null; archived: boolean; opening: number; balance: number; income: number; expense: number; count: number };
+export type AccountReport = {
+  id: string; name: string; description: string | null; group: AccountGroup; logo: number | null; archived: boolean; opening: number; balance: number;
+  income: number; expense: number; count: number; // income and expense only
+  transferIn: number; transferOut: number; // moved between accounts in the period
+};
 
-/** Balance of each virtual account (all time) plus its income and expense inside the period. */
+/** Balance of each virtual account (all time) plus its income, expense and transfers inside the period. */
 export async function accountReport(p: Period): Promise<AccountReport[]> {
+  // Each transfer also counts as an incoming movement ('transfer_in') of the account it went into.
   return query<AccountReport>(
-    `select a.id, a.name, case when a.logo is null then null else a.logo_version end as logo, a.archived, a.opening_balance::float8 as opening,
-            (a.opening_balance + coalesce(sum(case when t.type = 'income' then t.amount else -t.amount end), 0))::float8 as balance,
+    `select a.id, a.name, a.description, a.account_group as "group", case when a.logo is null then null else a.logo_version end as logo, a.archived, a.opening_balance::float8 as opening,
+            (a.opening_balance + coalesce(sum(case when t.type in ('income', 'transfer_in') then t.amount else -t.amount end), 0))::float8 as balance,
             coalesce(sum(t.amount) filter (where t.type = 'income' and t.occurred_on between $1::date and $2::date), 0)::float8 as income,
             coalesce(sum(t.amount) filter (where t.type = 'expense' and t.occurred_on between $1::date and $2::date), 0)::float8 as expense,
-            (count(t.id) filter (where t.occurred_on between $1::date and $2::date))::int as count
-     from fin_accounts a left join fin_transactions t on t.account_id = a.id
+            (count(t.id) filter (where t.type in ('income', 'expense') and t.occurred_on between $1::date and $2::date))::int as count,
+            coalesce(sum(t.amount) filter (where t.type = 'transfer_in' and t.occurred_on between $1::date and $2::date), 0)::float8 as "transferIn",
+            coalesce(sum(t.amount) filter (where t.type = 'transfer' and t.occurred_on between $1::date and $2::date), 0)::float8 as "transferOut"
+     from fin_accounts a left join (
+       select id, account_id, type, amount, occurred_on from fin_transactions
+       union all
+       select id, to_account_id, 'transfer_in', amount, occurred_on from fin_transactions where type = 'transfer'
+     ) t on t.account_id = a.id
      group by a.id
      having not a.archived or count(t.id) > 0
      order by a.archived, a.name`,
@@ -43,7 +54,7 @@ export async function unassignedAccountTotals(p: Period): Promise<{ income: numb
   const [row] = await query<{ income: number; expense: number; count: number }>(
     `select coalesce(sum(amount) filter (where type = 'income'), 0)::float8 as income,
             coalesce(sum(amount) filter (where type = 'expense'), 0)::float8 as expense, count(*)::int as count
-     from fin_transactions where account_id is null and occurred_on between $1::date and $2::date`,
+     from fin_transactions where account_id is null and type <> 'transfer' and occurred_on between $1::date and $2::date`,
     [p.from, p.to],
   );
   return row;
@@ -197,4 +208,28 @@ export async function expenseOutlook(): Promise<CategoryOutlook[]> {
     })
     .filter((c) => c.soFar > 0 || c.average > 0 || (c.nextMonth ?? 0) > 0)
     .sort((a, b) => (b.projected ?? b.soFar) - (a.projected ?? a.soFar));
+}
+
+export type PeriodTotals = { income: number; expense: number; count: number; prevIncome: number; prevExpense: number; months: number };
+
+/**
+ * Income and expense in the period and in the same-length period just before it, plus how many
+ * months the books actually cover inside the period (for monthly averages over "All").
+ */
+export async function periodTotals(p: Period): Promise<PeriodTotals> {
+  const [r] = await query<PeriodTotals & { first: string | null }>(
+    `with b as (select $1::date as f, $2::date as t, ($2::date - $1::date + 1) as len)
+     select coalesce(sum(x.amount) filter (where x.type = 'income' and x.occurred_on >= b.f), 0)::float8 as income,
+            coalesce(sum(x.amount) filter (where x.type = 'expense' and x.occurred_on >= b.f), 0)::float8 as expense,
+            (count(*) filter (where x.occurred_on >= b.f))::int as count,
+            coalesce(sum(x.amount) filter (where x.type = 'income' and x.occurred_on < b.f), 0)::float8 as "prevIncome",
+            coalesce(sum(x.amount) filter (where x.type = 'expense' and x.occurred_on < b.f), 0)::float8 as "prevExpense",
+            to_char(min(x.occurred_on) filter (where x.occurred_on >= b.f), 'YYYY-MM-DD') as first
+     from b left join fin_transactions x on x.occurred_on between b.f - b.len and b.t
+     group by b.f`,
+    [p.from, p.to],
+  );
+  const start = r.first && r.first > p.from ? r.first : p.from;
+  const months = Math.max(1, monthRange(monthOf(start), monthOf(p.to)).length);
+  return { income: r.income, expense: r.expense, count: r.count, prevIncome: r.prevIncome, prevExpense: r.prevExpense, months };
 }

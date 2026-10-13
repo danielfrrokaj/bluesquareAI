@@ -1,6 +1,7 @@
-export type NavIconName = "overview" | "transactions" | "reports" | "invoices" | "settings" | "ideas" | "calendar" | "leads" | "customers" | "archive" | "import" | "board" | "folder" | "ads" | "phone" | "files" | "vault";
+export type NavIconName = "overview" | "transactions" | "reports" | "invoices" | "settings" | "ideas" | "calendar" | "leads" | "customers" | "archive" | "import" | "board" | "folder" | "ads" | "phone" | "files" | "vault" | "wallet";
 
 const paths = {
+  wallet: <path d="M19 7V5.5A1.5 1.5 0 0 0 17.5 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3M21 9h-5a3 3 0 0 0 0 6h5ZM16 12h.01" />,
   leads: <path d="M3 5h18l-7 8v6l-4 2v-8z" />,
   customers: <path d="M16 11a4 4 0 1 0-8 0M4 21a8 8 0 0 1 16 0M17 3l1.5 1.5L21 2" />,
   archive: <path d="M3 4h18v4H3zM5 8v12h14V8M10 12h4" />,

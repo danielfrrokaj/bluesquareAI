@@ -41,34 +41,50 @@ export const isDate = (v: unknown): v is string =>
 export const PERIODS = {
   month: "This month",
   "last-month": "Last month",
-  "3m": "Last 3 months",
+  "3m": "3 months",
+  "6m": "6 months",
   ytd: "This year",
-  "12m": "Last 12 months",
+  all: "All",
 } as const;
-export type PeriodKey = keyof typeof PERIODS | "custom";
+export type PeriodKey = keyof typeof PERIODS | "12m" | "custom";
 
-/** A period covers whole days: from <= date <= to. */
-export type Period = { key: PeriodKey; from: string; to: string; label: string };
+/**
+ * A period covers whole days: from <= date <= to. `month` is set when it is exactly one calendar
+ * month (this month, last month or one picked with the month stepper).
+ */
+export type Period = { key: PeriodKey; from: string; to: string; label: string; month?: string };
 
-export function parsePeriod(sp: { period?: string; from?: string; to?: string }): Period {
+/** Day the "All" period starts: before any bookkeeping in this app. */
+const BEGINNING = "2000-01-01";
+
+export function parsePeriod(sp: { period?: string; from?: string; to?: string; month?: string }): Period {
   const t = today();
   const m = monthOf(t);
   const end = (month: string) => `${month}-${String(daysInMonth(month)).padStart(2, "0")}`;
   if (sp.period === "custom" && isDate(sp.from) && isDate(sp.to) && sp.from <= sp.to) {
     return { key: "custom", from: sp.from, to: sp.to, label: `${sp.from} – ${sp.to}` };
   }
+  // A month picked with the stepper (never past the current one).
+  if (isMonth(sp.month) && sp.month <= m && (!sp.period || sp.period === "month")) {
+    const key = sp.month === m ? "month" : sp.month === addMonths(m, -1) ? "last-month" : "custom";
+    return { key, from: `${sp.month}-01`, to: sp.month === m ? t : end(sp.month), label: monthLabel(sp.month), month: sp.month };
+  }
   switch (sp.period) {
     case "last-month": {
       const lm = addMonths(m, -1);
-      return { key: "last-month", from: `${lm}-01`, to: end(lm), label: monthLabel(lm) };
+      return { key: "last-month", from: `${lm}-01`, to: end(lm), label: monthLabel(lm), month: lm };
     }
     case "3m":
-      return { key: "3m", from: `${addMonths(m, -2)}-01`, to: t, label: PERIODS["3m"] };
+      return { key: "3m", from: `${addMonths(m, -2)}-01`, to: t, label: "Last 3 months" };
+    case "6m":
+      return { key: "6m", from: `${addMonths(m, -5)}-01`, to: t, label: "Last 6 months" };
     case "ytd":
-      return { key: "ytd", from: `${t.slice(0, 4)}-01-01`, to: t, label: PERIODS.ytd };
+      return { key: "ytd", from: `${t.slice(0, 4)}-01-01`, to: t, label: `This year (${t.slice(0, 4)})` };
     case "12m":
-      return { key: "12m", from: `${addMonths(m, -11)}-01`, to: t, label: PERIODS["12m"] };
+      return { key: "12m", from: `${addMonths(m, -11)}-01`, to: t, label: "Last 12 months" };
+    case "all":
+      return { key: "all", from: BEGINNING, to: t, label: "All time" };
     default:
-      return { key: "month", from: `${m}-01`, to: t, label: monthLabel(m) };
+      return { key: "month", from: `${m}-01`, to: t, label: monthLabel(m), month: m };
   }
 }

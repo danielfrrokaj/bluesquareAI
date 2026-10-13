@@ -1,5 +1,5 @@
 import { requireRole } from "@/lib/auth";
-import { BASE_CURRENCY, currencyUsage, getRates, listAccounts, listCategories, type Category } from "@/lib/finance";
+import { ACCOUNT_GROUPS, BASE_CURRENCY, currencyUsage, getRates, listAccounts, listCategories, type AccountGroup, type Category } from "@/lib/finance";
 import { accountReport } from "@/lib/finance-reports";
 import { getBlueBill } from "@/lib/bluebill";
 import { parsePeriod } from "@/lib/period";
@@ -52,6 +52,7 @@ export default async function FinanceSettings() {
               <label className="field"><span>Name</span><input name="name" required maxLength={80} placeholder="Raiffeisen business" /></label>
               <label className="field"><span>Description</span><input name="description" maxLength={200} placeholder="Optional" /></label>
               <label className="field"><span>Opening balance</span><input name="opening_balance" inputMode="decimal" placeholder="0" /></label>
+              <GroupSelect value="own" />
             </ActionForm>
           </Modal>
         </header>
@@ -75,6 +76,7 @@ export default async function FinanceSettings() {
                     <label className="field"><span>Name</span><input name="name" defaultValue={a.name} required maxLength={80} /></label>
                     <label className="field"><span>Description</span><input name="description" defaultValue={a.description ?? ""} maxLength={200} /></label>
                     <label className="field"><span>Opening balance</span><input name="opening_balance" inputMode="decimal" defaultValue={a.opening_balance} /></label>
+                    <GroupSelect value={a.account_group} />
                     <label className="check"><input type="checkbox" name="archived" defaultChecked={a.archived} /> Archived (hidden from new transactions)</label>
                   </ActionForm>
                   <div className="danger">
@@ -282,5 +284,18 @@ function CategoryList({ title, rows }: { title: string; rows: Category[] }) {
         </ul>
       )}
     </div>
+  );
+}
+
+function GroupSelect({ value }: { value: AccountGroup }) {
+  return (
+    <label className="field">
+      <span>Group</span>
+      <select name="group" defaultValue={value}>
+        {(Object.keys(ACCOUNT_GROUPS) as AccountGroup[]).map((g) => (
+          <option key={g} value={g}>{ACCOUNT_GROUPS[g].label} · {ACCOUNT_GROUPS[g].hint}</option>
+        ))}
+      </select>
+    </label>
   );
 }

@@ -149,6 +149,17 @@ alter table fin_transactions add column if not exists fx_rate numeric(14,6);
 alter table fin_accounts add column if not exists logo bytea;
 alter table fin_accounts add column if not exists logo_type text;
 alter table fin_accounts add column if not exists logo_version integer not null default 0;
+-- Portfolio group of a virtual account: own (operating and bank), partner (OTAs, agencies), other.
+alter table fin_accounts add column if not exists account_group text not null default 'own';
+-- Transfers between virtual accounts: type 'transfer', out of account_id into to_account_id. A transfer is neither
+-- income nor expense, so totals (which pick a type) skip it; only the two account balances move.
+alter table fin_transactions add column if not exists to_account_id text references fin_accounts(id) on delete set null;
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'fin_transactions_type_check' and pg_get_constraintdef(oid) like '%transfer%') then
+    alter table fin_transactions drop constraint if exists fin_transactions_type_check;
+    alter table fin_transactions add constraint fin_transactions_type_check check (type in ('income', 'expense', 'transfer'));
+  end if;
+end $$;
 alter table sites add column if not exists logo bytea;
 alter table sites add column if not exists logo_type text;
 alter table sites add column if not exists logo_version integer not null default 0;
@@ -383,6 +394,26 @@ create table if not exists mk_ad_results (
   created_at   timestamptz not null default now()
 );
 create index if not exists mk_ad_results_ad on mk_ad_results (ad_id, period_to);
+
+-- ---------- Channex ----------
+-- LuxHotel's properties, read at most once a day (app_settings 'channex_sync'), keeping only what
+-- Channex billing needs: [{ id, name, units, channels, chat }]. Invoices are estimated from these.
+create table if not exists channex_snapshots (
+  id            text primary key,
+  taken_at      timestamptz not null default now(),
+  generated_at  timestamptz,                 -- when LuxHotel produced the data
+  properties    jsonb not null
+);
+create index if not exists channex_snapshots_taken on channex_snapshots (taken_at);
+
+-- Billing category of each property, set by an admin to match its property_type in Channex.
+-- A property without a row is billed as a hotel, Channex's default.
+create table if not exists channex_categories (
+  hotel_id    text primary key,
+  category    text not null check (category in ('hotel', 'vacation_rental')),
+  updated_by  text references users(id) on delete set null,
+  updated_at  timestamptz not null default now()
+);
 `;
 
 // Kept on globalThis: Next.js bundles each route separately, and every bundle must share one

@@ -1,5 +1,5 @@
 import { currentUser } from "@/lib/auth";
-import { BASE_CURRENCY, isTxType, listTransactions } from "@/lib/finance";
+import { BASE_CURRENCY, isTxKind, listTransactions } from "@/lib/finance";
 import { parsePeriod } from "@/lib/period";
 import { csv } from "@/lib/csv";
 
@@ -14,7 +14,7 @@ export async function GET(req: Request) {
     {
       from: period.from,
       to: period.to,
-      type: isTxType(sp.type) ? sp.type : undefined,
+      type: isTxKind(sp.type) ? sp.type : undefined,
       accountId: sp.account || undefined,
       categoryId: sp.category || undefined,
       userId: sp.user || undefined,
@@ -24,10 +24,10 @@ export async function GET(req: Request) {
     50_000,
   );
   const body = csv(
-    ["date", "type", "amount", "currency", "original_amount", "original_currency", "rate", "description", "client_supplier", "category", "account", "user", "source"],
+    ["date", "type", "amount", "currency", "original_amount", "original_currency", "rate", "description", "client_supplier", "category", "account", "to_account", "user", "source"],
     rows.map((t) => [
       t.occurred_on, t.type, t.amount.toFixed(2), BASE_CURRENCY,
-      t.original_amount?.toFixed(2) ?? "", t.original_amount !== null ? t.currency : "", t.fx_rate ?? "", t.description, t.counterparty, t.category_name, t.account_name, t.user_name, t.source,
+      t.original_amount?.toFixed(2) ?? "", t.original_amount !== null ? t.currency : "", t.fx_rate ?? "", t.description, t.counterparty, t.category_name, t.account_name, t.to_account_name, t.user_name, t.source,
     ]),
   );
   const file = `transactions-${period.from}-to-${period.to}.csv`;

@@ -1,12 +1,11 @@
 import Link from "next/link";
 import { isAdmin, requireAuth } from "@/lib/auth";
-import { isTxType, listAccounts, listCategories, listTransactions, transactionTotals, type TxFilter } from "@/lib/finance";
+import { isTxKind, listAccounts, listCategories, listTransactions, transactionTotals, type TxFilter } from "@/lib/finance";
 import { listUsers } from "@/lib/users";
 import { parsePeriod } from "@/lib/period";
-import { money, num } from "@/lib/format";
+import { num } from "@/lib/format";
 import { Shell } from "@/components/Shell";
 import { financeNav } from "@/components/nav";
-import { PeriodTabs } from "@/components/PeriodTabs";
 import { TransactionTable } from "@/components/TransactionTable";
 import { AddTransaction } from "@/components/AddTransaction";
 
@@ -29,7 +28,7 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
   const filter: TxFilter = {
     from: period.from,
     to: period.to,
-    type: isTxType(sp.type) ? sp.type : undefined,
+    type: isTxKind(sp.type) ? sp.type : undefined,
     accountId: sp.account || undefined,
     categoryId: sp.category || undefined,
     userId: sp.user || undefined,
@@ -60,18 +59,10 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
           <h1>Transactions</h1>
           <p className="muted">{period.label}</p>
         </div>
-        <PeriodTabs base="/finance/transactions" current={period} keep={{ ...keep, period: undefined, from: undefined, to: undefined }} />
       </div>
 
       {sp.deleted && <p className="notice" role="status">Transaction deleted.</p>}
       {sp.saved && <p className="notice" role="status">Transaction saved.</p>}
-
-      <ul className="kpis kpis--4">
-        <li className="kpi--neutral"><span>Transactions</span><strong>{num(totals.count)}</strong></li>
-        <li className="kpi--income"><span>Income</span><strong>{money(totals.income)}</strong></li>
-        <li className="kpi--expense"><span>Expenses</span><strong>{money(totals.expense)}</strong></li>
-        <li className={totals.income - totals.expense < 0 ? "kpi--loss" : "kpi--profit"}><span>Net</span><strong className={totals.income - totals.expense < 0 ? "neg" : undefined}>{money(totals.income - totals.expense)}</strong></li>
-      </ul>
 
       <section className="panel">
         <form className="filters" action="/finance/transactions">
@@ -88,6 +79,7 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
               <option value="">All</option>
               <option value="income">Income</option>
               <option value="expense">Expense</option>
+              <option value="transfer">Transfer</option>
             </select>
           </label>
           <label className="field">

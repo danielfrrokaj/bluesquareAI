@@ -61,14 +61,6 @@
 .attentionList .redText, .redText { color: var(--red); }
 .myTasks { display: inline-flex; align-items: center; justify-content: space-between; font-size: 0.78rem; font-weight: 650; padding-top: 12px; margin-top: auto; min-height: 36px; }
 
-.cloudLink { display: flex; align-items: center; gap: 12px; margin: -4px 0 2px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--body); }
-.cloudLink:hover { text-decoration: none; border-color: #bacce6; background: #fbfdff; }
-.cloudLink img { flex: none; object-fit: contain; }
-.cloudLink > span:first-of-type { display: flex; align-items: baseline; gap: 12px; flex: 1; min-width: 0; }
-.cloudLink strong { color: var(--ink); font-size: 0.8rem; font-weight: 650; }
-.cloudLink > span:first-of-type > span { font-size: 0.76rem; color: var(--muted); }
-.currency { color: var(--muted); font-size: 0.69rem; font-weight: 700; padding: 2px 7px; background: var(--bg); border-radius: 5px; }
-.cloudLink .chevron { color: var(--muted); width: 13px; }
 
 .departments { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .department { --accent: #346cba; position: relative; min-width: 0; padding: 21px 22px 18px; background: #fff; border: 1px solid var(--line); border-radius: 16px; color: var(--body); transition: border-color 180ms ease, box-shadow 180ms ease; }
@@ -127,7 +119,6 @@
   .finance { padding: 22px 22px 0; }
   .financeBody { grid-template-columns: 1fr; gap: 20px; }
   .cashFlow { grid-template-columns: 1fr 1fr; border-left: 0; padding-left: 0; }
-  .cloudLink > span:first-of-type { display: grid; gap: 2px; }
   .department { padding: 18px; }
 }
 @media (max-width: 1000px) {
@@ -164,8 +155,6 @@
   .attentionList li + li { border-top: 1px solid #edf0f5; }
   .attentionList a { flex-wrap: nowrap; min-height: 50px; }
   .attentionList .chevron { display: block; }
-  .cloudLink { padding: 12px; gap: 9px; }
-  .cloudLink > span:first-of-type > span { font-size: 0.7rem; }
   .departments { grid-template-columns: 1fr; }
   .department { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; padding: 20px; }
   .departmentHead { grid-column: 1 / -1; flex-wrap: nowrap; }

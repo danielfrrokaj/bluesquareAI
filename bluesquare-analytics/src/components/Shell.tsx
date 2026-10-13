@@ -7,15 +7,16 @@ import { LogoMark, projectLogoUrl } from "./AccountMark";
 import { NavIcon, type NavIconName } from "./NavIcon";
 import s from "./Shell.module.css";
 
-export type Department = "overview" | "finance" | "analytics" | "marketing" | "archive" | "sales" | "projects" | "users" | "settings";
+export type Department = "overview" | "finance" | "analytics" | "luxhotel" | "marketing" | "archive" | "sales" | "projects" | "users" | "settings";
 /** `external` links (another app) open in a new browser tab. */
-export type SubLink = { href: string; label: string; icon?: NavIconName; current?: boolean; external?: boolean };
+export type SubLink = { href: string; label: string; icon?: NavIconName; image?: string; current?: boolean; external?: boolean };
 
 // Icons in public/icons, generated with Gemini in the website's 3D style (see bluesquare-next/tools).
 const DEPARTMENTS: { key: Department; href: string; label: string; adminOnly?: boolean }[] = [
   { key: "overview", href: "/", label: "Overview" },
   { key: "finance", href: "/finance", label: "Finance" },
   { key: "analytics", href: "/analytics", label: "Analytics" },
+  { key: "luxhotel", href: "/luxhotel", label: "LuxHotel System" },
   { key: "marketing", href: "/marketing", label: "Marketing & Ads" },
   { key: "archive", href: "/archive", label: "Archive" },
   { key: "sales", href: "/sales", label: "Sales" },
@@ -136,11 +137,15 @@ export async function Shell({ department, subnav, current, children }: {
                 l.external ? (
                   <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer" title={`Opens ${l.label} in a new tab`}>
                     {l.icon && <NavIcon name={l.icon} />}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    {l.image && <img src={l.image} alt="" width={16} height={16} />}
                     {l.label} <span aria-hidden="true">↗</span>
                   </a>
                 ) : (
                   <Link key={l.href} href={l.href} aria-current={l.current ? "page" : undefined}>
                     {l.icon && <NavIcon name={l.icon} />}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    {l.image && <img src={l.image} alt="" width={16} height={16} />}
                     {l.label}
                   </Link>
                 ),

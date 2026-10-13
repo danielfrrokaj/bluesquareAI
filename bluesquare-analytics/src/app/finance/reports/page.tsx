@@ -1,33 +1,34 @@
 import Link from "next/link";
 import { isAdmin, requireAuth } from "@/lib/auth";
 import {
-  accountReport, categoryReport, expenseOutlook, monthlyTotals, projection, unassignedAccountTotals, userReport, type CategoryReport,
+  accountReport, categoryReport, expenseOutlook, monthlyTotals, periodTotals, projection, unassignedAccountTotals, userReport,
 } from "@/lib/finance-reports";
-import { monthLabel, monthOf, parsePeriod } from "@/lib/period";
+import { addMonths, monthLabel, monthOf, parsePeriod } from "@/lib/period";
 import { change, money, num, pct } from "@/lib/format";
+import { FinanceSummary, SectionTitle, StatCard } from "@/components/FinanceCards";
+import { InfoTip } from "@/components/FinIcon";
 import { Shell } from "@/components/Shell";
 import { financeNav } from "@/components/nav";
 import { PeriodTabs } from "@/components/PeriodTabs";
 import { MoneyChart } from "@/components/MoneyChart";
-import { AccountMark } from "@/components/AccountMark";
-import { GoogleCloudForecast } from "@/components/GoogleCloudForecast";
-import { getGoogleCloudReport } from "@/lib/google-cloud-billing";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Finance reports" };
 
-export default async function ReportsPage({ searchParams }: { searchParams: Promise<{ period?: string; from?: string; to?: string }> }) {
+export default async function ReportsPage({ searchParams }: { searchParams: Promise<{ period?: string; from?: string; to?: string; month?: string }> }) {
   const user = await requireAuth();
   const period = parsePeriod(await searchParams);
-  const [proj, outlook, accounts, unassigned, expenses, income, people, months, cloud] = await Promise.all([
+  const [proj, outlook, accounts, unassigned, expenses, income, people, totals] = await Promise.all([
     projection(), expenseOutlook(), accountReport(period), unassignedAccountTotals(period), categoryReport("expense", period),
-    categoryReport("income", period), userReport(period), monthlyTotals(monthOf(period.from), monthOf(period.to)),
-    getGoogleCloudReport(period),
+    categoryReport("income", period), userReport(period), periodTotals(period),
   ]);
-  const totalIncome = income.reduce((s, c) => s + c.total, 0);
-  const totalExpense = expenses.reduce((s, c) => s + c.total, 0);
-  const prevIncome = income.reduce((s, c) => s + c.previous, 0);
-  const prevExpense = expenses.reduce((s, c) => s + c.previous, 0);
+  // "All" starts long before the books do: chart from the first booked month.
+  const firstMonth = period.key === "all" ? addMonths(monthOf(period.to), -(totals.months - 1)) : monthOf(period.from);
+  const months = await monthlyTotals(firstMonth, monthOf(period.to));
+  const { income: totalIncome, expense: totalExpense, prevIncome, prevExpense } = totals;
+  const balance = accounts.reduce((s, a) => s + a.balance, 0);
+  const qs = period.key === "custom" ? `period=custom&from=${period.from}&to=${period.to}` : `period=${period.key}`;
+  const margin = totalIncome ? Math.round(((totalIncome - totalExpense) / totalIncome) * 100) : null;
   const pNet = proj.projected.income !== null && proj.projected.expense !== null ? proj.projected.income - proj.projected.expense : null;
 
   return (
@@ -35,40 +36,42 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
       <div className="pagehead">
         <div>
           <h1>Reports &amp; forecast</h1>
-          <p className="muted">{period.label}</p>
+          <p className="muted">Results by account and category, and where the coming months are heading</p>
         </div>
-        <PeriodTabs base="/finance/reports" current={period} />
       </div>
 
-      <ul className="kpis kpis--4">
-        <li className="kpi--income">
-          <span>Income</span>
-          <strong>{money(totalIncome)}</strong>
-          <Delta now={totalIncome} before={prevIncome} />
-        </li>
-        <li className="kpi--expense">
-          <span>Expenses</span>
-          <strong>{money(totalExpense)}</strong>
-          <Delta now={totalExpense} before={prevExpense} upIsBad />
-        </li>
-        <li className={totalIncome - totalExpense < 0 ? "kpi--loss" : "kpi--profit"}>
-          <span>Net result</span>
-          <strong className={totalIncome - totalExpense < 0 ? "neg" : undefined}>{money(totalIncome - totalExpense)}</strong>
-          <Delta now={totalIncome - totalExpense} before={prevIncome - prevExpense} />
-        </li>
-        <li className="kpi--neutral">
-          <span>Margin</span>
-          <strong>{totalIncome ? `${Math.round(((totalIncome - totalExpense) / totalIncome) * 100)}%` : "–"}</strong>
-          <small>of income kept</small>
-        </li>
+      <PeriodTabs base="/finance/reports" current={period} />
+
+      <SectionTitle icon="trend" art="transactions" title="Results" sub={period.label}>
+        <InfoTip text="Compared with the period of the same length just before it." />
+      </SectionTitle>
+
+      <ul className="fstats">
+        <StatCard tone="green" label="Income" value={money(totalIncome)} caption={<Delta now={totalIncome} before={prevIncome} all={period.key === "all"} />} info="Income booked in the period." />
+        <StatCard tone="red" label="Expenses" value={money(totalExpense)} caption={<Delta now={totalExpense} before={prevExpense} upIsBad all={period.key === "all"} />} info="Expenses booked in the period." />
+        <StatCard
+          tone={totalIncome - totalExpense < 0 ? "red" : "blue"} label="Net result" value={money(totalIncome - totalExpense)}
+          caption={<Delta now={totalIncome - totalExpense} before={prevIncome - prevExpense} all={period.key === "all"} />} info="Income minus expenses in the period."
+        />
+        <StatCard tone="violet" label="Margin" value={margin === null ? "–" : `${margin}%`} caption={`${num(totals.count)} transactions`} info="Share of income left after expenses." />
       </ul>
 
+      <FinanceSummary
+        periodLabel={period.label}
+        income={totalIncome}
+        expense={totalExpense}
+        balance={balance}
+        extra={period.key !== "all" ? { label: "Net in the previous period", value: prevIncome - prevExpense } : null}
+        accounts={accounts}
+        unassigned={unassigned}
+        incomeCats={income}
+        expenseCats={expenses}
+        qs={qs}
+      />
+
       {/* ---------- Forecast ---------- */}
-      <section className="panel" id="forecast">
-        <header className="panel__head">
-          <h2>Forecast</h2>
-          <span>Based on the last 12 complete months</span>
-        </header>
+      <SectionTitle icon="trend" art="forecast" title="Forecast" sub="Based on the last 12 complete months" id="forecast" />
+      <section className="panel">
         {!proj.enoughHistory && proj.projected.expense === null ? (
           <p className="empty">Forecasts start once there are two complete months of transactions (or from day 7 of the first month).</p>
         ) : (
@@ -116,7 +119,6 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
         </p>
       </section>
 
-      <GoogleCloudForecast report={cloud} period={period} />
 
       <section className="panel">
         <header className="panel__head">
@@ -157,57 +159,6 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
           </div>
         )}
       </section>
-
-      {/* ---------- Virtual accounts ---------- */}
-      <section className="panel">
-        <header className="panel__head">
-          <h2>Virtual accounts</h2>
-          <span>Income and expenses in the period · balance today</span>
-        </header>
-        {accounts.length === 0 && unassigned.count === 0 ? (
-          <p className="empty">No virtual accounts yet.</p>
-        ) : (
-          <div className="tablewrap">
-            <table className="table">
-              <thead>
-                <tr><th>Account</th><th>Transactions</th><th>Income</th><th>Expenses</th><th>Net</th><th>Balance</th></tr>
-              </thead>
-              <tbody>
-                {accounts.map((a) => (
-                  <tr key={a.id}>
-                    <td className="table__path table__acc">
-                      <AccountMark id={a.id} name={a.name} logo={a.logo} size={28} />
-                      <Link href={`/finance/transactions?account=${a.id}&period=${period.key}${period.key === "custom" ? `&from=${period.from}&to=${period.to}` : ""}`}>{a.name}</Link>
-                      {a.archived && <span className="tag tag--muted">Archived</span>}
-                    </td>
-                    <td>{num(a.count)}</td>
-                    <td>{money(a.income)}</td>
-                    <td>{money(a.expense)}</td>
-                    <td className={a.income - a.expense < 0 ? "neg" : undefined}>{money(a.income - a.expense)}</td>
-                    <td className={a.balance < 0 ? "neg" : undefined}><strong>{money(a.balance)}</strong></td>
-                  </tr>
-                ))}
-                {unassigned.count > 0 && (
-                  <tr>
-                    <td className="muted">No account</td>
-                    <td>{num(unassigned.count)}</td>
-                    <td>{money(unassigned.income)}</td>
-                    <td>{money(unassigned.expense)}</td>
-                    <td>{money(unassigned.income - unassigned.expense)}</td>
-                    <td className="muted">–</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
-
-      {/* ---------- Categories ---------- */}
-      <div className="cols">
-        <CategoryTable title="Expenses by category" rows={expenses} total={totalExpense} period={period.key} upIsBad />
-        <CategoryTable title="Income by category" rows={income} total={totalIncome} period={period.key} />
-      </div>
 
       {months.length > 1 && (
         <section className="panel">
@@ -251,40 +202,10 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
   );
 }
 
-function Delta({ now, before, upIsBad }: { now: number; before: number; upIsBad?: boolean }) {
+function Delta({ now, before, upIsBad, all }: { now: number; before: number; upIsBad?: boolean; all?: boolean }) {
+  if (all) return <>All booked transactions</>;
   const c = change(now, before);
-  if (!c) return <small>No earlier data</small>;
+  if (!c) return <>No earlier data to compare</>;
   const up = now > before;
-  return <small className={up === !upIsBad ? "pos" : "neg"}>{c} vs previous period</small>;
-}
-
-function CategoryTable({ title, rows, total, period, upIsBad }: { title: string; rows: CategoryReport[]; total: number; period: string; upIsBad?: boolean }) {
-  return (
-    <section className="panel">
-      <header className="panel__head">
-        <h2>{title}</h2>
-        <span>{money(total)}</span>
-      </header>
-      {rows.length === 0 ? (
-        <p className="empty">Nothing in this period.</p>
-      ) : (
-        <ul className="breakdown">
-          {rows.map((c) => {
-            const d = change(c.total, c.previous);
-            return (
-              <li key={c.id ?? "none"}>
-                <span className="breakdown__bar" style={{ width: `${pct(c.total, total)}%` }} aria-hidden="true" />
-                <span className="breakdown__label">
-                  {c.id ? <Link href={`/finance/transactions?category=${c.id}&period=${period}`}>{c.name}</Link> : c.name}
-                  <small>{num(c.count)} transactions · {pct(c.total, total)}%</small>
-                </span>
-                {d && <span className={`breakdown__extra ${(c.total > c.previous) === !upIsBad ? "pos" : "neg"}`}>{d}</span>}
-                <span className="breakdown__value">{money(c.total)}</span>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </section>
-  );
+  return <span className={up === !upIsBad ? "pos" : "neg"}>{c} vs previous period</span>;
 }

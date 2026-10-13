@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { requireAuth } from "@/lib/auth";
 import { projection } from "@/lib/finance-reports";
 import { listSites } from "@/lib/sites";
@@ -10,6 +11,7 @@ import { listProjects, listTasks } from "@/lib/projects";
 import { money, num } from "@/lib/format";
 import { Shell } from "@/components/Shell";
 import { NavIcon } from "@/components/NavIcon";
+import { ChannexCard, ChannexCardLoading, GoogleCloudCard, GoogleCloudCardLoading } from "@/components/SupplierCards";
 import s from "./overview.module.css";
 
 export const dynamic = "force-dynamic";
@@ -93,12 +95,11 @@ export default async function Overview() {
           </section>
         </div>
 
-        <Link href="/finance/reports#google-cloud-forecast" className={s.cloudLink}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/icons/google.png" alt="" width={22} height={22} />
-          <span><strong>Google Cloud expenses</strong><span>Both billing accounts, with forecasts in Finance reports</span></span>
-          <span className={s.currency}>USD</span><Chevron />
-        </Link>
+        {/* Supplier costs billed in USD, streamed in: Google Cloud and the daily LuxHotel read can take a few seconds. */}
+        <ul className="fstats" aria-label="Expected supplier costs this month">
+          <Suspense fallback={<ChannexCardLoading />}><ChannexCard /></Suspense>
+          <Suspense fallback={<GoogleCloudCardLoading />}><GoogleCloudCard period={month} /></Suspense>
+        </ul>
 
         <div className={s.departments}>
           <Link href="/analytics" className={s.department}>

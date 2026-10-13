@@ -1,5 +1,6 @@
 import type { Site } from "@/lib/sites";
 import type { SubLink } from "./Shell";
+import type { NavIconName } from "./NavIcon";
 
 export const analyticsNav = (sites: Site[], currentId?: string): SubLink[] => [
   { href: "/analytics", label: "All websites", current: !currentId },
@@ -8,18 +9,27 @@ export const analyticsNav = (sites: Site[], currentId?: string): SubLink[] => [
   { href: "https://wandering-wolf-play.vercel.app/", label: "ShqipFol", external: true },
 ];
 
-export type FinanceTab = "overview" | "transactions" | "reports" | "invoices" | "settings";
+export type FinanceTab = "overview" | "accounts" | "transactions" | "reports" | "gcloud" | "channex" | "settings";
+
+// Suppliers show their own logo instead of a line icon.
+const financeLogos: Partial<Record<FinanceTab, string>> = { gcloud: "/icons/google.png", channex: "/icons/channex.webp" };
 
 export const financeNav = (current: FinanceTab, admin: boolean): SubLink[] =>
   (
     [
       ["overview", "/finance", "Overview"],
+      ["accounts", "/finance/accounts", "Accounts"],
       ["transactions", "/finance/transactions", "Transactions"],
       ["reports", "/finance/reports", "Reports & forecast"],
-      ["invoices", "/finance/invoices", "Fiscal invoices"],
+      ["gcloud", "/finance/gcloud", "Gcloud"],
+      ["channex", "/finance/channex", "Channex"],
       ...(admin ? [["settings", "/finance/settings", "Settings"]] : []),
     ] as [FinanceTab, string, string][]
-  ).map(([key, href, label]) => ({ href, label, icon: key, current: key === current }));
+  ).map(([key, href, label]): SubLink =>
+    financeLogos[key]
+      ? { href, label, image: financeLogos[key], current: key === current }
+      : { href, label, icon: (key === "accounts" ? "wallet" : key) as NavIconName, current: key === current },
+  );
 
 export type MarketingTab = "ideas" | "plan" | "ads";
 

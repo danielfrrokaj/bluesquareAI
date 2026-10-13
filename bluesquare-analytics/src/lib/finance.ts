@@ -5,6 +5,9 @@ import { query } from "./db";
 export type TxType = "income" | "expense";
 export const TX_TYPES: Record<TxType, string> = { income: "Income", expense: "Expense" };
 export const isTxType = (v: unknown): v is TxType => v === "income" || v === "expense";
+/** What a transaction can be: income, expense, or a transfer between two virtual accounts (neither). */
+export type TxKind = TxType | "transfer";
+export const isTxKind = (v: unknown): v is TxKind => isTxType(v) || v === "transfer";
 
 /** Currency for all amounts and reports. Other currencies are converted with the rates in settings. */
 export const BASE_CURRENCY = "EUR";
@@ -61,29 +64,39 @@ export const currencyUsage = () =>
 
 // ---------- Virtual accounts ----------
 
+/** How virtual accounts are grouped in the portfolio. */
+export const ACCOUNT_GROUPS = {
+  own: { label: "Virtual Accounts", hint: "Operating and bank accounts of the business" },
+  partner: { label: "Partners", hint: "OTAs, agencies and financial partners holding your money" },
+  other: { label: "Other", hint: "Savings, loans and anything else" },
+} as const;
+export type AccountGroup = keyof typeof ACCOUNT_GROUPS;
+export const isAccountGroup = (v: unknown): v is AccountGroup => typeof v === "string" && v in ACCOUNT_GROUPS;
+
 export type Account = {
   id: string; name: string; description: string | null; opening_balance: number; archived: boolean;
   logo_version: number | null; // null: no logo
+  account_group: AccountGroup;
 };
 
 export const listAccounts = (includeArchived = false) =>
   query<Account>(
     `select id, name, description, opening_balance::float8 as opening_balance, archived,
-            case when logo is null then null else logo_version end as logo_version
+            case when logo is null then null else logo_version end as logo_version, account_group
      from fin_accounts ${includeArchived ? "" : "where not archived"} order by archived, name`,
   );
 
-export async function createAccount(a: { name: string; description: string; openingBalance: number }) {
+export async function createAccount(a: { name: string; description: string; openingBalance: number; group: AccountGroup }) {
   const id = randomUUID();
-  await query("insert into fin_accounts (id, name, description, opening_balance) values ($1, $2, $3, $4)", [
-    id, a.name, a.description || null, a.openingBalance,
+  await query("insert into fin_accounts (id, name, description, opening_balance, account_group) values ($1, $2, $3, $4, $5)", [
+    id, a.name, a.description || null, a.openingBalance, a.group,
   ]);
   return id;
 }
 
-export const updateAccount = (id: string, a: { name: string; description: string; openingBalance: number; archived: boolean }) =>
-  query("update fin_accounts set name = $2, description = $3, opening_balance = $4, archived = $5 where id = $1", [
-    id, a.name, a.description || null, a.openingBalance, a.archived,
+export const updateAccount = (id: string, a: { name: string; description: string; openingBalance: number; archived: boolean; group: AccountGroup }) =>
+  query("update fin_accounts set name = $2, description = $3, opening_balance = $4, archived = $5, account_group = $6 where id = $1", [
+    id, a.name, a.description || null, a.openingBalance, a.archived, a.group,
   ]);
 
 // ---------- Account logos ----------
@@ -101,7 +114,7 @@ export async function getAccountLogo(id: string): Promise<{ data: Uint8Array; ty
 
 /** Deletes an unused account; one with transactions is archived instead, so history stays intact. */
 export async function deleteOrArchiveAccount(id: string): Promise<"deleted" | "archived"> {
-  const used = await query("select 1 from fin_transactions where account_id = $1 limit 1", [id]);
+  const used = await query("select 1 from fin_transactions where account_id = $1 or to_account_id = $1 limit 1", [id]);
   if (used.length) {
     await query("update fin_accounts set archived = true where id = $1", [id]);
     return "archived";
@@ -159,7 +172,7 @@ export const ensureIncomeCategory = (name: string) => ensureCategory("income", n
 
 export type Transaction = {
   id: string;
-  type: TxType;
+  type: TxKind;
   amount: number; // EUR
   currency: string; // what was entered or invoiced
   original_amount: number | null; // in that currency, when it isn't EUR
@@ -170,6 +183,10 @@ export type Transaction = {
   account_id: string | null;
   account_name: string | null;
   account_logo: number | null; // logo version, null without a logo
+  // Transfers only: the account the money went into (account_* is where it came from).
+  to_account_id: string | null;
+  to_account_name: string | null;
+  to_account_logo: number | null;
   category_id: string | null;
   category_name: string | null;
   user_id: string | null;
@@ -182,8 +199,8 @@ export type Transaction = {
 export type TxFilter = {
   from?: string;
   to?: string;
-  type?: TxType;
-  accountId?: string;
+  type?: TxKind;
+  accountId?: string; // also matches transfers into the account
   categoryId?: string;
   userId?: string;
   source?: string;
@@ -193,10 +210,13 @@ export type TxFilter = {
 const TX_SELECT = `
   select t.id, t.type, t.amount::float8 as amount, t.currency, t.original_amount::float8 as original_amount, t.fx_rate::float8 as fx_rate,
          to_char(t.occurred_on, 'YYYY-MM-DD') as occurred_on, t.description, t.counterparty,
-         t.account_id, a.name as account_name, case when a.logo is null then null else a.logo_version end as account_logo, t.category_id, c.name as category_name, t.user_id, u.name as user_name,
+         t.account_id, a.name as account_name, case when a.logo is null then null else a.logo_version end as account_logo,
+         t.to_account_id, ta.name as to_account_name, case when ta.logo is null then null else ta.logo_version end as to_account_logo,
+         t.category_id, c.name as category_name, t.user_id, u.name as user_name,
          t.source, t.external_id, t.created_by
   from fin_transactions t
   left join fin_accounts a on a.id = t.account_id
+  left join fin_accounts ta on ta.id = t.to_account_id
   left join fin_categories c on c.id = t.category_id
   left join users u on u.id = t.user_id`;
 
@@ -211,7 +231,10 @@ function where(f: TxFilter): { sql: string; params: unknown[] } {
   if (f.to) add("t.occurred_on <= ?::date", f.to);
   if (f.type) add("t.type = ?", f.type);
   if (f.accountId === "none") parts.push("t.account_id is null");
-  else if (f.accountId) add("t.account_id = ?", f.accountId);
+  else if (f.accountId) {
+    params.push(f.accountId);
+    parts.push(`(t.account_id = $${params.length} or t.to_account_id = $${params.length})`);
+  }
   if (f.categoryId === "none") parts.push("t.category_id is null");
   else if (f.categoryId) add("t.category_id = ?", f.categoryId);
   if (f.userId) add("t.user_id = ?", f.userId);
@@ -246,7 +269,7 @@ export async function getTransaction(id: string): Promise<Transaction | null> {
 }
 
 export type TxInput = {
-  type: TxType;
+  type: TxKind;
   amount: number; // EUR
   currency: string;
   originalAmount: number | null;
@@ -255,6 +278,7 @@ export type TxInput = {
   description: string;
   counterparty: string;
   accountId: string | null;
+  toAccountId: string | null; // transfers only
   categoryId: string | null;
   userId: string | null;
 };
@@ -263,10 +287,10 @@ export async function createTransaction(t: TxInput, createdBy: string): Promise<
   const id = randomUUID();
   await query(
     `insert into fin_transactions (id, type, amount, occurred_on, description, counterparty, account_id, category_id, user_id, created_by,
-                                   currency, original_amount, fx_rate)
-     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+                                   currency, original_amount, fx_rate, to_account_id)
+     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
     [id, t.type, t.amount, t.occurredOn, t.description, t.counterparty || null, t.accountId, t.categoryId, t.userId, createdBy,
-      t.currency, t.originalAmount, t.fxRate],
+      t.currency, t.originalAmount, t.fxRate, t.toAccountId],
   );
   return id;
 }
@@ -274,10 +298,11 @@ export async function createTransaction(t: TxInput, createdBy: string): Promise<
 export const updateTransaction = (id: string, t: TxInput) =>
   query(
     `update fin_transactions set type = $2, amount = $3, occurred_on = $4, description = $5, counterparty = $6,
-            account_id = $7, category_id = $8, user_id = $9, currency = $10, original_amount = $11, fx_rate = $12, updated_at = now()
+            account_id = $7, category_id = $8, user_id = $9, currency = $10, original_amount = $11, fx_rate = $12, to_account_id = $13,
+            updated_at = now()
      where id = $1`,
     [id, t.type, t.amount, t.occurredOn, t.description, t.counterparty || null, t.accountId, t.categoryId, t.userId,
-      t.currency, t.originalAmount, t.fxRate],
+      t.currency, t.originalAmount, t.fxRate, t.toAccountId],
   );
 
 /** Synced transactions keep amount, date and type from the source; only the booking can change. */

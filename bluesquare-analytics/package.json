@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start -p ${PORT:-4400}",
     "typecheck": "tsc --noEmit",
-    "test:cloud-billing": "tsx --test src/lib/google-cloud-costs.test.ts"
+    "test:cloud-billing": "tsx --test src/lib/google-cloud-costs.test.ts",
+    "test:luxhotel": "node --conditions=react-server --import tsx --test src/lib/luxhotel.test.ts",
+    "test:channex": "tsx --test src/lib/channex-pricing.test.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "0.5.8",

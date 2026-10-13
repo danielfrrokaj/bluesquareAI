@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { isAdmin, requireAuth, requireRole } from "@/lib/auth";
 import {
-  BASE_CURRENCY, categoryNameTaken, createAccount, currencyCode, getRates, removeRate as deleteRate, setRate, toBase, createCategory, createTransaction, deleteOrArchiveAccount, deleteOrArchiveCategory, setAccountLogo,
+  BASE_CURRENCY, categoryNameTaken, createAccount, currencyCode, getRates, removeRate as deleteRate, setRate, toBase, createCategory, createTransaction, deleteOrArchiveAccount, deleteOrArchiveCategory, isAccountGroup, setAccountLogo,
   deleteTransaction, getTransaction, isTxType, listAccounts, listCategories, updateAccount, updateCategory,
   updateTransaction, updateTransactionBooking, type Transaction, type TxInput,
 } from "@/lib/finance";
@@ -12,6 +12,8 @@ import { listUsers } from "@/lib/users";
 import { BlueBillError, connect, deactivate, disconnect, reactivate, setBlueBillAccount, syncInvoices } from "@/lib/bluebill";
 import { isDate } from "@/lib/period";
 import { readLogo } from "@/lib/logo";
+import { setChannexCategory } from "@/lib/channex";
+import { isChannexCategory } from "@/lib/channex-pricing";
 import type { FormState } from "@/components/ActionForm";
 
 const str = (form: FormData, key: string, max = 200) => String(form.get(key) ?? "").trim().slice(0, max);
@@ -29,24 +31,29 @@ const refresh = () => revalidatePath("/finance", "layout");
 
 // ---------- Transactions (any signed-in user; members edit only their own) ----------
 
-/** `existing` keeps its exchange rate while its currency and amount are unchanged. */
-async function readTransaction(form: FormData, existing?: Transaction): Promise<TxInput | string> {
-  const type = str(form, "type");
+/** The entered amount and currency, converted to EUR; `existing` keeps its exchange rate while both are unchanged. */
+async function convertedAmount(form: FormData, existing?: Transaction): Promise<Pick<TxInput, "amount" | "currency" | "originalAmount" | "fxRate"> | string> {
   const value = amount(str(form, "amount", 30));
   const currency = currencyCode(str(form, "currency", 3) || BASE_CURRENCY);
+  if (value === null || value <= 0) return "Enter an amount greater than 0, e.g. 12000 or 12000.50.";
+  if (!currency) return "Choose a currency.";
+  const unchanged = existing && existing.currency === currency && (existing.original_amount ?? existing.amount) === value;
+  const converted = unchanged && existing.fx_rate ? { amount: existing.amount, rate: existing.fx_rate } : toBase(value, currency, await getRates());
+  if (!converted) return `There's no ${currency} rate yet. An admin can add it in Finance → Settings → Currency rates.`;
+  const foreign = currency !== BASE_CURRENCY;
+  return { amount: converted.amount, currency, originalAmount: foreign ? value : null, fxRate: foreign ? converted.rate : null };
+}
+
+async function readTransaction(form: FormData, existing?: Transaction): Promise<TxInput | string> {
+  const type = str(form, "type");
   const occurredOn = str(form, "occurred_on", 10);
   const description = str(form, "description", 300);
   const accountId = str(form, "account_id") || null;
   const categoryId = str(form, "category_id") || null;
   const userId = str(form, "user_id") || null;
   if (!isTxType(type)) return "Choose income or expense.";
-  if (value === null || value <= 0) return "Enter an amount greater than 0, e.g. 12000 or 12000.50.";
-  if (!currency) return "Choose a currency.";
-  const unchanged = existing && existing.currency === currency && (existing.original_amount ?? existing.amount) === value;
-  const converted = unchanged && existing.fx_rate
-    ? { amount: existing.amount, rate: existing.fx_rate }
-    : toBase(value, currency, await getRates());
-  if (!converted) return `There's no ${currency} rate yet. An admin can add it in Finance → Settings → Currency rates.`;
+  const value = await convertedAmount(form, existing);
+  if (typeof value === "string") return value;
   if (!isDate(occurredOn)) return "Enter a valid date.";
   if (!description) return "Add a short description.";
   const [accounts, categories, users] = await Promise.all([listAccounts(true), listCategories(true), listUsers()]);
@@ -55,11 +62,42 @@ async function readTransaction(form: FormData, existing?: Transaction): Promise<
   if (categoryId && !category) return "That category no longer exists.";
   if (category && category.kind !== type) return `“${category.name}” is an ${category.kind} category; pick one for ${type}.`;
   if (userId && !users.some((u) => u.id === userId)) return "That user no longer exists.";
-  const foreign = currency !== BASE_CURRENCY;
   return {
-    type, amount: converted.amount, currency, originalAmount: foreign ? value : null, fxRate: foreign ? converted.rate : null,
-    occurredOn, description, counterparty: str(form, "counterparty", 120), accountId, categoryId, userId,
+    type, ...value, occurredOn, description, counterparty: str(form, "counterparty", 120), accountId, toAccountId: null, categoryId, userId,
   };
+}
+
+/** A transfer moves money from one virtual account to another: no category, not income or expense. */
+async function readTransfer(form: FormData, existing?: Transaction): Promise<TxInput | string> {
+  const from = str(form, "account_id");
+  const to = str(form, "to_account_id");
+  const occurredOn = str(form, "occurred_on", 10);
+  const value = await convertedAmount(form, existing);
+  if (typeof value === "string") return value;
+  if (!isDate(occurredOn)) return "Enter a valid date.";
+  if (!from || !to) return "Choose both accounts.";
+  if (from === to) return "Choose two different accounts.";
+  const accounts = await listAccounts(true);
+  const source = accounts.find((a) => a.id === from);
+  const target = accounts.find((a) => a.id === to);
+  if (!source || !target) return "That account no longer exists.";
+  // An archived account can stay on a transfer it already had, but can't be picked for a new one.
+  const kept = (id: string) => existing?.account_id === id || existing?.to_account_id === id;
+  if ((source.archived && !kept(from)) || (target.archived && !kept(to))) return "Archived accounts can't receive or send new transfers.";
+  return {
+    type: "transfer", ...value, occurredOn, description: str(form, "description", 300) || `Transfer ${source.name} → ${target.name}`,
+    counterparty: "", accountId: from, toAccountId: to, categoryId: null, userId: existing ? existing.user_id : null,
+  };
+}
+
+export async function addTransfer(_: FormState, form: FormData): Promise<FormState> {
+  const user = await requireAuth();
+  const input = await readTransfer(form);
+  if (typeof input === "string") return { error: input };
+  input.userId = user.id;
+  await createTransaction(input, user.id);
+  refresh();
+  return { ok: `Transferred: ${input.description}.` };
 }
 
 export async function addTransaction(_: FormState, form: FormData): Promise<FormState> {
@@ -91,6 +129,10 @@ export async function saveTransaction(_: FormState, form: FormData): Promise<For
     const category = categoryId ? categories.find((c) => c.id === categoryId) : null;
     if (category && category.kind !== tx.type) return { error: `Pick a ${tx.type} category.` };
     await updateTransactionBooking(tx.id, { accountId, categoryId, userId: isAdmin(user) ? str(form, "user_id") || null : tx.user_id });
+  } else if (tx.type === "transfer") {
+    const input = await readTransfer(form, tx);
+    if (typeof input === "string") return { error: input };
+    await updateTransaction(tx.id, input);
   } else {
     const input = await readTransaction(form, tx);
     if (typeof input === "string") return { error: input };
@@ -120,7 +162,8 @@ export async function addAccount(_: FormState, form: FormData): Promise<FormStat
   if (opening === null) return { error: "Enter a valid opening balance, e.g. 0 or 150000." };
   const logo = await readLogo(form);
   if (typeof logo === "string") return { error: logo };
-  const id = await createAccount({ name, description: str(form, "description", 200), openingBalance: opening });
+  const group = str(form, "group");
+  const id = await createAccount({ name, description: str(form, "description", 200), openingBalance: opening, group: isAccountGroup(group) ? group : "own" });
   if (logo) await setAccountLogo(id, logo);
   refresh();
   return { ok: `Account “${name}” created.` };
@@ -136,7 +179,10 @@ export async function saveAccount(_: FormState, form: FormData): Promise<FormSta
   if (typeof logo === "string") return { error: logo };
   if (logo) await setAccountLogo(str(form, "id"), logo);
   else if (form.get("remove_logo") === "on") await setAccountLogo(str(form, "id"), null);
-  await updateAccount(str(form, "id"), { name, description: str(form, "description", 200), openingBalance: opening, archived: form.get("archived") === "on" });
+  const group = str(form, "group");
+  await updateAccount(str(form, "id"), {
+    name, description: str(form, "description", 200), openingBalance: opening, archived: form.get("archived") === "on", group: isAccountGroup(group) ? group : "own",
+  });
   refresh();
   return { ok: "Saved." };
 }
@@ -280,4 +326,17 @@ export async function removeRate(_: FormState, form: FormData): Promise<FormStat
   if (!(await deleteRate(currency))) return { error: `Transactions in ${currency} use this rate, so it can't be removed. Change the rate instead.` };
   refresh();
   return { ok: `${currency} removed.` };
+}
+
+// ---------- Channex: billing category of each property (admin) ----------
+
+export async function saveChannexCategory(_: FormState, form: FormData): Promise<FormState> {
+  const user = await requireRole("admin");
+  const hotelId = str(form, "hotel_id", 128);
+  const category = str(form, "category", 20);
+  if (!/^[A-Za-z0-9_-]+$/.test(hotelId)) return { error: "That property no longer exists." };
+  if (!isChannexCategory(category)) return { error: "Choose hotel or vacation rental." };
+  await setChannexCategory(hotelId, category, user.id);
+  refresh();
+  return { ok: `Billed as ${category === "hotel" ? "a hotel" : "a vacation rental"}.` };
 }
