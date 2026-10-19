@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { isAdmin, requireAuth } from "@/lib/auth";
+import { isAdmin, requireFinanceTab } from "@/lib/auth";
 import { accountReport } from "@/lib/finance-reports";
+import { bookRecurring } from "@/lib/finance";
 import { parsePeriod } from "@/lib/period";
 import { Shell } from "@/components/Shell";
 import { financeNav } from "@/components/nav";
@@ -12,11 +13,13 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Accounts" };
 
 export default async function AccountsPage() {
-  const user = await requireAuth();
+  const user = await requireFinanceTab("accounts");
   const admin = isAdmin(user);
+  // Months of recurring rules whose day has come are booked before anything is read.
+  await bookRecurring();
   const accounts = await accountReport(parsePeriod({ period: "month" }));
   return (
-    <Shell department="finance" subnav={financeNav("accounts", admin)}>
+    <Shell department="finance" subnav={financeNav("accounts", user)}>
       <div className="pagehead">
         <div>
           <h1>Accounts</h1>

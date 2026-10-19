@@ -33,8 +33,9 @@ const dotColor = (key: string) => DOTS[[...key].reduce((h, c) => (h * 31 + c.cha
  * One cell of a `.fstats` strip: a tone marker and label, the figure, and a caption. A logo sits in the top-right corner,
  * so cells with and without one keep their figures in line. `info` shows on hover; with `href` the whole cell links there.
  */
-export function StatCard({ tone, logo, label, value, caption, info, href }: {
+export function StatCard({ tone, logo, label, value, caption, info, href, note }: {
   tone: Tone; logo?: string | null; label: string; value: string; caption: React.ReactNode; info: string; href?: string;
+  note?: string | null; // an extra line under the caption, e.g. how much of the figure is still pending
 }) {
   return (
     <li className={`fstat fstat--${tone}${logo ? " fstat--logo" : ""}`} title={info}>
@@ -44,6 +45,7 @@ export function StatCard({ tone, logo, label, value, caption, info, href }: {
       </span>
       <strong className="fstat__value">{value}</strong>
       <small className="fstat__caption">{caption}</small>
+      {note && <small className="fstat__note">{note}</small>}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       {logo && <img className="fstat__logo" src={logo} alt="" width={36} height={36} />}
     </li>
@@ -185,6 +187,7 @@ export function AccountPortfolio({ accounts }: { accounts: AccountReport[] }) {
   const open = accounts.filter((a) => !a.archived);
   const total = open.reduce((s, a) => s + a.balance, 0);
   const positive = open.reduce((s, a) => s + Math.max(0, a.balance), 0);
+  const pending = open.reduce((s, a) => s + a.pending, 0); // still with people, not in the balances yet
   const groups = (Object.keys(ACCOUNT_GROUPS) as AccountGroup[])
     .map((g) => ({ key: g, ...ACCOUNT_GROUPS[g], rows: open.filter((a) => a.group === g).sort((a, b) => b.balance - a.balance) }))
     .filter((g) => g.rows.length);
@@ -202,6 +205,11 @@ export function AccountPortfolio({ accounts }: { accounts: AccountReport[] }) {
         <div className="fport__total">
           <small>Total balance</small>
           <strong>{money(total)}</strong>
+          {pending !== 0 && (
+            <Link href="/finance/register" className="fport__pending">
+              {pending > 0 ? `+ ${money(pending)} pending with people` : `− ${money(-pending)} owed back to people`}
+            </Link>
+          )}
         </div>
       </section>
       {groups.length === 0 && <p className="empty empty--big">No virtual accounts yet. Admins create them in Finance → Settings.</p>}
@@ -227,7 +235,7 @@ export function AccountPortfolio({ accounts }: { accounts: AccountReport[] }) {
                   label={a.name}
                   value={money(a.balance)}
                   caption={`${share(Math.max(0, a.balance), positive)} of portfolio`}
-                  info={`${a.description ? `${a.description}. ` : ""}Opening balance ${money(a.opening)}. This month: +${money(a.income)} / −${money(a.expense)}${a.transferIn || a.transferOut ? `; transfers in ${money(a.transferIn)} / out ${money(a.transferOut)}` : ""}.`}
+                  info={`${a.description ? `${a.description}. ` : ""}Opening balance ${money(a.opening)}. This month: +${money(a.income)} / −${money(a.expense)}${a.transferIn || a.transferOut ? `; transfers in ${money(a.transferIn)} / out ${money(a.transferOut)}` : ""}.${a.pending ? ` Pending, not in the balance yet: ${a.pending > 0 ? "+" : "−"}${money(Math.abs(a.pending))}.` : ""}`}
                   href={`/finance/transactions?account=${a.id}&period=month`}
                 />
               ))}

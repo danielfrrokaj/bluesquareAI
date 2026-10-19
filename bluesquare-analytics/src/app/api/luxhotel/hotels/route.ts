@@ -1,8 +1,10 @@
 import { currentUser } from "@/lib/auth";
-import { getLuxHotels } from "@/lib/luxhotel";
+import { savedHotels, syncHotels } from "@/lib/lux-properties";
 
 export const dynamic = "force-dynamic";
-export async function GET() {
+/** The saved properties; `?refresh=1` (the Refresh button) first asks LuxHotel again, at most once a minute. */
+export async function GET(req: Request) {
   if (!await currentUser()) return Response.json({ error: "Sign in to view LuxHotel." }, { status: 401 });
-  return Response.json(await getLuxHotels(), { headers: { "Cache-Control": "private, no-store" } });
+  if (new URL(req.url).searchParams.get("refresh") === "1") await syncHotels(true);
+  return Response.json(await savedHotels(), { headers: { "Cache-Control": "private, no-store" } });
 }

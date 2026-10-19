@@ -1,5 +1,5 @@
 import { requireRole } from "@/lib/auth";
-import { ACCOUNT_GROUPS, BASE_CURRENCY, currencyUsage, getRates, listAccounts, listCategories, type AccountGroup, type Category } from "@/lib/finance";
+import { ACCOUNT_GROUPS, BASE_CURRENCY, bookRecurring, currencyUsage, getRates, listAccounts, listCategories, type AccountGroup, type Category } from "@/lib/finance";
 import { accountReport } from "@/lib/finance-reports";
 import { getBlueBill } from "@/lib/bluebill";
 import { parsePeriod } from "@/lib/period";
@@ -22,7 +22,9 @@ const when = (iso: string | null) =>
   iso ? new Date(iso).toLocaleString("en-GB", { timeZone: process.env.REPORT_TIMEZONE || "Europe/Tirane", dateStyle: "medium", timeStyle: "short" }) : "never";
 
 export default async function FinanceSettings() {
-  await requireRole("admin");
+  const user = await requireRole("admin");
+  // Months of recurring rules whose day has come are booked before anything is read.
+  await bookRecurring();
   const [accounts, balances, categories, bb, rates, usage] = await Promise.all([
     listAccounts(true), accountReport(parsePeriod({ period: "month" })), listCategories(true), getBlueBill(), getRates(), currencyUsage(),
   ]);
@@ -31,7 +33,7 @@ export default async function FinanceSettings() {
   const active = accounts.filter((a) => !a.archived);
 
   return (
-    <Shell department="finance" subnav={financeNav("settings", true)}>
+    <Shell department="finance" subnav={financeNav("settings", user)}>
       <div className="pagehead">
         <div>
           <h1>Finance settings</h1>

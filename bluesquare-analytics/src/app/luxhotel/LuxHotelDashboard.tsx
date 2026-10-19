@@ -28,14 +28,15 @@ export function LuxHotelDashboard({ initial }: { initial: LuxRead<HotelList> }) 
   const controller = useRef<AbortController | null>(null);
   const directory = useRef<HTMLElement>(null);
 
-  const refresh = useCallback(async () => {
+  // Auto-refresh reads our saved copy; the Refresh button (force) asks LuxHotel again first.
+  const refresh = useCallback(async (force = false) => {
     if (pending.current) return;
     pending.current = true;
     setRefreshing(true);
     const request = new AbortController();
     controller.current = request;
     try {
-      const response = await fetch("/api/luxhotel/hotels", { cache: "no-store", signal: AbortSignal.any([request.signal, AbortSignal.timeout(35_000)]) });
+      const response = await fetch(`/api/luxhotel/hotels${force ? "?refresh=1" : ""}`, { cache: "no-store", signal: AbortSignal.any([request.signal, AbortSignal.timeout(35_000)]) });
       if (response.status === 401) {
         setSessionExpired(true);
         setReport(previous => ({ ...previous, data: null, status: "error", message: "Your session has expired. Sign in again to continue monitoring.", retryAt: new Date(Date.now() + 60_000).toISOString() }));
@@ -71,6 +72,8 @@ export function LuxHotelDashboard({ initial }: { initial: LuxRead<HotelList> }) 
   const visible = useMemo(() => selectHotels(hotels, { query, filter, connection, sort, now }), [hotels, query, filter, connection, sort, now]);
   const cooldown = Math.max(0, Math.ceil((Date.parse(report.retryAt) - clock) / 1000));
   const chartMax = Math.max(1, ...months.map(m => m.count));
+  // Top three channels, with the long tail folded into one row so the card keeps its height.
+  const channels = totals.channelMix.length > 4 ? [...totals.channelMix.slice(0, 3), { label: "Other channels", count: totals.channelMix.slice(3).reduce((n, c) => n + c.count, 0) }] : totals.channelMix;
   const filterTo = (value: HotelFilter) => { setFilter(value); setConnection("all"); setQuery(""); directory.current?.scrollIntoView({ behavior: "instant", block: "start" }); };
   const reset = () => { setQuery(""); setFilter("all"); setConnection("all"); setSort("newest"); };
 
@@ -85,12 +88,12 @@ export function LuxHotelDashboard({ initial }: { initial: LuxRead<HotelList> }) 
 
     <div className={s.syncbar}>
       <div className={s.syncInfo}><span className={`${s.connectionState} ${report.status !== "ready" ? s.connectionWarning : ""}`}><i />{refreshing ? "Refreshing" : report.status === "ready" ? "Connected" : report.status === "stale" ? "Saved snapshot" : "Connection unavailable"}</span><span>{snapshot ? `Updated ${timeLabel(snapshot.generated_at)}` : "Waiting for property data"}</span></div>
-      <div className={s.syncActions}><label className={s.auto}><input type="checkbox" checked={autoRefresh} onChange={e => setAutoRefresh(e.target.checked)} />Auto-refresh · 1 min</label><button type="button" className={s.refresh} onClick={() => void refresh()} disabled={refreshing || cooldown > 0} title={cooldown ? `Next refresh available in ${cooldown} seconds` : "Refresh properties"}><Icon name="refresh" />{refreshing ? "Refreshing…" : cooldown ? `Refresh in ${cooldown}s` : "Refresh"}</button></div>
+      <div className={s.syncActions}><label className={s.auto}><input type="checkbox" checked={autoRefresh} onChange={e => setAutoRefresh(e.target.checked)} />Auto-refresh · 1 min</label><button type="button" className={s.refresh} onClick={() => void refresh(true)} disabled={refreshing || cooldown > 0} title={cooldown ? `Next refresh available in ${cooldown} seconds` : "Refresh properties"}><Icon name="refresh" />{refreshing ? "Refreshing…" : cooldown ? `Refresh in ${cooldown}s` : "Refresh"}</button></div>
     </div>
 
     {report.message && <div className={s.notice} role="alert"><Icon name="warning" /><div><strong>{report.status === "stale" ? "Showing the last successful snapshot" : "Property data is unavailable"}</strong><p>{report.message}</p>{sessionExpired && <a href="/login">Sign in</a>}</div></div>}
 
-    {!snapshot ? <section className={s.empty}><Icon name="hotel" /><h2>Connect to your property network</h2><p>Properties and monitoring data will appear here when the LuxHotel connection is available.</p><button className={s.secondary} disabled={refreshing || cooldown > 0} onClick={() => void refresh()}>{cooldown ? `Try again in ${cooldown}s` : "Try again"}</button></section> : <>
+    {!snapshot ? <section className={s.empty}><Icon name="hotel" /><h2>Connect to your property network</h2><p>Properties and monitoring data will appear here when the LuxHotel connection is available.</p><button className={s.secondary} disabled={refreshing || cooldown > 0} onClick={() => void refresh(true)}>{cooldown ? `Try again in ${cooldown}s` : "Try again"}</button></section> : <>
       <section className={s.metrics} aria-label="Portfolio totals">
         <div><span><Icon name="hotel" />Properties</span><strong>{number(totals.total)}</strong><small>Across {number(totals.accounts)} business accounts</small></div>
         <div><span><Icon name="rooms" />Physical rooms</span><strong>{number(totals.rooms)}</strong><small>Configured across your portfolio</small></div>
@@ -109,7 +112,8 @@ export function LuxHotelDashboard({ initial }: { initial: LuxRead<HotelList> }) 
         </section>
 
         <section className={s.connectivity} aria-label="Channel connections">
-          <div className={s.connectionTotal}><strong>{number(totals.channels)}</strong><span>reported active<br />channel connections</span></div>
+          <div className={s.connectionTotal}><strong>{number(totals.channels)}</strong><span>reported active channel connections<br />across {number(totals.channelHotels)} {totals.channelHotels === 1 ? "property" : "properties"}</span></div>
+          {channels.length > 0 && <ul className={s.channelMix} aria-label="Active connections by channel">{channels.map(channel => <li key={channel.label}><span>{channel.label}</span><strong>{number(channel.count)}</strong><div className={s.channelTrack}><span style={{ width: `${percentage(channel.count, totals.channels)}%` }} /></div></li>)}</ul>}
           <div className={s.connectionFoot}><button onClick={() => { setConnection("disconnected"); setFilter("all"); setQuery(""); directory.current?.scrollIntoView({ behavior: "instant" }); }}>{totals.total - totals.connected} disconnected <Icon name="arrow" /></button></div>
         </section>
       </div>
@@ -132,7 +136,7 @@ export function LuxHotelDashboard({ initial }: { initial: LuxRead<HotelList> }) 
           <p className={s.dataNote}><Icon name="link" /><span>Channel lists can be temporarily unavailable even when the channel manager is connected.</span></p>
         </aside>
       </div>
-      <footer className={s.pageFoot}><span>LuxHotel System · Property monitoring</span><span>Read-only data · Refreshes every minute while this tab is visible{!autoRefresh ? " (paused)" : ""}</span></footer>
+      <footer className={s.pageFoot}><span>LuxHotel System · Property monitoring</span><span>Read-only data · Saved copy, refreshed from LuxHotel every 10 minutes; Refresh asks now{!autoRefresh ? " · auto-refresh paused" : ""}</span></footer>
     </>}
   </div>;
 }

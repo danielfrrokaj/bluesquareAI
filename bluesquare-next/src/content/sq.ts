@@ -387,6 +387,14 @@ const sq: Dictionary = {
         role: "Inxhiniere Software",
         bio: "Antigona zhvillon dhe mirëmban software-in e produkteve të Blue Square AI, nga shërbimet back-end deri te funksionet që klientët përdorin çdo ditë.",
       },
+      {
+        role: "Marketing & Dizajn",
+        bio: "Grisilda kujdeset për pamjen dhe zërin e Blue Square AI, nga fushatat e marketingut dhe rrjetet sociale deri te dizajni i pamjeve që klientët shohin çdo ditë.",
+      },
+      {
+        role: "Shitje",
+        bio: "Klevis punon me hotelet dhe bizneset që duan të rriten me Blue Square AI, nga biseda e parë deri te nisja me produktet e duhura.",
+      },
     ],
     infraEyebrow: "Infrastruktura",
     infraTitle: "Ne dimë me kë të punojmë për të dhënë cilësi",

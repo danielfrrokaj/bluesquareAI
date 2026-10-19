@@ -4,6 +4,7 @@ import { saveProfile, saveSignIn } from "./actions";
 import { Shell } from "@/components/Shell";
 import { ActionForm } from "@/components/ActionForm";
 import { LogoField } from "@/components/LogoField";
+import { SignInFields } from "@/components/SignInFields";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Settings" };
@@ -35,10 +36,10 @@ export default async function SettingsPage() {
       <section className="panel settings">
         <header className="settings__head">
           <h2>Sign-in</h2>
-          <p className="muted">Changing your email or password needs your current password.</p>
+          <p className="muted">You sign in with your username or phone number. Changing these or your password needs your current password.</p>
         </header>
         <ActionForm action={saveSignIn} submit="Update sign-in" className="form settings__form">
-          <label className="field"><span>Email</span><input name="email" defaultValue={me.email} required autoComplete="username" /></label>
+          <SignInFields user={me} own />
           <div className="settings__pair">
             <label className="field"><span>New password</span><input name="new_password" type="password" autoComplete="new-password" minLength={10} placeholder="Leave empty to keep" /></label>
             <label className="field"><span>Repeat new password</span><input name="repeat_password" type="password" autoComplete="new-password" /></label>

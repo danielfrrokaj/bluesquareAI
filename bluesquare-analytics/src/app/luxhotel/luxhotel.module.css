@@ -54,6 +54,11 @@
 .connectionTotal { display: flex; align-items: center; gap: 18px; padding-bottom: 20px; }
 .connectionTotal > strong { color: #fff; font-size: 2.6rem; line-height: 1.2; font-weight: 700; letter-spacing: -.04em; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .connectionTotal > span { font-size: .72rem; line-height: 1.8; }
+.channelMix { display: grid; gap: 12px; margin: 0 0 20px; padding: 0; list-style: none; }
+.channelMix li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; font-size: .7rem; }
+.channelMix strong { color: #fff; font-weight: 650; font-variant-numeric: tabular-nums; }
+.channelTrack { grid-column: 1 / -1; height: 5px; background: #ffffff20; border-radius: 5px; overflow: hidden; }
+.channelTrack span { display: block; height: 100%; background: var(--lux-lime); border-radius: inherit; }
 .connectionFoot { display: grid; gap: 15px; font-size: .7rem; margin-top: auto; }
 .connectionFoot button { color: #fff; display: inline-flex; align-items: center; justify-content: space-between; padding: 12px 0 0; border: 0; border-top: 1px solid #ffffff25; background: none; font-size: .7rem; text-align: left; }
 .connectionFoot button svg { width: 14px; height: 14px; }

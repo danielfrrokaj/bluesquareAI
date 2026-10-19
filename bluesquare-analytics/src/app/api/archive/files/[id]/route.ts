@@ -1,4 +1,5 @@
 import { currentUser } from "@/lib/auth";
+import { canOpenArchiveTab } from "@/lib/departments";
 import { getFile } from "@/lib/archive";
 import { mediaResponse } from "@/lib/media-store";
 
@@ -9,7 +10,9 @@ const INLINE = /^(image\/(png|jpe?g|gif|webp|avif)|application\/pdf|video\/|audi
 
 /** A stored file for signed-in users. ?download forces a download; Range is supported for media. */
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  if (!(await currentUser())) return new Response("Unauthorized", { status: 401 });
+  const user = await currentUser();
+  if (!user) return new Response("Unauthorized", { status: 401 });
+  if (!canOpenArchiveTab(user, "files")) return new Response("Forbidden", { status: 403 });
   const file = await getFile((await params).id);
   if (!file || file.status !== "ready") return new Response("Not found", { status: 404 });
   const inline = INLINE.test(file.mime) && !new URL(req.url).searchParams.has("download");

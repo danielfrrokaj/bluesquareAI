@@ -11,10 +11,13 @@ export async function AddTransaction({ user, admin }: { user: User; admin: boole
   const [accounts, categories, users, rates] = await Promise.all([listAccounts(), listCategories(), admin ? listUsers() : [], getRates()]);
   return (
     <Modal trigger="Add transaction" title="Add a transaction">
-      {!admin && <p className="muted">Recorded under your name.</p>}
+      <p className="muted">
+        {admin ? "" : "Recorded under your name. "}It&apos;s saved as pending, with the money still with that person, until an admin
+        confirms it in the Register.
+      </p>
       <ActionForm action={addTransaction} submit="Save transaction">
         <TransactionFields
-          accounts={accounts} categories={categories} users={users} currencies={Object.keys(rates)} today={today()} currentUserId={user.id} canPickUser={admin}
+          accounts={accounts} categories={categories} users={users} currencies={Object.keys(rates)} today={today()} currentUserId={user.id} canPickUser={admin} repeat
         />
       </ActionForm>
     </Modal>

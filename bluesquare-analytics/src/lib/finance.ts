@@ -1,6 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import { query } from "./db";
+import { addMonths, dayOfMonth, monthOf, today } from "./period";
 
 export type TxType = "income" | "expense";
 export const TX_TYPES: Record<TxType, string> = { income: "Income", expense: "Expense" };
@@ -8,6 +9,13 @@ export const isTxType = (v: unknown): v is TxType => v === "income" || v === "ex
 /** What a transaction can be: income, expense, or a transfer between two virtual accounts (neither). */
 export type TxKind = TxType | "transfer";
 export const isTxKind = (v: unknown): v is TxKind => isTxType(v) || v === "transfer";
+/**
+ * Pending: the money is still with the person the transaction belongs to; it counts in income and expense, not in the balance.
+ * Confirmed: an admin confirmed it in the Register (or it never needed it), and it counts everywhere. Cancelled: counts nowhere.
+ */
+export type TxStatus = "pending" | "confirmed" | "cancelled";
+export const TX_STATUSES: Record<TxStatus, string> = { pending: "Pending", confirmed: "Confirmed", cancelled: "Cancelled" };
+export const isTxStatus = (v: unknown): v is TxStatus => typeof v === "string" && v in TX_STATUSES;
 
 /** Currency for all amounts and reports. Other currencies are converted with the rates in settings. */
 export const BASE_CURRENCY = "EUR";
@@ -194,7 +202,13 @@ export type Transaction = {
   source: string;
   external_id: string | null;
   created_by: string | null;
+  status: TxStatus;
+  reviewed_at: string | null; // when an admin confirmed or cancelled it in the Register; null if it never waited
+  reviewed_by_name: string | null;
 };
+
+/** Mirrors another system (BlueBill, Meta Ads), which owns its amount, date and type. Months of a recurring rule are not synced. */
+export const isSynced = (source: string) => source !== "manual" && source !== "recurring";
 
 export type TxFilter = {
   from?: string;
@@ -204,6 +218,7 @@ export type TxFilter = {
   categoryId?: string;
   userId?: string;
   source?: string;
+  status?: TxStatus;
   q?: string;
 };
 
@@ -213,12 +228,13 @@ const TX_SELECT = `
          t.account_id, a.name as account_name, case when a.logo is null then null else a.logo_version end as account_logo,
          t.to_account_id, ta.name as to_account_name, case when ta.logo is null then null else ta.logo_version end as to_account_logo,
          t.category_id, c.name as category_name, t.user_id, u.name as user_name,
-         t.source, t.external_id, t.created_by
+         t.source, t.external_id, t.created_by, t.status, t.reviewed_at::text as reviewed_at, ru.name as reviewed_by_name
   from fin_transactions t
   left join fin_accounts a on a.id = t.account_id
   left join fin_accounts ta on ta.id = t.to_account_id
   left join fin_categories c on c.id = t.category_id
-  left join users u on u.id = t.user_id`;
+  left join users u on u.id = t.user_id
+  left join users ru on ru.id = t.reviewed_by`;
 
 function where(f: TxFilter): { sql: string; params: unknown[] } {
   const parts: string[] = [];
@@ -239,6 +255,7 @@ function where(f: TxFilter): { sql: string; params: unknown[] } {
   else if (f.categoryId) add("t.category_id = ?", f.categoryId);
   if (f.userId) add("t.user_id = ?", f.userId);
   if (f.source) add("t.source = ?", f.source);
+  if (f.status) add("t.status = ?", f.status);
   if (f.q) add("(t.description || ' ' || coalesce(t.counterparty, '')) ilike ?", `%${f.q.replace(/[\\%_]/g, "\\$&")}%`);
   return { sql: parts.length ? `where ${parts.join(" and ")}` : "", params };
 }
@@ -255,8 +272,8 @@ export async function transactionTotals(f: TxFilter): Promise<{ count: number; i
   const w = where(f);
   const [row] = await query<{ count: number; income: number; expense: number }>(
     `select count(*)::int as count,
-            coalesce(sum(amount) filter (where type = 'income'), 0)::float8 as income,
-            coalesce(sum(amount) filter (where type = 'expense'), 0)::float8 as expense
+            coalesce(sum(amount) filter (where type = 'income' and status <> 'cancelled'), 0)::float8 as income,
+            coalesce(sum(amount) filter (where type = 'expense' and status <> 'cancelled'), 0)::float8 as expense
      from fin_transactions t ${w.sql}`,
     w.params,
   );
@@ -283,17 +300,64 @@ export type TxInput = {
   userId: string | null;
 };
 
-export async function createTransaction(t: TxInput, createdBy: string): Promise<string> {
+/** `status`: incomes and expenses entered by hand start pending, until confirmed in the Register; transfers are confirmed. */
+export async function createTransaction(t: TxInput, createdBy: string, status: TxStatus = "confirmed"): Promise<string> {
   const id = randomUUID();
   await query(
     `insert into fin_transactions (id, type, amount, occurred_on, description, counterparty, account_id, category_id, user_id, created_by,
-                                   currency, original_amount, fx_rate, to_account_id)
-     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
+                                   currency, original_amount, fx_rate, to_account_id, status)
+     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
     [id, t.type, t.amount, t.occurredOn, t.description, t.counterparty || null, t.accountId, t.categoryId, t.userId, createdBy,
-      t.currency, t.originalAmount, t.fxRate, t.toAccountId],
+      t.currency, t.originalAmount, t.fxRate, t.toAccountId, t.type === "transfer" ? "confirmed" : status],
   );
   return id;
 }
+
+// ---------- Register: confirming or cancelling pending money ----------
+
+/** Incomes and expenses of these sources wait in the Register; synced ones mirror another system and can't be cancelled. */
+const REVIEWABLE = "type in ('income', 'expense') and source in ('manual', 'recurring')";
+
+/** What a review changed, and whose money it is (the person it's booked to, else who entered it), to tell them. */
+export type ReviewedTx = { id: string; type: TxType; amount: number; description: string; owner_id: string | null };
+const REVIEWED = "returning id, type, amount::float8 as amount, description, coalesce(user_id, created_by) as owner_id";
+
+/** Confirms pending incomes and expenses: the money was handed over (or paid back) and counts in the balance. */
+export async function confirmTransactions(ids: string[], reviewedBy: string): Promise<ReviewedTx[]> {
+  if (!ids.length) return [];
+  return query<ReviewedTx>(
+    `update fin_transactions set status = 'confirmed', reviewed_at = now(), reviewed_by = $2, updated_at = now()
+     where id = any($1) and status = 'pending' and ${REVIEWABLE}
+     ${REVIEWED}`,
+    [ids, reviewedBy],
+  );
+}
+
+/** Cancels incomes and expenses, pending or confirmed: they stay listed but count nowhere. */
+export async function cancelTransactions(ids: string[], reviewedBy: string): Promise<ReviewedTx[]> {
+  if (!ids.length) return [];
+  return query<ReviewedTx>(
+    `update fin_transactions set status = 'cancelled', reviewed_at = now(), reviewed_by = $2, updated_at = now()
+     where id = any($1) and status <> 'cancelled' and ${REVIEWABLE}
+     ${REVIEWED}`,
+    [ids, reviewedBy],
+  );
+}
+
+/** Undoes a confirmation or a cancellation: the transaction is pending again, waiting in the Register. */
+export const reopenTransaction = (id: string) =>
+  query(
+    `update fin_transactions set status = 'pending', reviewed_at = null, reviewed_by = null, updated_at = now()
+     where id = $1 and reviewed_at is not null and ${REVIEWABLE}`,
+    [id],
+  );
+
+/** The latest confirmations and cancellations, newest first (one person's, with `userId`). */
+export const listRecentlyReviewed = (limit: number, userId?: string) =>
+  query<Transaction>(
+    `${TX_SELECT} where t.reviewed_at is not null ${userId ? "and t.user_id = $1" : ""} order by t.reviewed_at desc limit ${Math.floor(limit)}`,
+    userId ? [userId] : [],
+  );
 
 export const updateTransaction = (id: string, t: TxInput) =>
   query(
@@ -312,6 +376,113 @@ export const updateTransactionBooking = (id: string, b: { accountId: string | nu
   ]);
 
 export const deleteTransaction = (id: string) => query("delete from fin_transactions where id = $1", [id]);
+
+// ---------- Recurring transactions ----------
+
+export type RecurringRule = {
+  id: string;
+  type: TxType;
+  amount: number; // in currency
+  currency: string;
+  day: number;
+  description: string;
+  counterparty: string | null;
+  account_id: string | null;
+  account_name: string | null;
+  category_id: string | null;
+  category_name: string | null;
+  user_id: string | null;
+  user_name: string | null;
+  next_month: string; // first month not booked yet
+  end_month: string | null;
+  created_by: string | null;
+};
+
+const RULE_SELECT = `
+  select r.id, r.type, r.amount::float8 as amount, r.currency, r.day, r.description, r.counterparty,
+         r.account_id, a.name as account_name, r.category_id, c.name as category_name, r.user_id, u.name as user_name,
+         r.next_month, r.end_month, r.created_by
+  from fin_recurring r
+  left join fin_accounts a on a.id = r.account_id
+  left join fin_categories c on c.id = r.category_id
+  left join users u on u.id = r.user_id`;
+
+/** Whether a rule has booked its last month. */
+export const ruleEnded = (r: Pick<RecurringRule, "next_month" | "end_month">) => r.end_month !== null && r.next_month > r.end_month;
+
+/** Running rules first, by the date they next book. */
+export const listRecurring = () =>
+  query<RecurringRule>(`${RULE_SELECT} order by (r.end_month is not null and r.next_month > r.end_month), r.next_month, r.day, r.description`);
+
+export async function getRecurring(id: string): Promise<RecurringRule | null> {
+  const [row] = await query<RecurringRule>(`${RULE_SELECT} where r.id = $1`, [id]);
+  return row ?? null;
+}
+
+/** The rule a booked month came from: external_id is recurring:<rule id>:<YYYY-MM>. */
+export const ruleOf = (externalId: string | null) => {
+  const [kind, id, month] = externalId?.split(":") ?? [];
+  return kind === "recurring" && id && month ? { id, month } : null;
+};
+
+/** A rule from a transaction's input: its date is the first month and sets the day of every later one. */
+export async function createRecurring(t: TxInput, endMonth: string | null, createdBy: string): Promise<string> {
+  const id = randomUUID();
+  await query(
+    `insert into fin_recurring (id, type, amount, currency, day, description, counterparty, account_id, category_id, user_id,
+                                next_month, end_month, created_by)
+     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+    [id, t.type, t.originalAmount ?? t.amount, t.currency, Number(t.occurredOn.slice(8, 10)), t.description, t.counterparty || null,
+      t.accountId, t.categoryId, t.userId, monthOf(t.occurredOn), endMonth, createdBy],
+  );
+  return id;
+}
+
+/** An ended rule given a later end resumes from this month, without booking the months it was stopped for. */
+export async function updateRecurring(rule: RecurringRule, t: TxInput, day: number, endMonth: string | null) {
+  const current = monthOf(today());
+  const next = ruleEnded(rule) && rule.next_month < current ? current : rule.next_month;
+  await query(
+    `update fin_recurring set type = $2, amount = $3, currency = $4, day = $5, description = $6, counterparty = $7,
+            account_id = $8, category_id = $9, user_id = $10, end_month = $11, next_month = $12
+     where id = $1`,
+    [rule.id, t.type, t.originalAmount ?? t.amount, t.currency, day, t.description, t.counterparty || null, t.accountId, t.categoryId, t.userId,
+      endMonth, next],
+  );
+}
+
+/** Stops a rule; the months it booked stay. */
+export const deleteRecurring = (id: string) => query("delete from fin_recurring where id = $1", [id]);
+
+/**
+ * Books each rule's months whose day has come, as ordinary transactions. Pages that show transactions call it first, so no
+ * scheduled job is needed and months missed while nobody looked are caught up. external_id stops a month from being booked
+ * twice when two requests run this at once, and next_month moving past a month keeps it deleted if it's deleted later.
+ */
+export async function bookRecurring(now = today()): Promise<void> {
+  const due = await query<RecurringRule>(`${RULE_SELECT} where r.next_month <= $1 and (r.end_month is null or r.next_month <= r.end_month)`, [
+    monthOf(now),
+  ]);
+  if (!due.length) return;
+  const rates = await getRates();
+  for (const r of due) {
+    let month = r.next_month;
+    while ((r.end_month === null || month <= r.end_month) && dayOfMonth(month, r.day) <= now) {
+      const value = toBase(r.amount, r.currency, rates);
+      if (!value) break; // the currency's rate was removed: booked once it's back
+      await query(
+        `insert into fin_transactions (id, type, amount, occurred_on, description, counterparty, account_id, category_id, user_id, created_by,
+                                       currency, original_amount, fx_rate, source, external_id)
+         values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, 'recurring', $14)
+         on conflict (external_id) do nothing`,
+        [randomUUID(), r.type, value.amount, dayOfMonth(month, r.day), r.description, r.counterparty, r.account_id, r.category_id, r.user_id,
+          r.created_by, r.currency, r.currency === BASE_CURRENCY ? null : r.amount, value.rate, `recurring:${r.id}:${month}`],
+      );
+      month = addMonths(month, 1);
+    }
+    if (month !== r.next_month) await query("update fin_recurring set next_month = $2 where id = $1 and next_month = $3", [r.id, month, r.next_month]);
+  }
+}
 
 // ---------- Settings store ----------
 

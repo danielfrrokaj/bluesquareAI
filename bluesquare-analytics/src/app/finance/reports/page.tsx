@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { isAdmin, requireAuth } from "@/lib/auth";
+import { requireFinanceTab } from "@/lib/auth";
 import {
   accountReport, categoryReport, expenseOutlook, monthlyTotals, periodTotals, projection, unassignedAccountTotals, userReport,
 } from "@/lib/finance-reports";
+import { bookRecurring } from "@/lib/finance";
 import { addMonths, monthLabel, monthOf, parsePeriod } from "@/lib/period";
 import { change, money, num, pct } from "@/lib/format";
 import { FinanceSummary, SectionTitle, StatCard } from "@/components/FinanceCards";
@@ -16,8 +17,10 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Finance reports" };
 
 export default async function ReportsPage({ searchParams }: { searchParams: Promise<{ period?: string; from?: string; to?: string; month?: string }> }) {
-  const user = await requireAuth();
+  const user = await requireFinanceTab("reports");
   const period = parsePeriod(await searchParams);
+  // Months of recurring rules whose day has come are booked before anything is read.
+  await bookRecurring();
   const [proj, outlook, accounts, unassigned, expenses, income, people, totals] = await Promise.all([
     projection(), expenseOutlook(), accountReport(period), unassignedAccountTotals(period), categoryReport("expense", period),
     categoryReport("income", period), userReport(period), periodTotals(period),
@@ -32,7 +35,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
   const pNet = proj.projected.income !== null && proj.projected.expense !== null ? proj.projected.income - proj.projected.expense : null;
 
   return (
-    <Shell department="finance" subnav={financeNav("reports", isAdmin(user))}>
+    <Shell department="finance" subnav={financeNav("reports", user)}>
       <div className="pagehead">
         <div>
           <h1>Reports &amp; forecast</h1>

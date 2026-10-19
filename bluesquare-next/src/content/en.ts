@@ -421,6 +421,14 @@ const en = {
         role: "Software Engineer",
         bio: "Antigona develops and maintains the software behind Blue Square AI's products, from back-end services to the features clients use every day.",
       },
+      {
+        role: "Marketing & Design",
+        bio: "Grisilda shapes how Blue Square AI looks and speaks, from marketing campaigns and social media to the design of the visuals clients see every day.",
+      },
+      {
+        role: "Sales",
+        bio: "Klevis works with hotels and businesses that want to grow with Blue Square AI, from the first conversation to getting started with the right products.",
+      },
     ],
     infraEyebrow: "Infrastructure",
     infraTitle: "We know who to work with to deliver quality",

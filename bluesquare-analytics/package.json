@@ -9,7 +9,14 @@
     "typecheck": "tsc --noEmit",
     "test:cloud-billing": "tsx --test src/lib/google-cloud-costs.test.ts",
     "test:luxhotel": "node --conditions=react-server --import tsx --test src/lib/luxhotel.test.ts",
-    "test:channex": "tsx --test src/lib/channex-pricing.test.ts"
+    "test:channex": "tsx --test src/lib/channex-pricing.test.ts",
+    "test:departments": "tsx --test src/lib/departments.test.ts",
+    "test:recurring": "node --conditions=react-server --import tsx --test src/lib/finance-recurring.test.ts",
+    "test:leads-api": "node --conditions=react-server --import tsx --test src/lib/lead-intake.test.ts",
+    "test:notifications": "node --conditions=react-server --import tsx --test src/lib/notifications.test.ts",
+    "test:lead-ai": "node --conditions=react-server --import tsx --test src/lib/lead-ai.test.ts",
+    "reset-password": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx tools/reset-password.ts",
+    "test:lux-feeds": "node --conditions=react-server --import tsx --test src/lib/lux-feeds.test.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "0.5.8",

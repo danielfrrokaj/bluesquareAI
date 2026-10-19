@@ -1,0 +1,145 @@
+/*
+ * AI import: one gradient (azure → violet → magenta → amber) carries the AI everywhere. A rotating gradient frame with a
+ * soft halo around the text, a light scanning down it while Gemini reads, a flowing button with a passing sheen, and
+ * fields that rise in, the AI-filled ones outlined in the gradient. All motion stops with prefers-reduced-motion.
+ */
+@property --spin { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+
+.trigger, .compose, .review { --ai-1: #4a84d0; --ai-2: #7c5cff; --ai-3: #d946ef; --ai-4: #f5a524; }
+.trigger, .go, .review :global(.btn--primary) {
+  --flow: linear-gradient(110deg, var(--ai-1), var(--ai-2) 38%, var(--ai-3) 68%, var(--ai-1)) 0 0 / 250% 100%;
+}
+
+/* ---------- The page's "AI import" button ---------- */
+:global(.btn).trigger {
+  position: relative; isolation: isolate; overflow: hidden; gap: 8px; border-color: transparent; color: #fff;
+  background: var(--flow); box-shadow: 0 8px 22px -10px rgb(124 92 255 / 0.75);
+  animation: flow 7s linear infinite; transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+:global(.btn).trigger:hover { border-color: transparent; transform: translateY(-1px); box-shadow: 0 12px 28px -10px rgb(124 92 255 / 0.9); }
+.trigger::after, .go::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.38) 50%, transparent 70%) -150% 0 / 55% 100% no-repeat;
+  animation: sheen 3.6s ease-in-out infinite;
+}
+
+/* ---------- Writing ---------- */
+.intro { margin: 0 0 14px; color: var(--muted); font-size: 0.9rem; }
+.frame {
+  position: relative; isolation: isolate; padding: 1.5px; border-radius: 16px;
+  background: conic-gradient(from var(--spin), var(--ai-1), var(--ai-2), var(--ai-3), var(--ai-4), var(--ai-1));
+  animation: spin 8s linear infinite;
+}
+/* A blurred copy of the frame behind it: the halo. */
+.frame::before {
+  content: ""; position: absolute; inset: -4px; z-index: -1; border-radius: 20px;
+  background: inherit; filter: blur(16px); opacity: 0.28; transition: opacity 0.4s ease;
+}
+.busy { animation-duration: 1.4s; }
+.busy::before { opacity: 0.6; }
+.inner { position: relative; overflow: hidden; border-radius: 14.5px; background: linear-gradient(180deg, #fff 60%, #faf8ff); }
+.text {
+  display: block; width: 100%; min-height: 190px; padding: 16px 16px 10px; border: 0; outline: none; resize: vertical;
+  background: transparent; color: var(--ink); font: inherit; font-size: 0.95rem; line-height: 1.6;
+}
+.text::placeholder { color: #9aa3b8; }
+.text[readonly] { color: var(--muted); }
+.scan {
+  position: absolute; inset: 0 0 auto 0; height: 46%; pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgb(124 92 255 / 0.16) 50%, rgb(217 70 239 / 0.3) 72%, transparent);
+  animation: scan 1.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+.toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px 10px 12px; border-top: 1px solid rgb(124 92 255 / 0.12); }
+.example { padding: 4px 10px; border: 0; border-radius: 999px; background: none; color: var(--ai-2); font: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+.example:hover:not(:disabled) { background: rgb(124 92 255 / 0.08); }
+.example:disabled { opacity: 0.5; cursor: default; }
+.count { color: var(--muted); font-size: 0.74rem; font-variant-numeric: tabular-nums; }
+
+.go {
+  position: relative; isolation: isolate; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; min-height: 48px; margin-top: 16px; border: 0; border-radius: 999px; color: #fff; cursor: pointer;
+  font: inherit; font-weight: 700; font-size: 0.95rem; letter-spacing: -0.01em;
+  background: var(--flow); animation: flow 6s linear infinite;
+  box-shadow: 0 14px 30px -14px rgb(124 92 255 / 0.85); transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.2s ease;
+}
+.go:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 18px 36px -14px rgb(124 92 255 / 0.95); }
+.go:focus-visible { outline: 3px solid var(--ai-2); outline-offset: 3px; }
+.go:disabled { cursor: not-allowed; filter: saturate(0.35) brightness(1.05); opacity: 0.75; }
+.go[aria-busy="true"] { cursor: progress; filter: none; opacity: 1; animation-duration: 1.2s; }
+.dots { display: inline-block; width: 1.2em; text-align: left; }
+.dots::after { content: ""; animation: dots 1.2s steps(1) infinite; }
+.hint { margin: 8px 0 0; color: var(--muted); font-size: 0.76rem; text-align: center; }
+
+.spark { flex: none; overflow: visible; }
+.spark path { transform-box: fill-box; transform-origin: center; }
+.big { animation: twinkle 2.6s ease-in-out infinite; }
+.small { animation: twinkle 2.6s ease-in-out 0.9s infinite; }
+.go[aria-busy="true"] .big, .go[aria-busy="true"] .small { animation-duration: 0.9s; }
+
+/* ---------- Review ---------- */
+.banner {
+  display: flex; align-items: center; gap: 12px; margin: 0 0 18px; padding: 12px 12px 12px 14px; border-radius: 14px;
+  background: linear-gradient(110deg, rgb(74 132 208 / 0.1), rgb(124 92 255 / 0.12), rgb(217 70 239 / 0.1));
+  border: 1px solid rgb(124 92 255 / 0.22); animation: rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.banner p { flex: 1; margin: 0; color: var(--ink); font-size: 0.88rem; }
+.badge {
+  display: grid; place-items: center; flex: none; width: 38px; height: 38px; border-radius: 12px; color: #fff;
+  background: linear-gradient(135deg, var(--ai-1), var(--ai-2), var(--ai-3)); box-shadow: 0 8px 18px -8px rgb(124 92 255 / 0.85);
+}
+.back {
+  flex: none; padding: 6px 12px; border: 1px solid rgb(124 92 255 / 0.3); border-radius: 999px; background: #fff;
+  color: var(--ai-2); font: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer;
+}
+.back:hover { border-color: var(--ai-2); }
+
+/* Fields rise in one after another. */
+.review :global(.field) { animation: rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.review :global(.field):nth-child(2) { animation-delay: 0.04s; }
+.review :global(.field):nth-child(3) { animation-delay: 0.08s; }
+.review :global(.field):nth-child(4) { animation-delay: 0.12s; }
+.review :global(.field):nth-child(5) { animation-delay: 0.16s; }
+.review :global(.field):nth-child(6) { animation-delay: 0.2s; }
+.review :global(.field):nth-child(7) { animation-delay: 0.24s; }
+.review :global(.field):nth-child(8) { animation-delay: 0.28s; }
+.review :global(.field):nth-child(9) { animation-delay: 0.32s; }
+.review :global(.field):nth-child(10) { animation-delay: 0.36s; }
+.review :global(.field):nth-child(11) { animation-delay: 0.4s; }
+.review :global(.field):nth-child(12) { animation-delay: 0.44s; }
+
+/* What the AI filled: a gradient outline that pulses once, and an "AI" tag on its label. */
+.review [data-ai] {
+  border: 1.5px solid transparent;
+  background: linear-gradient(#fff, #fff) padding-box, linear-gradient(110deg, var(--ai-1), var(--ai-2), var(--ai-3)) border-box;
+  animation: glow 1.8s ease-out 0.35s both;
+}
+.review [data-ai]:focus { border-color: transparent; box-shadow: 0 0 0 3px rgb(124 92 255 / 0.25); }
+.review :global(.field):has([data-ai]) > span::after {
+  content: "AI"; margin-left: 7px; padding: 1px 7px; border-radius: 999px; vertical-align: 1px;
+  color: #fff; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.08em;
+  background: linear-gradient(110deg, var(--ai-1), var(--ai-2), var(--ai-3));
+}
+.review :global(.btn--primary) {
+  border-color: transparent; background: var(--flow); animation: flow 6s linear infinite;
+  box-shadow: 0 14px 30px -14px rgb(124 92 255 / 0.85);
+}
+.review :global(.btn--primary):hover { background: var(--flow); filter: brightness(1.05); }
+
+@keyframes flow { to { background-position: 250% 0; } }
+@keyframes sheen { 0%, 50% { background-position: -150% 0; } 100% { background-position: 250% 0; } }
+@keyframes spin { to { --spin: 360deg; } }
+@keyframes scan { from { transform: translateY(-100%); } to { transform: translateY(230%); } }
+@keyframes twinkle { 0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; } 50% { transform: scale(0.72) rotate(18deg); opacity: 0.75; } }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+@keyframes glow {
+  0% { box-shadow: 0 0 0 0 rgb(124 92 255 / 0.5); }
+  60% { box-shadow: 0 0 0 7px rgb(124 92 255 / 0); }
+  100% { box-shadow: 0 0 0 3px rgb(124 92 255 / 0.1); }
+}
+@keyframes dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .trigger, .trigger::after, .frame, .go, .go::after, .big, .small, .banner,
+  .review :global(.field), .review [data-ai], .review :global(.btn--primary) { animation: none !important; }
+  .scan { display: none; }
+}

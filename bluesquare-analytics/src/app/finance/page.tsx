@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { after } from "next/server";
-import { isAdmin, requireAuth } from "@/lib/auth";
+import { isAdmin, requireFinanceTab } from "@/lib/auth";
+import { canOpenFinanceTab } from "@/lib/departments";
 import { accountReport, categoryReport, monthlyTotals, periodTotals, projection, unassignedAccountTotals } from "@/lib/finance-reports";
 import { getBlueBill, syncIfStale } from "@/lib/bluebill";
+import { bookRecurring } from "@/lib/finance";
 import { addMonths, parsePeriod } from "@/lib/period";
 import { money } from "@/lib/format";
 import { Shell } from "@/components/Shell";
@@ -21,9 +23,11 @@ export const metadata = { title: "Finance" };
 type SP = { period?: string; from?: string; to?: string; month?: string };
 
 export default async function FinanceOverview({ searchParams }: { searchParams: Promise<SP> }) {
-  const user = await requireAuth();
+  const user = await requireFinanceTab("overview");
   const admin = isAdmin(user);
   const period = parsePeriod(await searchParams);
+  // Months of recurring rules whose day has come are booked before anything is read.
+  await bookRecurring();
   const [proj, totals, accounts, unassigned, incomeCats, expenseCats, bluebill] = await Promise.all([
     projection(), periodTotals(period), accountReport(period), unassignedAccountTotals(period),
     categoryReport("income", period), categoryReport("expense", period), getBlueBill(),
@@ -43,7 +47,7 @@ export default async function FinanceOverview({ searchParams }: { searchParams: 
   const expectedNet = thisMonth && proj.projected.income !== null && proj.projected.expense !== null ? proj.projected.income - proj.projected.expense : null;
 
   return (
-    <Shell department="finance" subnav={financeNav("overview", admin)}>
+    <Shell department="finance" subnav={financeNav("overview", user)}>
       <div className="pagehead">
         <div>
           <h1>Finance</h1>
@@ -62,15 +66,19 @@ export default async function FinanceOverview({ searchParams }: { searchParams: 
       </SectionTitle>
 
       <ul className={`fstats${thisMonth ? "" : " fstats--2"}`}>
-        <StatCard tone="green" label="Income" value={money(totals.income)} caption={expected(proj.projected.income)} info="Income recorded in this period, including fiscalized invoices from BlueBill." />
-        <StatCard tone="red" label="Expenses" value={money(totals.expense)} caption={expected(proj.projected.expense)} info="Expenses recorded in this period. Channex and Google Cloud are billed in USD and shown separately." />
+        <StatCard
+          tone="green" label="Income" value={money(totals.income)} caption={expected(proj.projected.income)}
+          note={totals.pendingIncome ? `${money(totals.pendingIncome)} pending, not confirmed yet` : null}
+          info="Income recorded in this period, including fiscalized invoices from BlueBill and pending income still with people. Cancelled transactions aren't counted."
+        />
+        <StatCard
+          tone="red" label="Expenses" value={money(totals.expense)} caption={expected(proj.projected.expense)}
+          note={totals.pendingExpense ? `${money(totals.pendingExpense)} pending, not confirmed yet` : null}
+          info="Expenses recorded in this period, including pending ones paid by people themselves. Cancelled transactions aren't counted. Channex and Google Cloud are billed in USD and shown separately."
+        />
         {/* Expected supplier costs, streamed in: Google Cloud and the daily LuxHotel read can take a few seconds. */}
-        {thisMonth && (
-          <>
-            <Suspense fallback={<ChannexCardLoading />}><ChannexCard /></Suspense>
-            <Suspense fallback={<GoogleCloudCardLoading />}><GoogleCloudCard period={period} /></Suspense>
-          </>
-        )}
+        {thisMonth && canOpenFinanceTab(user, "channex") && <Suspense fallback={<ChannexCardLoading />}><ChannexCard /></Suspense>}
+        {thisMonth && canOpenFinanceTab(user, "gcloud") && <Suspense fallback={<GoogleCloudCardLoading />}><GoogleCloudCard period={period} /></Suspense>}
       </ul>
 
       <FinanceSummary

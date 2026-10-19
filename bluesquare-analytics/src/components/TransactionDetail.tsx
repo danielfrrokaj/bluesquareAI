@@ -1,31 +1,37 @@
-import { getRates, getTransaction, listAccounts, listCategories } from "@/lib/finance";
+import { getRates, getRecurring, getTransaction, isSynced, listAccounts, listCategories, ruleOf } from "@/lib/finance";
 import { query } from "@/lib/db";
 import { invoiceDocumentUrl } from "@/lib/bluebill";
 import { adForTransaction } from "@/lib/ads";
 import Link from "next/link";
 import { isAdmin } from "@/lib/auth";
 import { listUsers, type User } from "@/lib/users";
-import { today } from "@/lib/period";
+import { monthLabel, today, TZ } from "@/lib/period";
 import { money } from "@/lib/format";
-import { removeTransaction, saveTransaction } from "@/app/finance/actions";
+import { cancel, confirm, removeTransaction, reopen, saveTransaction } from "@/app/finance/actions";
 import { ActionForm } from "./ActionForm";
 import { Modal } from "./Modal";
 import { CopyButton } from "./CopyButton";
 import { TransactionFields } from "./TransactionFields";
 import { TransferFields } from "./TransferFields";
 import { AccountMark } from "./AccountMark";
+import { nth } from "./RecurringRules";
 
 const longDate = new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+const reviewedOn = (iso: string) => new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "short", timeZone: TZ() }).format(new Date(iso));
 
 /** One transaction: summary card, details and fiscal data, with Edit/Delete for those allowed. Used as a page and as a modal. */
 export async function TransactionDetail({ id, user }: { id: string; user: User }) {
   const tx = await getTransaction(id);
   if (!tx) return null;
   const admin = isAdmin(user);
-  const canEdit = admin || tx.created_by === user.id || tx.user_id === user.id;
-  const synced = tx.source !== "manual";
+  // Members can't change a transaction once an admin confirmed or cancelled it in the Register.
+  const canEdit = admin || ((tx.created_by === user.id || tx.user_id === user.id) && tx.reviewed_at === null);
+  // Only incomes and expenses entered here (or booked by a monthly rule) wait in the Register.
+  const reviewable = tx.type !== "transfer" && (tx.source === "manual" || tx.source === "recurring");
+  const synced = isSynced(tx.source);
   const fromAds = tx.source === "meta_ads";
-  const [accounts, categories, users, rates, invoice, ad] = await Promise.all([
+  const booked = ruleOf(tx.external_id); // a month of a recurring rule
+  const [accounts, categories, users, rates, invoice, ad, rule] = await Promise.all([
     listAccounts(true),
     listCategories(true),
     listUsers(),
@@ -37,6 +43,7 @@ export async function TransactionDetail({ id, user }: { id: string; user: User }
         ).then((r) => r[0] ?? null)
       : null,
     fromAds && tx.external_id ? adForTransaction(tx.external_id) : null,
+    booked ? getRecurring(booked.id) : null,
   ]);
   const income = tx.type === "income";
   const transfer = tx.type === "transfer";
@@ -49,6 +56,10 @@ export async function TransactionDetail({ id, user }: { id: string; user: User }
           <div className="txhero__badges">
             <span className="txhero__badge">{transfer ? "⇄ Transfer" : income ? "↓ Income" : "↑ Expense"}</span>
             {synced && <span className="txhero__badge">{fromAds ? "Meta Ads" : "✓ Fiscalized"}</span>}
+            {booked && <span className="txhero__badge">↻ Monthly</span>}
+            {tx.status === "pending" && <span className="txhero__badge">◷ Pending · with {tx.user_name ?? "nobody"}</span>}
+            {tx.status === "cancelled" && <span className="txhero__badge">✕ Cancelled</span>}
+            {tx.status === "confirmed" && tx.reviewed_at && <span className="txhero__badge">✓ Confirmed</span>}
           </div>
           <h1>{tx.description || "Transaction"}</h1>
           <p>
@@ -69,6 +80,24 @@ export async function TransactionDetail({ id, user }: { id: string; user: User }
         </div>
         {canEdit && (
           <div className="txhero__actions">
+            {admin && reviewable && tx.status === "pending" && (
+              <form action={confirm}>
+                <input type="hidden" name="id" value={tx.id} />
+                <button className="btn btn--small btn--glass" title="The money was handed over: count it in the account's balance">Confirm</button>
+              </form>
+            )}
+            {admin && reviewable && tx.status !== "cancelled" && (
+              <form action={cancel}>
+                <input type="hidden" name="id" value={tx.id} />
+                <button className="btn btn--small btn--glass" title="It stays listed as cancelled but counts nowhere">Cancel transaction</button>
+              </form>
+            )}
+            {admin && reviewable && tx.reviewed_at && (
+              <form action={reopen}>
+                <input type="hidden" name="id" value={tx.id} />
+                <button className="btn btn--small btn--glass" title="Pending again, waiting in the Register">Back to pending</button>
+              </form>
+            )}
             <Modal trigger="Edit" title={transfer ? "Edit transfer" : "Edit transaction"} triggerClassName="btn btn--small btn--glass">
               {synced && (
                 <p className="muted note-top">
@@ -119,7 +148,17 @@ export async function TransactionDetail({ id, user }: { id: string; user: User }
         <Tile label="User" value={tx.user_name} empty={fromAds ? "Meta Ads" : synced ? "BlueBill" : "Nobody"} />
         {!transfer && <Tile label="Client / supplier" value={tx.counterparty} empty="–" />}
         <Tile label="Currency" value={tx.currency} empty="EUR" />
-        <Tile label="Source" value={fromAds ? "Meta Ads (Marketing & Ads)" : synced ? "BlueBill sync" : "Entered here"} empty="" />
+        <Tile label="Source" value={fromAds ? "Meta Ads (Marketing & Ads)" : synced ? "BlueBill sync" : booked ? "Recurring" : "Entered here"} empty="" />
+        {!transfer && (
+          <Tile
+            label="Status" empty=""
+            value={tx.status === "pending"
+              ? `Pending: with ${tx.user_name ?? "nobody"}, not in the balance yet`
+              : tx.reviewed_at
+                ? `${tx.status === "cancelled" ? "Cancelled, counts nowhere" : "Confirmed"} · ${reviewedOn(tx.reviewed_at)}${tx.reviewed_by_name ? ` by ${tx.reviewed_by_name}` : ""}`
+                : "Confirmed"}
+          />
+        )}
       </ul>
 
       {fromAds && (
@@ -133,6 +172,27 @@ export async function TransactionDetail({ id, user }: { id: string; user: User }
               </p>
             </div>
             {ad && <Link href={`/marketing/ads#ad-${ad.id}`} className="btn btn--small">Open the ad</Link>}
+          </header>
+        </section>
+      )}
+
+      {booked && (
+        <section className="panel">
+          <header className="panel__head">
+            <div>
+              <h2>Repeats every month</h2>
+              <p className="muted panel__sub">
+                {rule ? (
+                  <>
+                    {monthLabel(booked.month)}&apos;s booking of “{rule.description}”, on the {nth(rule.day)} of each month. Editing it here changes only this
+                    month; edit the rule for the months after.
+                  </>
+                ) : (
+                  <>{monthLabel(booked.month)}&apos;s booking of a monthly rule that has since been stopped.</>
+                )}
+              </p>
+            </div>
+            {rule && <Link href="/finance/transactions#recurring" className="btn btn--small">Edit the rule</Link>}
           </header>
         </section>
       )}

@@ -1,6 +1,11 @@
-export type NavIconName = "overview" | "transactions" | "reports" | "invoices" | "settings" | "ideas" | "calendar" | "leads" | "customers" | "archive" | "import" | "board" | "folder" | "ads" | "phone" | "files" | "vault" | "wallet";
+export type NavIconName = "overview" | "transactions" | "reports" | "invoices" | "settings" | "ideas" | "calendar" | "leads" | "customers" | "archive" | "import" | "board" | "folder" | "ads" | "phone" | "files" | "vault" | "wallet" | "register" | "hotel" | "chat" | "inbox" | "issue";
 
 const paths = {
+  register: <path d="M3 13h18v7H3zM5 13l1.5-5h11l1.5 5M9 8V4h6v4M7 16.5h2M11 16.5h2M15 16.5h2" />,
+  hotel: <path d="M4 21V4h11v17M15 9h5v12M2 21h20M8 8h3M8 12h3M8 16h3" />,
+  chat: <path d="M4 5h16v11H9l-5 4V5ZM8 9h8M8 12h5" />,
+  inbox: <path d="M3 13 6 5h12l3 8v6H3v-6Zm0 0h5l1 3h6l1-3h5" />,
+  issue: <path d="M12 3 2 20h20L12 3ZM12 10v4M12 17h.01" />,
   wallet: <path d="M19 7V5.5A1.5 1.5 0 0 0 17.5 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3M21 9h-5a3 3 0 0 0 0 6h5ZM16 12h.01" />,
   leads: <path d="M3 5h18l-7 8v6l-4 2v-8z" />,
   customers: <path d="M16 11a4 4 0 1 0-8 0M4 21a8 8 0 0 1 16 0M17 3l1.5 1.5L21 2" />,

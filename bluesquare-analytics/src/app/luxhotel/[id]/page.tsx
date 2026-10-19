@@ -2,9 +2,10 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { requireAuth } from "@/lib/auth";
-import { getLuxHotel } from "@/lib/luxhotel";
+import { savedHotel } from "@/lib/lux-properties";
 import { timeLabel } from "@/lib/luxhotel-data";
 import { Shell } from "@/components/Shell";
+import { luxhotelNav } from "@/components/nav";
 import { PropertyDetails } from "../PropertyDetails";
 import { Icon } from "../parts";
 import s from "../luxhotel.module.css";
@@ -13,7 +14,7 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Property details | LuxHotel System" };
 
 async function Property({ id }: { id: string }) {
-  const report = await getLuxHotel(id);
+  const report = await savedHotel(id);
   return <>
     {report.message && <div className={s.notice} role="alert">
       <Icon name="warning" />
@@ -30,7 +31,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
   await requireAuth();
   const { id } = await params;
   if (!/^[A-Za-z0-9_-]{1,128}$/.test(id)) notFound();
-  return <Shell department="luxhotel">
+  return <Shell department="luxhotel" subnav={luxhotelNav("properties")}>
     <div className={s.detailPage}>
       <Link href="/luxhotel" className={s.backLink}>← All properties</Link>
       <Suspense fallback={<section className={s.loading} role="status"><Icon name="hotel" /><h1>Loading property details…</h1><p>Fetching rooms, booking channels and subscription information.</p></section>}>

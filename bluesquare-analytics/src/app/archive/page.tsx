@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { isAdmin, requireAuth } from "@/lib/auth";
+import { isAdmin, requireArchiveTab } from "@/lib/auth";
 import { deleteFileRow, folderCounts, listFiles, staleFileUploads, type ArchiveFile } from "@/lib/archive";
 import { removeMedia } from "@/lib/media-store";
 import { Shell } from "@/components/Shell";
@@ -31,7 +31,7 @@ function kindOf(f: ArchiveFile): { label: string; tone: string } {
 type SP = { folder?: string; q?: string };
 
 export default async function ArchiveFiles({ searchParams }: { searchParams: Promise<SP> }) {
-  const user = await requireAuth();
+  const user = await requireArchiveTab("files");
   const sp = await searchParams;
   const folder = typeof sp.folder === "string" ? sp.folder : null;
   const q = (sp.q ?? "").trim().slice(0, 100);
@@ -45,7 +45,7 @@ export default async function ArchiveFiles({ searchParams }: { searchParams: Pro
   };
 
   return (
-    <Shell department="archive" subnav={archiveNav("files")}>
+    <Shell department="archive" subnav={archiveNav("files", user)}>
       <div className={s.page}>
         <div className="pagehead">
           <div>

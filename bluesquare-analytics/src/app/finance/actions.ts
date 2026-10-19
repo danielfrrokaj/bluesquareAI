@@ -7,25 +7,20 @@ import {
   BASE_CURRENCY, categoryNameTaken, createAccount, currencyCode, getRates, removeRate as deleteRate, setRate, toBase, createCategory, createTransaction, deleteOrArchiveAccount, deleteOrArchiveCategory, isAccountGroup, setAccountLogo,
   deleteTransaction, getTransaction, isTxType, listAccounts, listCategories, updateAccount, updateCategory,
   updateTransaction, updateTransactionBooking, type Transaction, type TxInput,
+  bookRecurring, createRecurring, deleteRecurring, getRecurring, isSynced, updateRecurring,
+  cancelTransactions, confirmTransactions, reopenTransaction,
 } from "@/lib/finance";
 import { listUsers } from "@/lib/users";
 import { BlueBillError, connect, deactivate, disconnect, reactivate, setBlueBillAccount, syncInvoices } from "@/lib/bluebill";
-import { isDate } from "@/lib/period";
+import { parseAmount } from "@/lib/format";
+import { dayOfMonth, isDate, isMonth, monthOf, today } from "@/lib/period";
 import { readLogo } from "@/lib/logo";
 import { setChannexCategory } from "@/lib/channex";
+import { notifyReviewed } from "@/lib/notifications";
 import { isChannexCategory } from "@/lib/channex-pricing";
 import type { FormState } from "@/components/ActionForm";
 
 const str = (form: FormData, key: string, max = 200) => String(form.get(key) ?? "").trim().slice(0, max);
-
-/** "12,000.50" or "12000,5" -> 12000.5; null when not a number. */
-function amount(raw: string): number | null {
-  const s = raw.replace(/\s/g, "");
-  const normalized = /,\d{1,2}$/.test(s) && !s.includes(".") ? s.replace(",", ".") : s.replace(/,/g, "");
-  if (!/^-?\d+(\.\d{1,2})?$/.test(normalized)) return null;
-  const n = Number(normalized);
-  return Number.isFinite(n) && Math.abs(n) < 1e12 ? n : null;
-}
 
 const refresh = () => revalidatePath("/finance", "layout");
 
@@ -33,7 +28,7 @@ const refresh = () => revalidatePath("/finance", "layout");
 
 /** The entered amount and currency, converted to EUR; `existing` keeps its exchange rate while both are unchanged. */
 async function convertedAmount(form: FormData, existing?: Transaction): Promise<Pick<TxInput, "amount" | "currency" | "originalAmount" | "fxRate"> | string> {
-  const value = amount(str(form, "amount", 30));
+  const value = parseAmount(str(form, "amount", 30));
   const currency = currencyCode(str(form, "currency", 3) || BASE_CURRENCY);
   if (value === null || value <= 0) return "Enter an amount greater than 0, e.g. 12000 or 12000.50.";
   if (!currency) return "Choose a currency.";
@@ -44,9 +39,8 @@ async function convertedAmount(form: FormData, existing?: Transaction): Promise<
   return { amount: converted.amount, currency, originalAmount: foreign ? value : null, fxRate: foreign ? converted.rate : null };
 }
 
-async function readTransaction(form: FormData, existing?: Transaction): Promise<TxInput | string> {
+async function readTransaction(form: FormData, existing?: Transaction, occurredOn = str(form, "occurred_on", 10)): Promise<TxInput | string> {
   const type = str(form, "type");
-  const occurredOn = str(form, "occurred_on", 10);
   const description = str(form, "description", 300);
   const accountId = str(form, "account_id") || null;
   const categoryId = str(form, "category_id") || null;
@@ -106,9 +100,27 @@ export async function addTransaction(_: FormState, form: FormData): Promise<Form
   if (typeof input === "string") return { error: input };
   // Members record their own transactions; admins may record them for anyone.
   if (!isAdmin(user)) input.userId = user.id;
-  await createTransaction(input, user.id);
+  if (form.get("repeat")) {
+    const until = readUntil(form);
+    if (until === false) return { error: "Enter the last month as YYYY-MM, e.g. 2027-06." };
+    if (until && until < monthOf(input.occurredOn)) return { error: "The last month can't be before the first date." };
+    await createRecurring(input, until, user.id);
+    await bookRecurring();
+    refresh();
+    return input.occurredOn <= today()
+      ? { ok: `Saved: ${input.description}. It repeats every month.` }
+      : { ok: `Scheduled: ${input.description}. It's booked from ${input.occurredOn}, then every month.` };
+  }
+  // The money stays with the person until an admin confirms it in the Register.
+  await createTransaction(input, user.id, "pending");
   refresh();
-  return { ok: `Saved: ${input.description}.` };
+  return { ok: `Saved as pending: ${input.description}.` };
+}
+
+/** The optional last month of a recurring rule: null when empty, false when it isn't a month. */
+function readUntil(form: FormData): string | null | false {
+  const until = str(form, "until", 7);
+  return !until ? null : isMonth(until) ? until : false;
 }
 
 async function editableTransaction(id: string) {
@@ -116,12 +128,17 @@ async function editableTransaction(id: string) {
   const tx = await getTransaction(id);
   if (!tx) redirect("/finance/transactions");
   if (!isAdmin(user) && tx.created_by !== user.id && tx.user_id !== user.id) redirect("/forbidden");
-  return { user, tx };
+  // Once an admin confirmed or cancelled it in the Register, only an admin may change it.
+  const locked = !isAdmin(user) && tx.reviewed_at !== null;
+  return { user, tx, locked };
 }
 
+const LOCKED = "This transaction was already reviewed in the Register; ask an admin to change it.";
+
 export async function saveTransaction(_: FormState, form: FormData): Promise<FormState> {
-  const { user, tx } = await editableTransaction(str(form, "id"));
-  if (tx.source !== "manual") {
+  const { user, tx, locked } = await editableTransaction(str(form, "id"));
+  if (locked) return { error: LOCKED };
+  if (isSynced(tx.source)) {
     // Synced transactions mirror the fiscal invoice; only where it's booked can change.
     const accountId = str(form, "account_id") || null;
     const categoryId = str(form, "category_id") || null;
@@ -144,12 +161,71 @@ export async function saveTransaction(_: FormState, form: FormData): Promise<For
 }
 
 export async function removeTransaction(_: FormState, form: FormData): Promise<FormState> {
-  const { tx } = await editableTransaction(str(form, "id"));
+  const { tx, locked } = await editableTransaction(str(form, "id"));
+  if (locked) return { error: LOCKED };
   if (tx.source === "meta_ads") return { error: "This expense comes from Marketing & Ads → Meta Ads; change or delete the results there." };
-  if (tx.source !== "manual") return { error: "Synced transactions can't be deleted here; they mirror a fiscalized invoice." };
+  if (isSynced(tx.source)) return { error: "Synced transactions can't be deleted here; they mirror a fiscalized invoice." };
   await deleteTransaction(tx.id);
   refresh();
   redirect("/finance/transactions?deleted=1");
+}
+
+// ---------- Register: confirming or cancelling pending transactions (admin) ----------
+
+const postedIds = (form: FormData) => form.getAll("id").map(String).filter((id) => /^[\w-]{1,64}$/.test(id)).slice(0, 1000);
+
+/** Confirms the posted transactions (`id`, one or many): the money was handed over and now counts in the balance. */
+export async function confirm(form: FormData) {
+  const user = await requireRole("admin");
+  await notifyReviewed(await confirmTransactions(postedIds(form), user.id), "confirmed", user.id);
+  refresh();
+}
+
+/** Cancels the posted transactions: they stay listed, marked cancelled, but count nowhere. */
+export async function cancel(form: FormData) {
+  const user = await requireRole("admin");
+  await notifyReviewed(await cancelTransactions(postedIds(form), user.id), "cancelled", user.id);
+  refresh();
+}
+
+/** Undoes a confirmation or cancellation made by mistake: pending again, back in the Register. */
+export async function reopen(form: FormData) {
+  await requireRole("admin");
+  await reopenTransaction(str(form, "id", 64));
+  refresh();
+}
+
+// ---------- Recurring rules (same access as transactions) ----------
+
+async function editableRule(id: string) {
+  const user = await requireAuth();
+  const rule = await getRecurring(id);
+  if (!rule) redirect("/finance/transactions");
+  if (!isAdmin(user) && rule.created_by !== user.id && rule.user_id !== user.id) redirect("/forbidden");
+  return { user, rule };
+}
+
+export async function saveRecurring(_: FormState, form: FormData): Promise<FormState> {
+  const { user, rule } = await editableRule(str(form, "id"));
+  const day = Number(str(form, "day", 2));
+  if (!Number.isInteger(day) || day < 1 || day > 31) return { error: "Enter a day of the month from 1 to 31." };
+  const until = readUntil(form);
+  if (until === false) return { error: "Enter the last month as YYYY-MM, e.g. 2027-06." };
+  const input = await readTransaction(form, undefined, dayOfMonth(rule.next_month, day));
+  if (typeof input === "string") return { error: input };
+  if (!isAdmin(user)) input.userId = rule.user_id;
+  await updateRecurring(rule, input, day, until);
+  // The new day may already have come this month.
+  await bookRecurring();
+  refresh();
+  return { ok: "Saved. Months already booked keep their amounts." };
+}
+
+export async function removeRecurring(_: FormState, form: FormData): Promise<FormState> {
+  const { rule } = await editableRule(str(form, "id"));
+  await deleteRecurring(rule.id);
+  refresh();
+  return { ok: `Stopped: ${rule.description}. Months already booked stay.` };
 }
 
 // ---------- Settings: virtual accounts & categories (admin) ----------
@@ -157,7 +233,7 @@ export async function removeTransaction(_: FormState, form: FormData): Promise<F
 export async function addAccount(_: FormState, form: FormData): Promise<FormState> {
   await requireRole("admin");
   const name = str(form, "name", 80);
-  const opening = amount(str(form, "opening_balance", 30) || "0");
+  const opening = parseAmount(str(form, "opening_balance", 30) || "0");
   if (!name) return { error: "Enter a name for the account." };
   if (opening === null) return { error: "Enter a valid opening balance, e.g. 0 or 150000." };
   const logo = await readLogo(form);
@@ -172,7 +248,7 @@ export async function addAccount(_: FormState, form: FormData): Promise<FormStat
 export async function saveAccount(_: FormState, form: FormData): Promise<FormState> {
   await requireRole("admin");
   const name = str(form, "name", 80);
-  const opening = amount(str(form, "opening_balance", 30) || "0");
+  const opening = parseAmount(str(form, "opening_balance", 30) || "0");
   if (!name) return { error: "The name can't be empty." };
   if (opening === null) return { error: "Enter a valid opening balance." };
   const logo = await readLogo(form);
@@ -197,7 +273,7 @@ export async function removeAccount(_: FormState, form: FormData): Promise<FormS
 function budget(form: FormData): number | null | undefined {
   const raw = str(form, "monthly_budget", 30);
   if (!raw) return null;
-  const n = amount(raw);
+  const n = parseAmount(raw);
   return n !== null && n >= 0 ? n : undefined;
 }
 

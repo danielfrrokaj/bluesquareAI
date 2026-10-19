@@ -26,7 +26,7 @@ export function TransactionTable({ rows, highlight }: { rows: Transaction[]; hig
     if (day?.date !== t.occurred_on) days.push((day = { date: t.occurred_on, rows: [], net: 0 }));
     day.rows.push(t);
     // A transfer only moves money between accounts, so it leaves the day's net unchanged.
-    day.net += t.type === "income" ? t.amount : t.type === "expense" ? -t.amount : 0;
+    if (t.status !== "cancelled") day.net += t.type === "income" ? t.amount : t.type === "expense" ? -t.amount : 0;
   }
 
   return (
@@ -64,8 +64,15 @@ export function TransactionTable({ rows, highlight }: { rows: Transaction[]; hig
                       {t.description || "(no description)"}
                     </Link>
                     <small>
+                      {t.status === "pending" && (
+                        <span className="txrow__pending" title={`Still with ${t.user_name ?? "the person who recorded it"}; not in the balance until confirmed in the Register`}>
+                          Pending
+                        </span>
+                      )}
+                      {t.status === "cancelled" && <span className="txrow__cancelled" title="Cancelled: counts nowhere">Cancelled</span>}
                       {t.source === "bluebill" && <span className="txrow__fiscal">Fiscal</span>}
                       {t.source === "meta_ads" && <span className="txrow__fiscal">Meta Ads</span>}
+                      {t.source === "recurring" && <span className="txrow__fiscal txrow__fiscal--repeat">Monthly</span>}
                       {transfer ? <span className="muted">Between virtual accounts</span> : t.counterparty ?? (t.source === "bluebill" ? null : <span className="muted">No client / supplier</span>)}
                     </small>
                   </div>
@@ -95,7 +102,7 @@ export function TransactionTable({ rows, highlight }: { rows: Transaction[]; hig
                       <span className="muted">–</span>
                     )}
                   </span>
-                  <span className={`txrow__amount ${transfer ? "txrow__amount--move" : income ? "pos" : "neg"}`}>
+                  <span className={`txrow__amount ${t.status === "cancelled" ? "txrow__amount--void" : transfer ? "txrow__amount--move" : income ? "pos" : "neg"}`}>
                     {transfer ? "" : income ? "+" : "−"}
                     {money(t.amount)}
                     {t.original_amount !== null && <small>{money(t.original_amount, t.currency)}</small>}

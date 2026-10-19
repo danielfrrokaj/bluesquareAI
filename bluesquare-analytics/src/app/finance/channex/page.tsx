@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { isAdmin, requireAuth } from "@/lib/auth";
+import { isAdmin, requireFinanceTab } from "@/lib/auth";
 import { getChannexReport } from "@/lib/channex";
 import { channelLabel } from "@/lib/luxhotel-data";
 import { money } from "@/lib/format";
@@ -27,9 +27,9 @@ function channelList(channels: string[]) {
 
 /** What Channex charges us, estimated from the LuxHotel properties (USD, excluding VAT). */
 export default async function ChannexPage() {
-  const user = await requireAuth();
+  const user = await requireFinanceTab("channex");
   return (
-    <Shell department="finance" subnav={financeNav("channex", isAdmin(user))}>
+    <Shell department="finance" subnav={financeNav("channex", user)}>
       <div className="pagehead">
         <div>
           <h1>Channex</h1>

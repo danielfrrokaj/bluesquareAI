@@ -64,6 +64,8 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0
 .btn--ghost:hover { color: #fff; border-color: #fff; }
 .btn--danger { color: var(--danger); border-color: #f1c6c2; }
 .btn--danger:hover { border-color: var(--danger); }
+.btn--mint { background: #e4f6ea; border-color: #b6e3c6; color: #16703c; }
+.btn--mint:hover { background: #d3f0dd; border-color: #7fcf9c; }
 .btnrow { display: inline-flex; gap: 8px; flex-wrap: wrap; }
 
 .form { display: grid; gap: 14px; }
@@ -248,6 +250,9 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0
 .status--ok { color: var(--ok); }
 .status--warn { color: var(--warn); }
 .status--bad { color: var(--danger); }
+.status--confirmed { color: var(--ok); }
+.status--cancelled { color: var(--muted); }
+.table td .status + small { display: block; }
 .table td small { display: block; color: var(--muted); font-size: 0.78rem; font-weight: 500; }
 .table td.table__path small { overflow: hidden; text-overflow: ellipsis; }
 .table tfoot td { font-weight: 700; color: var(--ink); border-bottom: 0; }
@@ -258,10 +263,34 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0
 .facts dt { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .facts dd { margin: 0; color: var(--ink); font-weight: 600; word-break: break-all; }
 .pager { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 16px; }
+/* Numbered pages: "1–25 of 312" on the left, ‹ Newer 1 … 4 5 6 … 13 Older › on the right. */
+.pager--numbers { justify-content: space-between; flex-wrap: wrap; gap: 10px 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.pager__info { color: var(--muted); font-size: 0.84rem; font-variant-numeric: tabular-nums; }
+.pager__pages { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.pager__num, .pager__step, .pager__gap {
+  display: inline-grid; place-items: center; min-width: 34px; height: 34px; padding: 0 10px; border-radius: 9px;
+  color: var(--ink); font-size: 0.84rem; font-weight: 650; font-variant-numeric: tabular-nums;
+}
+.pager__num, .pager__step { border: 1px solid var(--line); background: #fff; }
+.pager__num:hover, .pager__step:hover { border-color: var(--blue-500); text-decoration: none; }
+.pager__num[aria-current="page"] { border-color: var(--blue-600); background: var(--blue-600); color: #fff; }
+.pager__step[aria-disabled] { color: var(--muted); opacity: 0.5; pointer-events: none; }
+.pager__gap { min-width: 20px; padding: 0; color: var(--muted); }
 
-.filters { display: grid; grid-template-columns: 2fr repeat(5, 1fr) auto; gap: 12px; align-items: end; margin: 0; }
-@media (max-width: 1100px) { .filters { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 640px) { .filters { grid-template-columns: 1fr; } }
+.filters { display: grid; grid-template-columns: 2fr repeat(5, 1fr) auto; gap: 10px 12px; align-items: end; margin: 0; }
+/* Filter bars are compact: small labels, 34px controls, a tighter panel, so the list below gets the room. */
+.panel:has(> .filters) { padding: 14px 16px; }
+.filters .field { gap: 4px; }
+.filters .field span { color: var(--muted); font-size: 0.74rem; font-weight: 600; }
+.filters .field input, .filters .field select { height: 34px; min-height: 34px; padding: 0 10px; border-radius: 8px; font-size: 0.84rem; }
+.filters .btn { min-height: 34px; padding: 0 14px; font-size: 0.84rem; }
+/* Phones zoom into inputs under 16px when focused; keep 16px there. */
+@media (max-width: 640px) { .filters .field input, .filters .field select { height: 38px; font-size: 16px; } }
+/* Transactions: two rows. Search, Dates, Type, Account / Category, User, Source and the buttons. */
+.filters--tx { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.filters--tx > :first-child { grid-column: span 2; }
+@media (max-width: 1100px) { .filters, .filters--tx { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 640px) { .filters, .filters--tx { grid-template-columns: 1fr; } .filters--tx > :first-child { grid-column: auto; } }
 .searchrow { display: flex; gap: 8px; align-items: center; margin: 0; width: 100%; max-width: 480px; }
 .searchrow .field { flex: 1; }
 
@@ -345,6 +374,7 @@ details.danger > summary { cursor: pointer; color: var(--muted); font-weight: 60
 .txhero__amount strong { display: block; font-size: clamp(1.8rem, 4.5vw, 2.8rem); letter-spacing: -0.03em; line-height: 1.1; font-variant-numeric: tabular-nums; }
 .txhero__amount small { display: block; color: rgb(255 255 255 / 0.85); font-weight: 600; margin-top: 4px; }
 .txhero__actions { grid-column: 1 / -1; display: flex; gap: 8px; position: relative; z-index: 1; }
+.txhero__actions form { margin: 0; }
 .btn--glass { background: rgb(255 255 255 / 0.16); border-color: rgb(255 255 255 / 0.3); color: #fff; backdrop-filter: blur(4px); }
 .btn--glass:hover { background: rgb(255 255 255 / 0.28); border-color: #fff; }
 @media (max-width: 640px) {
@@ -393,6 +423,31 @@ details.danger > summary { cursor: pointer; color: var(--muted); font-weight: 60
 .txrow__main small { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--muted); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .txrow__fiscal { flex: none; padding: 0 7px; border-radius: 999px; background: #e3f4e9; color: #157f3b; font-weight: 700; font-size: 0.7rem; line-height: 1.6; }
 .txrow__fiscal::before { content: "✓ "; }
+.txrow__cancelled { flex: none; padding: 0 7px; border-radius: 999px; background: #eef0f4; color: var(--muted); font-weight: 700; font-size: 0.7rem; line-height: 1.6; }
+.txrow__amount--void, .register__void { color: var(--muted); text-decoration: line-through; }
+.txrow__pending { flex: none; padding: 0 7px; border-radius: 999px; background: #fdf1d8; color: #9a5b00; font-weight: 700; font-size: 0.7rem; line-height: 1.6; }
+
+/* ---------- Finance: Register (pending money, by person) ---------- */
+.register { display: grid; gap: 12px; }
+.register__head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.register__avatar { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #346cba, #6fa5e6); color: #fff; font-size: 0.8rem; font-weight: 800; }
+.register__who { flex: 1; min-width: 160px; }
+.register__who h2 { font-size: 1rem; margin: 0; }
+.register__who p { margin: 2px 0 0; font-size: 0.8rem; }
+.register__net { font-variant-numeric: tabular-nums; font-size: 0.95rem; white-space: nowrap; }
+.register__head form { margin: 0; }
+.table--register th:nth-child(2), .table--register td:nth-child(2), .table--register th:nth-child(3), .table--register td:nth-child(3) { text-align: left; }
+.table--register td:nth-child(2) { white-space: normal; min-width: 200px; }
+.table--register td:nth-child(2) a { color: var(--ink); font-weight: 650; }
+.table--register td form { margin: 0; }
+.register__actions { display: inline-flex; gap: 6px; }
+.txrow__fiscal--repeat { background: var(--blue-50); color: var(--blue-600); }
+.txrow__fiscal--repeat::before { content: "↻ "; }
+/* "Last month" of a new transaction shows once "Repeat every month" is ticked. */
+.repeat { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; align-items: end; }
+.repeat__until { display: none; }
+.repeat:has(input[name="repeat"]:checked) .repeat__until { display: grid; }
+@media (max-width: 560px) { .repeat { grid-template-columns: 1fr; } }
 .chip { justify-self: start; max-width: 100%; padding: 3px 10px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); color: var(--ink); font-size: 0.8rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chip--empty { color: var(--muted); border-style: dashed; background: transparent; }
 .chip--move { background: #f3f1fd; border-color: #ddd8f7; color: #4d40b0; }
@@ -623,6 +678,7 @@ details.danger > summary { cursor: pointer; color: var(--muted); font-weight: 60
 .fstat--logo .fstat__label { padding-right: 44px; }
 .fstat__value { color: var(--ink); font-size: clamp(1.4rem, 2vw, 1.75rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .fstat__caption { display: block; color: var(--muted); font-size: 0.76rem; font-weight: 500; }
+.fstat__note { display: block; color: #9a5b00; font-size: 0.74rem; font-weight: 600; }
 .fstat__label a { color: inherit; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fstat:has(a:hover) .fstat__label { color: var(--ink); }
 
@@ -698,6 +754,8 @@ details.danger > summary { cursor: pointer; color: var(--muted); font-weight: 60
 .fport__total { position: relative; z-index: 1; display: grid; text-align: right; }
 .fport__total small { font-size: 0.74rem; font-weight: 750; letter-spacing: 0.12em; text-transform: uppercase; color: rgb(255 255 255 / 0.7); }
 .fport__total strong { font-size: clamp(1.6rem, 3.2vw, 2.3rem); font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.fport__pending { margin-top: 4px; font-size: 0.8rem; font-weight: 600; color: rgb(255 255 255 / 0.8); }
+.fport__pending:hover { color: #fff; }
 @media (max-width: 640px) { .fport__head { flex-wrap: wrap; padding: 22px; } .fport__total { width: 100%; text-align: left; } }
 .fport__icon { display: grid; place-items: center; width: 52px; height: 52px; flex: none; border-radius: 16px; color: #fff; }
 .fport__icon--blue { background: linear-gradient(135deg, #2a64b4, #5b9be6); box-shadow: 0 10px 20px -12px #2a64b4; }

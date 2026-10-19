@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/auth";
+import { canAccess, canOpenFinanceTab, homeFor, type Department } from "@/lib/departments";
 import { projection } from "@/lib/finance-reports";
+import { bookRecurring } from "@/lib/finance";
 import { listSites } from "@/lib/sites";
 import { siteTotals } from "@/lib/stats";
 import { monthLabel, parsePeriod, today } from "@/lib/period";
@@ -19,6 +22,13 @@ export const metadata = { title: "Overview" };
 
 export default async function Overview() {
   const user = await requireAuth();
+  if (!canAccess(user, "overview")) redirect(homeFor(user));
+  // Each block shows only to people who can open its department.
+  const can = (d: Department) => canAccess(user, d);
+  const finance = canOpenFinanceTab(user, "overview");
+  const suppliers = { channex: canOpenFinanceTab(user, "channex"), gcloud: canOpenFinanceTab(user, "gcloud") };
+  // Months of recurring rules whose day has come are booked before anything is read.
+  await bookRecurring();
   const date = today();
   const month = parsePeriod({ period: "month" });
   const [proj, sites, traffic, sales, ads, projects, tasks] = await Promise.all([
@@ -36,7 +46,8 @@ export default async function Overview() {
   const inProgress = openTasks.filter((task) => task.status === "in_progress").length;
   const currentProjects = projects.filter((project) => project.status !== "Completed");
   const followUpsToday = sales.due - sales.overdue;
-  const attentionCount = sales.due + overdueTasks;
+  const attentionCount = (can("sales") ? sales.due : 0) + (can("projects") ? overdueTasks : 0);
+  const departmentCards = (["analytics", "marketing", "sales"] as const).filter(can);
   const dateLabel = new Intl.DateTimeFormat("en-GB", {
     weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
   }).format(new Date(`${date}T00:00:00Z`));
@@ -52,8 +63,8 @@ export default async function Overview() {
           <time className={s.date} dateTime={date}><NavIcon name="calendar" />{dateLabel}</time>
         </header>
 
-        <div className={s.topGrid}>
-          <section className={s.finance} aria-labelledby="finance-title">
+        {(finance || can("sales") || can("projects")) && <div className={s.topGrid}>
+          {finance && <section className={s.finance} aria-labelledby="finance-title">
             <header className={s.financeHead}>
               <div className={s.sectionTitle}>
                 <DepartmentIcon name="finance" />
@@ -76,53 +87,53 @@ export default async function Overview() {
 
             <div className={s.financeFooter}>
               <div><span>Month-end estimate</span><strong>{expectedNet === null ? "Building forecast" : money(expectedNet)}</strong></div>
-              <Link href="/finance/reports#forecast">View forecast <NavIcon name="reports" /></Link>
+              {canOpenFinanceTab(user, "reports") && <Link href="/finance/reports#forecast">View forecast <NavIcon name="reports" /></Link>}
             </div>
-          </section>
+          </section>}
 
-          <section className={s.attention} aria-labelledby="attention-title">
+          {(can("sales") || can("projects")) && <section className={s.attention} aria-labelledby="attention-title">
             <header className={s.panelHead}>
               <h2 id="attention-title">Needs attention</h2>
               <span className={`${s.count} ${attentionCount ? s.countWarm : ""}`}>{num(attentionCount)}</span>
             </header>
             <p className={s.sectionNote}>{attentionCount ? "A few things to keep moving." : "No overdue tasks or follow-ups due."}</p>
             <ul className={s.attentionList}>
-              <li><Link href="/sales?due=overdue"><span className={`${s.attentionIcon} ${sales.overdue ? s.red : ""}`}><NavIcon name="phone" /></span><span>Overdue follow-ups</span><strong className={sales.overdue ? s.redText : undefined}>{num(sales.overdue)}</strong><Chevron /></Link></li>
-              <li><Link href="/sales?due=today"><span className={s.attentionIcon}><NavIcon name="calendar" /></span><span>Follow-ups today</span><strong>{num(followUpsToday)}</strong><Chevron /></Link></li>
-              <li><Link href="/projects?view=list"><span className={`${s.attentionIcon} ${overdueTasks ? s.red : ""}`}><NavIcon name="board" /></span><span>Overdue tasks</span><strong className={overdueTasks ? s.redText : undefined}>{num(overdueTasks)}</strong><Chevron /></Link></li>
+              {can("sales") && <li><Link href="/sales?due=overdue"><span className={`${s.attentionIcon} ${sales.overdue ? s.red : ""}`}><NavIcon name="phone" /></span><span>Overdue follow-ups</span><strong className={sales.overdue ? s.redText : undefined}>{num(sales.overdue)}</strong><Chevron /></Link></li>}
+              {can("sales") && <li><Link href="/sales?due=today"><span className={s.attentionIcon}><NavIcon name="calendar" /></span><span>Follow-ups today</span><strong>{num(followUpsToday)}</strong><Chevron /></Link></li>}
+              {can("projects") && <li><Link href="/projects?view=list"><span className={`${s.attentionIcon} ${overdueTasks ? s.red : ""}`}><NavIcon name="board" /></span><span>Overdue tasks</span><strong className={overdueTasks ? s.redText : undefined}>{num(overdueTasks)}</strong><Chevron /></Link></li>}
             </ul>
-            <Link href="/projects?who=me" className={s.myTasks}>View my tasks <Chevron /></Link>
-          </section>
-        </div>
+            {can("projects") && <Link href="/projects?who=me" className={s.myTasks}>View my tasks <Chevron /></Link>}
+          </section>}
+        </div>}
 
         {/* Supplier costs billed in USD, streamed in: Google Cloud and the daily LuxHotel read can take a few seconds. */}
-        <ul className="fstats" aria-label="Expected supplier costs this month">
-          <Suspense fallback={<ChannexCardLoading />}><ChannexCard /></Suspense>
-          <Suspense fallback={<GoogleCloudCardLoading />}><GoogleCloudCard period={month} /></Suspense>
-        </ul>
+        {(suppliers.channex || suppliers.gcloud) && <ul className="fstats" aria-label="Expected supplier costs this month">
+          {suppliers.channex && <Suspense fallback={<ChannexCardLoading />}><ChannexCard /></Suspense>}
+          {suppliers.gcloud && <Suspense fallback={<GoogleCloudCardLoading />}><GoogleCloudCard period={month} /></Suspense>}
+        </ul>}
 
-        <div className={s.departments}>
-          <Link href="/analytics" className={s.department}>
+        {departmentCards.length > 0 && <div className={s.departments}>
+          {can("analytics") && <Link href="/analytics" className={s.department}>
             <div className={s.departmentHead}><DepartmentIcon name="analytics" /><h2>Analytics</h2><Chevron /></div>
             <p className={s.period}>Last 7 days</p>
             <div className={s.mainMetric}><strong>{num(visitors)}</strong><span>Visitors across websites</span></div>
             <dl className={s.supportMetrics}><div><dt>Page views</dt><dd>{num(views)}</dd></div><div><dt>Websites</dt><dd>{num(sites.length)}</dd></div></dl>
-          </Link>
-          <Link href="/marketing/ads" className={`${s.department} ${s.marketing}`}>
+          </Link>}
+          {can("marketing") && <Link href="/marketing/ads" className={`${s.department} ${s.marketing}`}>
             <div className={s.departmentHead}><DepartmentIcon name="marketing" /><h2>Marketing &amp; Ads</h2><Chevron /></div>
             <p className={s.period}>Meta Ads · {monthLabel(proj.month)}</p>
             <div className={s.mainMetric}><strong>{money(adTotals.spend)}</strong><span>Ad spend this month</span></div>
             <dl className={s.supportMetrics}><div><dt>Active ads</dt><dd>{num(ads.filter((ad) => ad.status === "active").length)}</dd></div><div><dt>Results</dt><dd>{num(adTotals.results)}</dd></div></dl>
-          </Link>
-          <Link href="/sales" className={`${s.department} ${s.sales}`}>
+          </Link>}
+          {can("sales") && <Link href="/sales" className={`${s.department} ${s.sales}`}>
             <div className={s.departmentHead}><DepartmentIcon name="sales" /><h2>Sales</h2><Chevron /></div>
             <p className={s.period}>Current pipeline</p>
             <div className={s.mainMetric}><strong>{num(sales.open)}</strong><span>Open leads</span></div>
             <dl className={s.supportMetrics}><div><dt>Interested</dt><dd>{num(sales.interested)}</dd></div><div><dt>Customers</dt><dd>{num(sales.customers)}</dd></div></dl>
-          </Link>
-        </div>
+          </Link>}
+        </div>}
 
-        <section className={s.projects} aria-labelledby="projects-title">
+        {can("projects") && <section className={s.projects} aria-labelledby="projects-title">
           <header className={s.panelHead}>
             <div className={s.sectionTitle}>
               <DepartmentIcon name="projects" />
@@ -161,7 +172,7 @@ export default async function Overview() {
               {currentProjects.length > 0 && <Link href="/projects/list" className={s.allProjects}>View all projects <Chevron /></Link>}
             </div>
           </div>
-        </section>
+        </section>}
       </div>
     </Shell>
   );

@@ -55,3 +55,18 @@ export function change(current: number, previous: number): string | null {
   const p = Math.round(((current - previous) / previous) * 100);
   return `${p > 0 ? "+" : ""}${p}%`;
 }
+
+/** "12,000.50" or "12000,5" -> 12000.5; null when not a number. */
+export function parseAmount(raw: string): number | null {
+  const s = raw.replace(/\s/g, "");
+  const normalized = /,\d{1,2}$/.test(s) && !s.includes(".") ? s.replace(",", ".") : s.replace(/,/g, "");
+  if (!/^-?\d+(\.\d{1,2})?$/.test(normalized)) return null;
+  const n = Number(normalized);
+  return Number.isFinite(n) && Math.abs(n) < 1e12 ? n : null;
+}
+
+/** Last 9 digits: the same number written as 067…, +35567… or 0035567… matches. */
+export const phoneKey = (phone: string | null | undefined) => {
+  const digits = (phone ?? "").replace(/\D/g, "");
+  return digits.length >= 6 ? digits.slice(-9) : null;
+};

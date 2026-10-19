@@ -15,8 +15,66 @@ Company dashboard with departments: **Finance**, **Analytics**, Marketing, Proje
   ones are recalculated only when you tick the option.
 
 ## Users and roles
-Sign-in is per user (email + password). The first sign-in with `ADMIN_EMAIL` (default `admin`) and `ADMIN_PASSWORD` creates the first admin.
-Admins manage settings and users; members use the dashboards and record their own transactions.
+Sign-in is per user: a username or phone number, and a password. Email is optional (accounts that have one can also sign in with it).
+A phone number matches however it's written (`069 123 4567`, `+355 69 123 4567`). The first sign-in with `ADMIN_USERNAME`
+(default `admin`) and `ADMIN_PASSWORD` creates the first admin. Accounts created before usernames got the name before their email's `@`.
+Admins manage settings and users and open every section; members open the sections (and Finance tabs) picked for them under Users.
+Forgotten password: stop the dev server, run `npm run reset-password -- <username>` (default `admin`) and type the new one; with
+Cloud SQL, set `DATABASE_URL` first. `ADMIN_PASSWORD` is only used to create the very first admin, so it won't match a password changed later.
+
+## Sales: AI import
+
+Next to **Add lead**, **AI import** takes free text about one property (a WhatsApp message, an email, a form, call notes, in
+Albanian or English) and has Gemini fill in the lead: property, contact, phone, email, city, type, rooms, current system, source,
+the next follow-up (relative dates like "të enjten" are resolved from today) and a short note. The answer is checked on the server
+(only the form's own choices, real dates, whole rooms) and only pre-fills the usual form, where the AI-filled fields are marked; the
+lead is saved when the person adds it. Needs `GEMINI_API_KEY` (server-only). Checks: `npm run test:lead-ai`.
+
+## Sales: adding leads through the API
+
+Programs, such as a Claude automation that finds hotels worth contacting, add leads with an API key instead of a sign-in.
+An admin creates one in **Users → API keys**: it's shown once (only a hash is stored), can only add leads, shows when it
+was last used, and can be revoked.
+
+```
+POST /api/sales/leads
+Authorization: Bearer bsa_…
+Content-Type: application/json
+
+{ "leads": [ { "hotel": "Hotel Riviera", "city": "Sarandë", "phone": "+355 69 111 2233", "email": "info@riviera.al",
+               "contact": "Arben", "property_type": "Hotel", "rooms": 24, "current_system": "Excel",
+               "website": "https://riviera.al", "address": "Rruga Butrinti", "notes": "Why it's worth contacting",
+               "extra": { "Booking.com rating": "8.7" }, "external_id": "maps:ChIJ…", "source": "Claude" } ],
+  "dry_run": false }
+```
+
+- A body can also be one lead object or an array; at most 100 leads per call. Each needs `hotel`, `contact` or `phone`; the
+  rest is optional. `website`, `address`, `notes` and up to 12 `extra` labels appear among the lead's details, with
+  "Added by" (the key's name). `source` defaults to "Claude". Leads arrive unassigned and open.
+- A lead Sales already has is skipped: the same `external_id` (e.g. a Google Maps place id), the same phone in any format,
+  the same email, or the same property name in the same city (or where either has no city). Won and lost leads count, so a
+  customer or a refusal isn't contacted again. Repeats within one call are skipped too.
+- `"dry_run": true` saves nothing and answers which leads would be new: a way to check before researching a hotel further.
+- The answer gives totals (`created`, `new`, `duplicates`, `invalid`) and, per lead in the order sent, its `status`, the
+  lead's `id` and `url` (created or matched), the `match` and `lead_status` of a duplicate, or the `error` of an invalid one.
+  201 when something was created, 200 otherwise; 401 without a valid key, 400 for a body that isn't JSON.
+
+Checks: `npm run test:leads-api`.
+
+## Notifications
+
+The bell in the sidebar (and `/notifications`) collects, per person:
+
+- **Transactions**: an admin confirmed or cancelled yours in the Register (one note per review, linked to the transaction, or to
+  the Register for members without the Transactions tab).
+- **Tasks**: someone else gave you a task, or reassigned one to you. Editing a task without changing its assignee sends nothing.
+- **Follow-ups**: one note a day listing your open leads due today (by lead owner).
+- **Publishing**: a note for each post planned for today, to everyone who can open Marketing & Ads.
+- **LuxHotel** (for those who open it): new AI chats, website requests and technical issues.
+
+Nobody is notified about what they did themselves, or about a section they can't open. Daily reminders are written as people use
+the app, at most every ten minutes per server, once per person and day; one changes (and is unread again) only when its list does.
+Run the checks with `npm run test:notifications`.
 
 ## Google Cloud expense forecast
 
@@ -171,7 +229,8 @@ The tables are created automatically on first start.
 | Name | Purpose |
 |---|---|
 | `DATABASE_URL` | Postgres connection string. Empty means the embedded local database. |
-| `ADMIN_EMAIL` | Email (login name) of the first admin. Default `admin`. |
+| `ADMIN_USERNAME` | Username of the first admin. Default `admin`. (`ADMIN_EMAIL` from older setups is still read.) |
+| `GEMINI_API_KEY` | Google AI Studio key for the AI lead import and import column mapping. Server-only; unset turns AI off. |
 | `ADMIN_PASSWORD` | Password of the first admin, used only while no users exist (required in production). |
 | `SESSION_SECRET` | 32+ random characters used to sign the login cookie (required in production). |
 | `REPORT_TIMEZONE` | Time zone for daily/hourly reports. Default `Europe/Tirane`. |

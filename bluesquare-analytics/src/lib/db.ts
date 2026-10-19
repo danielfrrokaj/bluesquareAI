@@ -160,12 +160,64 @@ do $$ begin
     alter table fin_transactions add constraint fin_transactions_type_check check (type in ('income', 'expense', 'transfer'));
   end if;
 end $$;
+-- Status: an income or expense entered by hand starts 'pending' while the money is still with the person it belongs to
+-- (user_id). An admin confirms it in Finance → Register once the money is handed over ('confirmed'), or cancels it
+-- ('cancelled'). Income and expense totals count pending and confirmed; account balances count only confirmed; cancelled
+-- counts nowhere. Synced, recurring and older transactions, and transfers, are confirmed from the start.
+alter table fin_transactions add column if not exists status text not null default 'confirmed';
+alter table fin_transactions add column if not exists reviewed_at timestamptz;   -- when confirmed or cancelled in the Register
+alter table fin_transactions add column if not exists reviewed_by text references users(id) on delete set null;
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'fin_transactions_status_check' and pg_get_constraintdef(oid) like '%cancelled%') then
+    alter table fin_transactions drop constraint if exists fin_transactions_status_check;
+    alter table fin_transactions add constraint fin_transactions_status_check check (status in ('pending', 'confirmed', 'cancelled'));
+  end if;
+end $$;
+create index if not exists fin_transactions_pending on fin_transactions (user_id) where status = 'pending';
+-- Monthly rules. When a month's day comes, the rule is booked as an ordinary transaction (source 'recurring',
+-- external_id 'recurring:<rule id>:<YYYY-MM>') that can then be edited or deleted on its own. Changing a rule only
+-- affects the months it hasn't booked yet.
+create table if not exists fin_recurring (
+  id            text primary key,
+  type          text not null check (type in ('income', 'expense')),
+  amount        numeric(14,2) not null check (amount > 0),     -- in its currency, converted to EUR when booked
+  currency      text not null default 'EUR',
+  day           integer not null check (day between 1 and 31), -- the month's last day in shorter months
+  description   text not null,
+  counterparty  text,
+  account_id    text references fin_accounts(id) on delete set null,
+  category_id   text references fin_categories(id) on delete set null,
+  user_id       text references users(id) on delete set null,
+  next_month    text not null,                                 -- first month not booked yet, YYYY-MM
+  end_month     text,                                          -- last month to book, null: no end
+  created_by    text references users(id) on delete set null,
+  created_at    timestamptz not null default now()
+);
 alter table sites add column if not exists logo bytea;
 alter table sites add column if not exists logo_type text;
 alter table sites add column if not exists logo_version integer not null default 0;
 alter table users add column if not exists avatar bytea;
 alter table users add column if not exists avatar_type text;
 alter table users add column if not exists avatar_version integer not null default 0;
+-- Sidebar departments a member may open (see lib/departments.ts); null: all of them. Admins always see everything.
+alter table users add column if not exists departments text[];
+-- Users sign in with a username or their phone number; email is optional.
+alter table users add column if not exists username text;            -- lower-case, starts with a letter
+alter table users add column if not exists phone text;               -- as typed
+alter table users add column if not exists phone_key text;           -- last 9 digits: 069…, +35569… and 0035569… match
+alter table users alter column email drop not null;
+-- Existing accounts: the email's name before the @, when it makes a valid username.
+update users set username = case
+    when lower(regexp_replace(split_part(email, '@', 1), '[^a-zA-Z0-9._-]', '', 'g')) ~ '^[a-z][a-z0-9._-]{2,31}$'
+      then lower(regexp_replace(split_part(email, '@', 1), '[^a-zA-Z0-9._-]', '', 'g'))
+    else 'user' || substr(md5(id), 1, 6) end
+  where username is null;
+-- Two emails with the same name before the @ (anna@a.com, anna@b.com): the later account gets a suffix.
+update users u set username = left(u.username, 27) || '-' || substr(md5(u.id), 1, 4)
+  where exists (select 1 from users o where o.username = u.username and (o.created_at, o.id) < (u.created_at, u.id));
+alter table users alter column username set not null;
+create unique index if not exists users_username on users (username);
+create unique index if not exists users_phone_key on users (phone_key);
 
 -- ---------- Sales ----------
 create table if not exists sales_leads (
@@ -199,6 +251,9 @@ create table if not exists sales_leads (
 );
 create index if not exists sales_leads_status on sales_leads (status, due_date);
 create index if not exists sales_leads_phone on sales_leads (phone_key);
+-- Leads pulled from another system keep its row id (e.g. multisystem:<uuid>), so importing again skips them.
+alter table sales_leads add column if not exists external_id text;
+create unique index if not exists sales_leads_external on sales_leads (external_id);
 
 -- Notes and the activity timeline (kind: note, call, meeting, or system events).
 create table if not exists sales_notes (
@@ -219,6 +274,20 @@ create table if not exists sales_imports (
   headers     jsonb not null,
   rows        jsonb not null,
   created_at  timestamptz not null default now()
+);
+
+-- Keys for programs (e.g. a Claude automation) to call the API without signing in, each limited to one scope
+-- ('leads': add sales leads). Only a hash is kept: the key itself is shown once, when it's created.
+create table if not exists api_keys (
+  id            text primary key,
+  name          text not null,
+  scope         text not null,
+  prefix        text not null,                   -- its first characters, to tell keys apart
+  hash          text not null unique,            -- sha256 of the key
+  created_by    text references users(id) on delete set null,
+  created_at    timestamptz not null default now(),
+  last_used_at  timestamptz,
+  revoked_at    timestamptz
 );
 insert into app_settings (key, value) values ('fx_rates', '{"ALL": 91.77}') on conflict do nothing;
 
@@ -405,6 +474,56 @@ create table if not exists channex_snapshots (
   properties    jsonb not null
 );
 create index if not exists channex_snapshots_taken on channex_snapshots (taken_at);
+
+-- LuxHotel answers saved so its pages open instantly: '/hotels' (every property) and '/hotels/{id}' (one property's
+-- details). Refreshed in the background; LuxHotel is asked directly only before anything is saved.
+create table if not exists lux_cache (
+  path        text primary key,
+  data        jsonb not null,
+  fetched_at  timestamptz not null default now()
+);
+
+-- LuxHotel records copied from its API (AI chats, website requests, technical issues), kept even if removed there.
+create table if not exists lux_records (
+  kind        text not null,               -- ai-chats | web-requests | technical-issues
+  id          text not null,               -- LuxHotel's id
+  data        jsonb not null,              -- the record as the API sent it
+  created_at  timestamptz,                 -- when it was created on LuxHotel (an AI chat: when it started)
+  changed_at  timestamptz,                 -- its last change there (an AI chat: its last message); unread again when it moves
+  synced_at   timestamptz not null default now(),
+  primary key (kind, id)
+);
+create index if not exists lux_records_newest on lux_records (kind, created_at desc);
+create index if not exists lux_records_changed on lux_records (changed_at desc);
+
+-- What each person has read. A record is unread when it changed after they read it, or after they started receiving
+-- notifications (the later of their account's creation and app_settings 'lux_notifications_since').
+create table if not exists lux_reads (
+  user_id    text not null references users(id) on delete cascade,
+  kind       text not null,
+  record_id  text not null,
+  read_at    timestamptz not null default now(),
+  primary key (user_id, kind, record_id)
+);
+
+-- ---------- Notifications ----------
+-- Personal ones: a transaction of yours was confirmed or cancelled, someone gave you a task, your tasks due today or
+-- overdue, follow-ups due today, media to publish today. (LuxHotel's records notify through lux_reads.) Reminders carry a dedupe_key, one per person and key, so
+-- they're written once and only freshened when their text changes.
+create table if not exists notifications (
+  id          text primary key,
+  user_id     text not null references users(id) on delete cascade,
+  kind        text not null,                     -- transaction | task | deadlines | followups | publish
+  title       text not null,
+  body        text not null default '',
+  href        text,
+  actor_id    text references users(id) on delete set null,   -- who caused it; null for reminders
+  dedupe_key  text,                              -- e.g. followups:2026-10-16
+  created_at  timestamptz not null default now(),
+  read_at     timestamptz
+);
+create index if not exists notifications_user on notifications (user_id, created_at desc);
+create unique index if not exists notifications_dedupe on notifications (user_id, dedupe_key);
 
 -- Billing category of each property, set by an admin to match its property_type in Channex.
 -- A property without a row is billed as a hotel, Channex's default.

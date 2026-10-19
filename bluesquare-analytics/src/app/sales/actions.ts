@@ -8,8 +8,12 @@ import {
 } from "@/lib/sales";
 import { LOST_REASONS, NOTE_KINDS, PRODUCTS, STEPS, isStep, isLeadField, type NoteKind } from "@/lib/sales-fields";
 import { analyze, runImport, type Analysis, type ImportResult, type Mapping } from "@/lib/sales-import";
+import { importMultiSystemLeads } from "@/lib/multisystem";
 import { listUsers } from "@/lib/users";
-import { isDate } from "@/lib/period";
+import { isDate, today } from "@/lib/period";
+import { aiEnabled } from "@/lib/ai";
+import { canAccess } from "@/lib/departments";
+import { extractLead, MAX_LEAD_TEXT, type DraftField, type LeadDraft } from "@/lib/lead-ai";
 import type { FormState } from "@/components/ActionForm";
 
 const str = (form: FormData, key: string, max = 200) => String(form.get(key) ?? "").trim().slice(0, max);
@@ -33,6 +37,26 @@ async function readLead(form: FormData): Promise<LeadInput | string> {
   }
   if (input.owner_id && !(await listUsers()).some((u) => u.id === input.owner_id)) return "That owner no longer exists.";
   return input;
+}
+
+/** AI import: reads one lead out of free text with Gemini. Only pre-fills the form; adding the lead is still `addLead`. */
+export async function readLeadText(text: string): Promise<{ draft: LeadDraft; filled: DraftField[] } | { error: string }> {
+  const me = await requireAuth();
+  if (!canAccess(me, "sales")) return { error: "You can't add leads." };
+  const body = String(text ?? "").trim();
+  if (body.length < 12) return { error: "Paste a bit more: a message, an email or your call notes about the property." };
+  if (body.length > MAX_LEAD_TEXT) return { error: `That's a lot for one lead: paste up to ${MAX_LEAD_TEXT.toLocaleString("en-US")} characters.` };
+  if (!aiEnabled()) return { error: "AI import isn't set up: GEMINI_API_KEY is missing on the server." };
+  try {
+    const result = await extractLead(body, today());
+    if (!result.filled.some((f) => f === "hotel" || f === "contact" || f === "phone")) {
+      return { error: "No property, contact or phone number in this text. Add one of them and try again." };
+    }
+    return result;
+  } catch (err) {
+    console.error("AI lead import failed", err instanceof Error ? err.message : err);
+    return { error: "Gemini couldn't read this right now. Try again in a moment." };
+  }
 }
 
 export async function addLead(_: FormState, form: FormData): Promise<FormState> {
@@ -174,6 +198,22 @@ export async function confirmImport(_: ImportState, form: FormData): Promise<Imp
   if (typeof result === "string") return { error: result };
   refresh();
   return { result };
+}
+
+const leads = (n: number) => `${n} lead${n === 1 ? "" : "s"}`;
+
+/** "Import from MultiSystem": adds the leads of MultiSystem's Leads table that aren't here yet. */
+export async function importFromMultiSystem(_: FormState, form: FormData): Promise<FormState> {
+  const me = await requireAuth();
+  const r = await importMultiSystemLeads(me.id);
+  if (typeof r === "string") return { error: r };
+  refresh();
+  const skipped = [
+    r.already && `${r.already} imported before`,
+    r.duplicates && `${r.duplicates} with a phone already in Sales`,
+    r.empty && `${r.empty} without hotel or phone`,
+  ].filter(Boolean);
+  return { ok: `${r.created ? `Imported ${leads(r.created)}` : "No new leads"} from MultiSystem${skipped.length ? `; skipped ${skipped.join(", ")}` : ""}.` };
 }
 
 /** Follow-ups tab: push a lead's next follow-up by some days from today. */

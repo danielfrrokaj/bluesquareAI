@@ -12,19 +12,39 @@
 }
 .brand { display: flex; align-items: center; gap: 10px; padding: 4px 10px 18px; color: #fff; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
 .brand:hover { text-decoration: none; }
+.top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.bell { position: relative; display: grid; place-items: center; flex: none; width: 36px; height: 36px; margin-top: -4px; border-radius: 10px; color: #c9d6ee; }
+.bell:hover { background: rgb(255 255 255 / 0.08); color: #fff; text-decoration: none; }
+.bell:focus-visible { outline: 3px solid var(--blue-500); outline-offset: 1px; }
+.bellCount { position: absolute; top: 2px; right: 0; min-width: 18px; padding: 0 5px; border-radius: 999px; background: #e34948; color: #fff; font-size: 0.66rem; font-weight: 800; line-height: 18px; text-align: center; box-shadow: 0 0 0 2px var(--navy-900); }
+.itemCount { margin-left: auto; background: #e34948; }
+.tabCount { min-width: 20px; padding: 0 6px; border-radius: 999px; background: #e34948; color: #fff; font-size: 0.68rem; font-weight: 800; line-height: 18px; text-align: center; }
 
 .label { margin: 6px 12px 6px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6f82a8; }
 
-.nav { display: grid; gap: 2px; overflow-y: auto; scrollbar-width: none; }
+.nav { display: grid; align-content: start; gap: 2px; min-height: 0; overflow-y: auto; scrollbar-width: none; }
 .item {
   position: relative; display: flex; align-items: center; gap: 12px; padding: 7px 10px; border-radius: 12px;
   color: #c9d6ee; font-weight: 600; font-size: 0.92rem; transition: background 0.15s, color 0.15s;
 }
-/* Projects listed under their department */
+/* The open department's tabs, and Projects' projects, listed under it */
 .group { display: grid; gap: 2px; }
-.subitems { list-style: none; margin: 2px 0 6px 26px; padding: 0 0 0 12px; display: grid; gap: 1px; border-left: 1px solid rgb(255 255 255 / 0.12); }
-.subitem { display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 9px; color: #b4c3e0; font-size: 0.84rem; font-weight: 600; }
+.fold { display: grid; margin: 2px 0 6px; }
+.subitems { list-style: none; margin: 0 0 0 26px; min-height: 0; padding: 0 0 0 12px; display: grid; gap: 1px; border-left: 1px solid rgb(255 255 255 / 0.12); }
+.subitem { display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 9px; color: #b4c3e0; font-size: 0.84rem; font-weight: 600; transition: background 0.15s, color 0.15s; }
 .subname { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.subicon { flex: none; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; color: #8fa3c8; }
+img.subicon { width: 18px; height: 18px; margin: 2px; object-fit: contain; }
+.subitem:hover .subicon, .subitem[aria-current="page"] .subicon { color: #fff; }
+.subsep { height: 1px; margin: 5px 8px; background: rgb(255 255 255 / 0.1); }
+.unreadCount { background: #e34948; }
+/* Opening a department unfolds its list: the space opens and the items slide in one after another. */
+.unfold { animation: unfold 0.3s cubic-bezier(0.2, 0.7, 0.3, 1); }
+.unfold .subitems { animation: clip 0.3s; }
+.unfold .subitems > li { animation: slideIn 0.34s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(min(var(--i, 0), 10) * 30ms + 60ms); }
+@keyframes unfold { from { grid-template-rows: 0fr; } to { grid-template-rows: 1fr; } }
+@keyframes clip { from, to { overflow: hidden; } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-8px); } }
 .subitem:hover { color: #fff; text-decoration: none; background: rgb(255 255 255 / 0.06); }
 .subitem[aria-current="page"] { color: #fff; background: rgb(74 132 208 / 0.25); box-shadow: inset 0 0 0 1px rgb(74 132 208 / 0.4); }
 .subitem :global(.accmark) { border-radius: 6px; }
@@ -35,6 +55,7 @@
 .item:hover { color: #fff; text-decoration: none; background: rgb(255 255 255 / 0.06); }
 .item:hover img { transform: translateY(-1px) scale(1.06); }
 .item[aria-current="page"] { color: #fff; background: linear-gradient(90deg, rgb(74 132 208 / 0.28), rgb(74 132 208 / 0.08)); box-shadow: inset 0 0 0 1px rgb(74 132 208 / 0.35); }
+.item.open { color: #fff; }
 .item[aria-current="page"]::before { content: ""; position: absolute; left: -14px; top: 10px; bottom: 10px; width: 4px; border-radius: 0 4px 4px 0; background: var(--blue-500); }
 
 /* ---------- Account card ---------- */
@@ -57,7 +78,8 @@
 
 /* ---------- Content column ---------- */
 .content { margin-left: var(--side); min-width: 0; display: flex; flex-direction: column; min-height: 100vh; }
-.subnav { position: sticky; top: 0; z-index: 9; background: rgb(255 255 255 / 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+/* Small screens only: there the sidebar, with the tabs, is a drawer. */
+.subnav { display: none; position: sticky; top: 0; z-index: 9; background: rgb(255 255 255 / 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
 .subnav nav { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; min-height: 52px; align-items: center; }
 .subnav a { display: inline-flex; align-items: center; gap: 7px; flex-shrink: 0; color: var(--muted); padding: 6px 12px; border-radius: 999px; white-space: nowrap; font-weight: 600; font-size: 0.88rem; }
 .subnav a svg { flex: none; }
@@ -75,10 +97,11 @@
     background: var(--navy-900); color: #fff;
   }
   .mobilebar .brand { padding: 0; }
+  .mobilebar .bell { margin: 0 0 0 auto; }
   .burger { display: grid; place-items: center; width: 40px; height: 40px; margin-left: -6px; border-radius: 10px; color: #fff; cursor: pointer; }
   .burger:hover { background: rgb(255 255 255 / 0.08); }
   .toggle:focus-visible + .mobilebar .burger { outline: 3px solid var(--blue-500); }
-  .subnav { top: 56px; }
+  .subnav { display: block; top: 56px; }
   .side { transform: translateX(-100%); transition: transform 0.25s ease; box-shadow: 0 0 40px rgb(0 0 0 / 0.35); }
   .toggle:checked ~ .side { transform: none; }
   .scrim { display: block; position: fixed; inset: 0; z-index: 25; background: rgb(4 11 36 / 0.5); opacity: 0; pointer-events: none; transition: opacity 0.25s; }
@@ -86,5 +109,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .side, .scrim, .item, .item img { transition: none; }
+  .side, .scrim, .item, .item img, .subitem { transition: none; }
+  .unfold, .unfold .subitems, .unfold .subitems > li { animation: none; }
 }

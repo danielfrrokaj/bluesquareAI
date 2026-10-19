@@ -1,4 +1,4 @@
-import { isAdmin, requireAuth } from "@/lib/auth";
+import { requireFinanceTab } from "@/lib/auth";
 import { parsePeriod } from "@/lib/period";
 import { getGoogleCloudReport } from "@/lib/google-cloud-billing";
 import { Shell } from "@/components/Shell";
@@ -11,11 +11,11 @@ export const metadata = { title: "Google Cloud" };
 
 /** Google Cloud expenses & forecast (both billing accounts, in USD). */
 export default async function GcloudPage({ searchParams }: { searchParams: Promise<{ period?: string; from?: string; to?: string }> }) {
-  const user = await requireAuth();
+  const user = await requireFinanceTab("gcloud");
   const period = parsePeriod(await searchParams);
   const report = await getGoogleCloudReport(period);
   return (
-    <Shell department="finance" subnav={financeNav("gcloud", isAdmin(user))}>
+    <Shell department="finance" subnav={financeNav("gcloud", user)}>
       <div className="pagehead">
         <div>
           <h1>Google Cloud</h1>

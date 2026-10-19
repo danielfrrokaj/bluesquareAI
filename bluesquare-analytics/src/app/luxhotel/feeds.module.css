@@ -1,0 +1,56 @@
+/* LuxHotel record pages: AI chats, website requests, technical issues. */
+
+.notice { margin: 0 0 16px; padding: 14px 16px; border: 1px solid #f1d9a8; border-radius: 12px; background: #fff9ec; }
+.notice strong { color: var(--ink); font-size: 0.9rem; }
+.notice p { margin: 4px 0 0; color: var(--body); font-size: 0.86rem; }
+
+.list { list-style: none; margin: 0; padding: 0; }
+.row { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px 20px; align-items: center; padding: 14px 4px; }
+.row + .row { border-top: 1px solid var(--line); }
+.row:has(:global(.stretched)):hover { background: var(--blue-50); }
+.rowTop { align-items: start; grid-template-columns: minmax(0, 1fr) auto; }
+.rowMain { min-width: 0; display: grid; gap: 3px; }
+.title { color: var(--ink); font-weight: 650; font-size: 0.92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rowTop .title { white-space: normal; }
+.issueTitle { white-space: normal; overflow: visible; }
+.title:hover { color: var(--blue-600); text-decoration: none; }
+/* Unread for this person: a blue dot and a bolder title, until they open it. */
+.unread .title { font-weight: 800; }
+.newDot { display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: var(--blue-500); vertical-align: middle; }
+.property { color: var(--muted); font-weight: 550; }
+.meta { margin: 0; color: var(--muted); font-size: 0.8rem; overflow-wrap: anywhere; }
+.meta a { position: relative; z-index: 1; }
+.body { margin: 4px 0 2px; color: var(--body); font-size: 0.88rem; white-space: pre-wrap; overflow-wrap: anywhere; max-width: 80ch; }
+.url { margin: 0; color: var(--muted); font-size: 0.74rem; overflow-wrap: anywhere; }
+.side { display: grid; justify-items: end; gap: 2px; color: var(--muted); font-size: 0.78rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+.flags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+.tag { display: inline-flex; align-items: center; padding: 1px 8px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); color: var(--body); font-size: 0.72rem; font-weight: 650; line-height: 1.6; white-space: nowrap; }
+.tagWarn { background: #fdf1d8; border-color: #f3dca8; color: #8a5200; }
+.tagBad { background: #fde8e6; border-color: #f4c7c2; color: #a8261b; }
+.tagGood { background: #e3f4e9; border-color: #bfe3cc; color: #157f3b; }
+
+.pager { display: flex; justify-content: space-between; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+
+.back { margin: 0 0 10px; font-size: 0.86rem; }
+
+/* One conversation: the staff member's question, then the assistant's answer. */
+.thread { list-style: none; margin: 0; padding: 0; display: grid; gap: 22px; }
+.exchange { display: grid; gap: 8px; }
+.question, .answer { display: grid; gap: 4px; max-width: min(720px, 92%); padding: 12px 14px; border-radius: 12px; }
+.question { justify-self: end; background: var(--blue-50); border: 1px solid #d6e3f5; }
+.answer { justify-self: start; background: #fff; border: 1px solid var(--line); }
+.question p, .answer p { margin: 0; color: var(--ink); font-size: 0.9rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+.who { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.74rem; font-weight: 650; }
+
+.feedback { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.feedback li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: start; }
+.feedback p { margin: 0; font-size: 0.88rem; }
+.feedback time { font-size: 0.76rem; white-space: nowrap; }
+
+@media (max-width: 640px) {
+  .row { grid-template-columns: minmax(0, 1fr); padding: 12px 0; }
+  .side { justify-items: start; }
+  .feedback li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .question, .answer { max-width: 100%; }
+}

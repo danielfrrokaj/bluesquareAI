@@ -1,20 +1,31 @@
-import { BASE_CURRENCY, type Account, type Category, type Transaction } from "@/lib/finance";
+import { BASE_CURRENCY, isSynced, type Account, type Category, type Transaction } from "@/lib/finance";
 import type { User } from "@/lib/users";
 
-/** Inputs for a transaction form. Synced (BlueBill) transactions only show the booking: account, category, user. */
+/** What the fields show for an existing transaction, or a recurring rule. */
+export type FieldValues = Pick<
+  Transaction,
+  "id" | "source" | "type" | "amount" | "original_amount" | "currency" | "occurred_on" | "counterparty" | "description" | "account_id" | "category_id" | "user_id"
+>;
+
+/**
+ * Inputs for a transaction form. Synced (BlueBill) transactions only show the booking: account, category, user.
+ * `when` replaces the date field (a rule has a day of the month instead); `repeat` offers to make a new one monthly.
+ */
 export function TransactionFields({
-  accounts, categories, users, currencies, tx, today, currentUserId, canPickUser,
+  accounts, categories, users, currencies, tx, today, currentUserId, canPickUser, when, repeat,
 }: {
   accounts: Account[];
   categories: Category[];
   users: User[];
   currencies: string[]; // those with a rate; EUR is always offered
-  tx?: Transaction;
+  tx?: FieldValues;
   today: string;
   currentUserId: string;
   canPickUser: boolean;
+  when?: React.ReactNode;
+  repeat?: boolean;
 }) {
-  const locked = tx ? tx.source !== "manual" : false;
+  const locked = tx ? isSynced(tx.source) : false;
   // Keep an archived account/category selectable when the transaction already uses it.
   const accountOptions = accounts.filter((a) => !a.archived || a.id === tx?.account_id);
   const categoryOptions = categories.filter((c) => !c.archived || c.id === tx?.category_id);
@@ -47,12 +58,13 @@ export function TransactionFields({
           </select>
         </label>
       )}
-      {!locked && (
-        <label className="field">
-          <span>Date</span>
-          <input type="date" name="occurred_on" defaultValue={tx?.occurred_on ?? today} required />
-        </label>
-      )}
+      {!locked &&
+        (when ?? (
+          <label className="field">
+            <span>Date</span>
+            <input type="date" name="occurred_on" defaultValue={tx?.occurred_on ?? today} required />
+          </label>
+        ))}
       {!locked && (
         <label className="field">
           <span>Client / supplier</span>
@@ -106,6 +118,17 @@ export function TransactionFields({
             ))}
           </select>
         </label>
+      )}
+      {repeat && (
+        <div className="repeat field--wide">
+          <label className="check">
+            <input type="checkbox" name="repeat" /> Repeat every month on this date&apos;s day
+          </label>
+          <label className="field repeat__until">
+            <span>Last month (optional)</span>
+            <input type="month" name="until" placeholder="YYYY-MM" />
+          </label>
+        </div>
       )}
     </div>
   );

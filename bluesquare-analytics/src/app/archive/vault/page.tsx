@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { isAdmin, requireAuth } from "@/lib/auth";
+import { isAdmin, requireArchiveTab } from "@/lib/auth";
 import { entryLog, listVault, VAULT_KINDS, type VaultEntry, type VaultKind } from "@/lib/archive";
 import { Shell } from "@/components/Shell";
 import { archiveNav } from "@/components/nav";
@@ -17,7 +17,7 @@ const ICON: Record<VaultKind, string> = { password: "🔑", api_key: "🧩", not
 const ACTION: Record<string, string> = { create: "created it", edit: "edited it", reveal: "revealed the secret", notes: "opened the notes" };
 
 export default async function Vault({ searchParams }: { searchParams: Promise<{ q?: string; kind?: string }> }) {
-  const user = await requireAuth();
+  const user = await requireArchiveTab("vault");
   const admin = isAdmin(user);
   const sp = await searchParams;
   const q = (sp.q ?? "").trim().slice(0, 100);
@@ -27,7 +27,7 @@ export default async function Vault({ searchParams }: { searchParams: Promise<{ 
   const logs = admin ? new Map(await Promise.all(entries.map(async (e) => [e.id, await entryLog(e.id)] as const))) : null;
 
   return (
-    <Shell department="archive" subnav={archiveNav("vault")}>
+    <Shell department="archive" subnav={archiveNav("vault", user)}>
       <div className={s.page}>
         <div className="pagehead">
           <div>

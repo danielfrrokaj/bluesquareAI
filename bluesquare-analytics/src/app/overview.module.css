@@ -63,6 +63,12 @@
 
 
 .departments { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+/* Fewer blocks when a member can't open every department. */
+.topGrid:has(> :only-child) { grid-template-columns: 1fr; }
+@media (min-width: 641px) {
+  .departments:has(> :only-child) { grid-template-columns: 1fr; }
+  .departments:has(> :nth-child(2):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 .department { --accent: #346cba; position: relative; min-width: 0; padding: 21px 22px 18px; background: #fff; border: 1px solid var(--line); border-radius: 16px; color: var(--body); transition: border-color 180ms ease, box-shadow 180ms ease; }
 .department:hover { text-decoration: none; border-color: #b3c9e6; box-shadow: 0 9px 22px -18px #183d7b66; }
 .departmentHead { display: flex; align-items: center; gap: 8px; }

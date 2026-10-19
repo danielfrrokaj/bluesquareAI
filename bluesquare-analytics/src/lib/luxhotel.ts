@@ -1,6 +1,6 @@
 import "server-only";
 import { createHash } from "node:crypto";
-import { parseHotelDetail, parseHotelList, type HotelDetail, type HotelList, type LuxRead } from "./luxhotel-data";
+import { parseFeedPage, parseHotelDetail, parseHotelList, type FeedItem, type FeedKind, type FeedPage, type HotelDetail, type HotelList, type LuxRead } from "./luxhotel-data";
 
 const BASE_URL = "https://us-central1-pms-channex-2030.cloudfunctions.net/hotelsApi";
 const CACHE_MS = 60_000;
@@ -57,3 +57,34 @@ export const getLuxHotel = (id: string) => read<HotelDetail>(`/hotels/${encodeUR
   if (hotel.id !== id) throw new Error("invalid_response");
   return hotel;
 });
+
+/** Why a feed page couldn't be read: no key, LuxHotel hasn't published the endpoint, the key was refused, or anything else. */
+export class FeedError extends Error {
+  constructor(readonly reason: "unconfigured" | "not_published" | "rejected" | "unavailable") { super(reason); }
+}
+
+/**
+ * One page of a record feed (newest first, 50 by default, up to 200), straight from the API: the sync stores it in our database and the
+ * pages read from there. `cursor` (the previous page's next_cursor) continues with older records.
+ */
+export async function fetchFeedPage<K extends FeedKind>(kind: K, cursor?: string, limit = 50): Promise<FeedPage<FeedItem[K]>> {
+  const key = process.env.LUXHOTEL_API_KEY?.trim();
+  if (!key) throw new FeedError("unconfigured");
+  let response: Response;
+  try {
+    response = await fetch(`${BASE_URL}/${kind}?limit=${limit}${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`, {
+      headers: { Authorization: `Bearer ${key}`, Accept: "application/json" },
+      cache: "no-store", redirect: "error", signal: AbortSignal.timeout(25_000),
+    });
+  } catch {
+    throw new FeedError("unavailable");
+  }
+  if (response.status === 404) throw new FeedError("not_published");
+  if (response.status === 401 || response.status === 403) throw new FeedError("rejected");
+  if (!response.ok) throw new FeedError("unavailable");
+  try {
+    return parseFeedPage(kind, await response.json());
+  } catch {
+    throw new FeedError("unavailable");
+  }
+}

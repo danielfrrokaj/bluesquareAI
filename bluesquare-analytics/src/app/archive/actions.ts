@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { isAdmin, requireAuth } from "@/lib/auth";
+import { isAdmin, requireArchiveTab } from "@/lib/auth";
 import {
   canSeeEntry, cleanFolder, createEntry, deleteEntry, deleteFileRow, getFile, isVaultKind, revealField, updateEntry, updateFile,
   type VaultInput,
@@ -15,7 +15,7 @@ const refresh = () => revalidatePath("/archive", "layout");
 // ---------- Files ----------
 
 export async function saveFile(_: FormState, form: FormData): Promise<FormState> {
-  await requireAuth();
+  await requireArchiveTab("files");
   const file = await getFile(str(form, "id"));
   if (!file) return { error: "This file no longer exists." };
   const name = str(form, "name", 200);
@@ -26,7 +26,7 @@ export async function saveFile(_: FormState, form: FormData): Promise<FormState>
 }
 
 export async function removeFile(_: FormState, form: FormData): Promise<FormState> {
-  const user = await requireAuth();
+  const user = await requireArchiveTab("files");
   const file = await getFile(str(form, "id"));
   if (!file) return { ok: "Deleted." };
   if (!isAdmin(user) && file.created_by !== user.id) return { error: "Only whoever uploaded it or an admin can delete this file." };
@@ -58,7 +58,7 @@ function readEntry(form: FormData, editing: boolean): VaultInput | string {
 }
 
 export async function addEntry(_: FormState, form: FormData): Promise<FormState> {
-  const user = await requireAuth();
+  const user = await requireArchiveTab("vault");
   const input = readEntry(form, false);
   if (typeof input === "string") return { error: input };
   if (input.adminsOnly && !isAdmin(user)) return { error: "Only admins can create admin-only entries." };
@@ -68,7 +68,7 @@ export async function addEntry(_: FormState, form: FormData): Promise<FormState>
 }
 
 export async function saveEntry(_: FormState, form: FormData): Promise<FormState> {
-  const user = await requireAuth();
+  const user = await requireArchiveTab("vault");
   const admin = isAdmin(user);
   const id = str(form, "id");
   if (!(await canSeeEntry(id, admin))) return { error: "This entry no longer exists." };
@@ -81,7 +81,7 @@ export async function saveEntry(_: FormState, form: FormData): Promise<FormState
 }
 
 export async function removeEntry(_: FormState, form: FormData): Promise<FormState> {
-  const user = await requireAuth();
+  const user = await requireArchiveTab("vault");
   const id = str(form, "id");
   if (!(await canSeeEntry(id, isAdmin(user)))) return { ok: "Deleted." };
   if (str(form, "confirm").toUpperCase() !== "DELETE") return { error: "Type DELETE to confirm." };
@@ -92,7 +92,7 @@ export async function removeEntry(_: FormState, form: FormData): Promise<FormSta
 
 /** Decrypts a secret or the notes for display or copying; every call is logged. */
 export async function reveal(id: string, field: "secret" | "notes"): Promise<string | null> {
-  const user = await requireAuth();
+  const user = await requireArchiveTab("vault");
   if (field !== "secret" && field !== "notes") return null;
   return revealField(id, field, user.id, isAdmin(user));
 }

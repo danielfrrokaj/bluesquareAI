@@ -1,4 +1,5 @@
 import { currentUser } from "@/lib/auth";
+import { canOpenArchiveTab } from "@/lib/departments";
 import { cleanFolder, createFile } from "@/lib/archive";
 import { CHUNK, MAX_SIZE, startUpload, storageReady } from "@/lib/media-store";
 
@@ -8,6 +9,7 @@ export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   const user = await currentUser();
   if (!user) return Response.json({ error: "Sign in again." }, { status: 401 });
+  if (!canOpenArchiveTab(user, "files")) return Response.json({ error: "You can't upload to the Archive." }, { status: 403 });
   if (!storageReady()) return Response.json({ error: "File storage isn't configured (MEDIA_BUCKET)." }, { status: 503 });
   const body = (await req.json().catch(() => ({}))) as Record<string, unknown>;
   const name = typeof body.name === "string" ? body.name.trim().slice(0, 200) : "";

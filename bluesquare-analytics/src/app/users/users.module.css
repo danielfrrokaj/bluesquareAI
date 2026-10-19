@@ -1,0 +1,54 @@
+/* Section permissions: the sidebar's icons as on/off tiles. */
+.picker { grid-column: 1 / -1; min-width: 0; margin: 0; padding: 0; border: 0; }
+.picker legend { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; padding: 0; margin-bottom: 8px; color: var(--ink); font-size: 0.88rem; font-weight: 650; }
+.picker legend small { color: var(--muted); font-size: 0.78rem; font-weight: 500; }
+.quick { display: flex; gap: 6px; margin-bottom: 10px; }
+.quick button { padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--blue-600); font: inherit; font-size: 0.76rem; font-weight: 650; cursor: pointer; }
+.quick button:hover { border-color: var(--blue-500); }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.tile {
+  position: relative; display: flex; align-items: center; gap: 10px; min-width: 0; padding: 9px 30px 9px 10px; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--muted); font-size: 0.84rem; font-weight: 650;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.tile input { position: absolute; opacity: 0; pointer-events: none; }
+.tile img { flex: none; filter: grayscale(1); opacity: 0.45; transition: filter 0.15s ease, opacity 0.15s ease; }
+.tile span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; line-height: 1.25; }
+.tile:hover { border-color: #cdd5e3; }
+.tile:has(input:focus-visible) { outline: 3px solid var(--blue-500); outline-offset: 2px; }
+.tick { position: absolute; top: 50%; right: 9px; translate: 0 -50%; padding: 3px; border-radius: 50%; background: var(--blue-600); color: #fff; opacity: 0; scale: 0.6; transition: opacity 0.15s ease, scale 0.15s ease; }
+
+.on { border-color: var(--blue-500); background: var(--blue-50); color: var(--ink); }
+.on img { filter: none; opacity: 1; }
+.on .tick { opacity: 1; scale: 1; }
+/* Finance's tabs, under the tiles while Finance is on. */
+.tabs { margin-top: 12px; padding: 12px; border: 1px dashed #cdd5e3; border-radius: 12px; background: var(--bg); }
+.tabsHead { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0 0 10px; color: var(--ink); font-size: 0.84rem; font-weight: 650; }
+.tabsHead small { color: var(--muted); font-size: 0.76rem; font-weight: 500; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  position: relative; display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px 6px 10px; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--muted); font-size: 0.8rem; font-weight: 650;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.chip input { position: absolute; opacity: 0; pointer-events: none; }
+.chip svg, .chip img { flex: none; width: 16px; height: 16px; }
+.chip img { filter: grayscale(1); opacity: 0.5; }
+.chip:hover { border-color: #cdd5e3; }
+.chip:has(input:focus-visible) { outline: 3px solid var(--blue-500); outline-offset: 2px; }
+.chip.on { border-color: var(--blue-500); background: var(--blue-50); color: var(--blue-600); }
+.chip.on img { filter: none; opacity: 1; }
+
+.adminNote { grid-column: 1 / -1; margin: 0; color: var(--muted); font-size: 0.84rem; }
+
+/* The sections a member can open, as small icons in the user list. */
+.access { display: inline-flex; align-items: center; gap: 2px; margin-right: 10px; vertical-align: middle; }
+.access img { display: block; }
+@media (max-width: 640px) { .access { display: none; } }
+
+/* A new API key, shown once, and the example request. */
+.key { display: flex; align-items: center; gap: 8px; }
+.key code, .example { flex: 1; min-width: 0; margin: 0; padding: 9px 11px; border-radius: 10px; background: var(--bg); border: 1px solid var(--line); color: var(--ink); font-size: 0.8rem; overflow-wrap: anywhere; }
+.example { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; line-height: 1.5; }
+.warn { margin: 0; padding: 9px 11px; border-radius: 10px; background: #fff4e0; color: var(--warn); font-size: 0.86rem; font-weight: 600; }

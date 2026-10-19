@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { afterEach, test } from "node:test";
-import { attentionReasons, channelMix, parseHotelDetail, parseHotelList, registrationMonths, selectHotels, summarizeHotels, type Hotel } from "./luxhotel-data";
-import { getLuxHotel, getLuxHotels } from "./luxhotel";
+import { attentionReasons, channelMix, parseFeedPage, parseHotelDetail, parseHotelList, registrationMonths, selectHotels, summarizeHotels, type Hotel } from "./luxhotel-data";
+import { FeedError, fetchFeedPage, getLuxHotel, getLuxHotels } from "./luxhotel";
 
 const NOW = Date.parse("2026-10-13T12:00:00Z");
 function hotel(overrides: Partial<Hotel> = {}): Hotel {
@@ -157,4 +157,51 @@ test("missing configuration, malformed data, and mismatched detail IDs fail visi
   assert.equal((await getLuxHotels()).status, "error");
   globalThis.fetch = async () => Response.json(detail());
   assert.equal((await getLuxHotel("another-id")).status, "error");
+});
+
+// ---------- Record feeds (shapes as built in pms-2030 functions/src/partnerApi) ----------
+
+const chat = { id: "chat-1", vendor_id: "account-1", user: { email: "staff@example.test", role: "owner" }, started_at: "2026-10-15T09:00:00.000Z",
+  updated_at: "2026-10-15T09:05:00.000Z",
+  messages: [{ question: "How do I add a room?", answer: "Open Rooms.", needs_human: false, has_screenshot: true, asked_at: "2026-10-15T09:00:00.000Z" },
+    { question: "It fails", answer: "Let me get a colleague.", needs_human: true, has_screenshot: false, asked_at: null }],
+  feedback: [{ vote: "down", comment: null, at: "2026-10-15T09:06:00.000Z" }] };
+const request = { id: "req-1", name: "Ana", email: null, phone: "069 000 0000", property_name: "Vila", message: "Call me", created_at: "2026-10-15T10:00:00.000Z" };
+const issue = { id: "tick-1", description: "Calendar blank", priority: "high", due_date: { _seconds: 1 }, reported_by: { email: null }, vendor_id: null,
+  hotel_id: "hotel-1", page_url: "/calendar", created_at: "2026-10-15T11:00:00.000Z" };
+const feed = (key: string, items: unknown[], next: string | null = null) => ({ count: items.length, generated_at: "2026-10-16T00:00:00.000Z", next_cursor: next, [key]: items });
+
+test("feeds parse each record type, keeping nulls and flags, and reject a changed contract", () => {
+  const chats = parseFeedPage("ai-chats", feed("ai_chats", [chat], "chat-1"));
+  assert.equal(chats.next_cursor, "chat-1");
+  assert.equal(chats.items[0].messages[0].has_screenshot, true);
+  assert.equal(chats.items[0].messages[1].needs_human, true);
+  assert.equal(chats.items[0].messages[1].asked_at, null);
+  assert.equal(chats.items[0].feedback[0].vote, "down");
+  assert.equal(parseFeedPage("web-requests", feed("web_requests", [request])).items[0].email, null);
+  // A due date stored as anything but text reads as none instead of failing the whole page.
+  assert.equal(parseFeedPage("technical-issues", feed("technical_issues", [issue])).items[0].due_date, null);
+  assert.throws(() => parseFeedPage("ai-chats", { ...feed("ai_chats", [chat]), count: 2 }));
+  assert.throws(() => parseFeedPage("ai-chats", feed("web_requests", [chat])));
+  assert.throws(() => parseFeedPage("ai-chats", feed("ai_chats", [{ ...chat, feedback: [{ vote: "meh", comment: null, at: null }] }])));
+  assert.throws(() => parseFeedPage("web-requests", feed("web_requests", [{ ...request, created_at: "yesterday" }])));
+});
+
+test("feed pages are read 50 at a time with a cursor, and each failure has its reason", async () => {
+  process.env.LUXHOTEL_API_KEY = "feed-test-key";
+  const urls: string[] = [];
+  globalThis.fetch = async (url) => { urls.push(String(url)); return Response.json(feed("web_requests", [request])); };
+  assert.equal((await fetchFeedPage("web-requests", "req-0")).items[0].id, "req-1");
+  assert.ok(urls[0].endsWith("/web-requests?limit=50&cursor=req-0"));
+  const reason = async (status: number) => {
+    globalThis.fetch = async () => new Response(null, { status });
+    return fetchFeedPage("technical-issues").then(() => "ok", (e: unknown) => (e instanceof FeedError ? e.reason : "other"));
+  };
+  assert.equal(await reason(404), "not_published");
+  assert.equal(await reason(401), "rejected");
+  assert.equal(await reason(500), "unavailable");
+  globalThis.fetch = async () => Response.json({ broken: true });
+  assert.equal(await fetchFeedPage("ai-chats").then(() => "ok", (e: unknown) => (e as FeedError).reason), "unavailable");
+  delete process.env.LUXHOTEL_API_KEY;
+  assert.equal(await fetchFeedPage("ai-chats").then(() => "ok", (e: unknown) => (e as FeedError).reason), "unconfigured");
 });

@@ -259,7 +259,7 @@ function toStatus(v: string | undefined): LeadStatus {
 
 const pick = (v: string | null, options: string[]) => (v ? (options.find((o) => plain(o) === plain(v)) ?? v) : null);
 
-function toSource(v: string | undefined): string | null {
+export function toSource(v: string | undefined): string | null {
   const s = clean(v);
   if (!s) return null;
   const p = plain(s);

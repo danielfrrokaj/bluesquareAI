@@ -33,7 +33,10 @@ export async function LeadDetail({ id, me, today }: { id: string; me: User; toda
     ["Source", lead.source],
     ["Owner", lead.owner_name],
     ["ID in old system", lead.ref],
-    ...Object.entries(lead.extra),
+    // Links, such as a website found by the lead API, open in a new tab.
+    ...Object.entries(lead.extra).map(([k, v]): [string, React.ReactNode] => [
+      k, /^https?:\/\/\S+$/.test(v) ? <a href={v} target="_blank" rel="noopener noreferrer">{v.replace(/^https?:\/\/(www\.)?/, "")}</a> : v,
+    ]),
   ];
 
   return (

@@ -20,6 +20,9 @@ export const daysInMonth = (month: string) => {
   return new Date(Date.UTC(y, m, 0)).getUTCDate();
 };
 
+/** Day `day` of a month, or its last day when the month is shorter: ("2027-02", 31) -> "2027-02-28". */
+export const dayOfMonth = (month: string, day: number) => `${month}-${String(Math.min(day, daysInMonth(month))).padStart(2, "0")}`;
+
 /** Months from `from` to `to`, both inclusive. */
 export function monthRange(from: string, to: string): string[] {
   const out: string[] = [];
@@ -87,4 +90,9 @@ export function parsePeriod(sp: { period?: string; from?: string; to?: string; m
     default:
       return { key: "month", from: `${m}-01`, to: t, label: monthLabel(m), month: m };
   }
+}
+
+/** For lists that aren't limited by date: a period only when the link asks for one ("all", or none, means every date). */
+export function optionalPeriod(sp: { period?: string; from?: string; to?: string; month?: string }): Period | null {
+  return (sp.period && sp.period !== "all") || sp.month ? parsePeriod(sp) : null;
 }

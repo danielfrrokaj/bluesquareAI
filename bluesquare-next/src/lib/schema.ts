@@ -24,6 +24,7 @@ export function organizationSchema(lang: Locale): Thing {
     name: member.name,
     jobTitle: t.about.team[i].role,
     ...(member.image ? { image: absoluteUrl(member.image) } : {}),
+    ...(member.linkedin ? { sameAs: [member.linkedin] } : {}),
     worksFor: { "@id": ORG_ID },
   }));
 

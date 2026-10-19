@@ -2,6 +2,9 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { query } from "./db";
 import { STEPS, type NoteKind, type Step } from "./sales-fields";
+import { phoneKey } from "./format";
+
+export { phoneKey };
 
 export type LeadStatus = "open" | "won" | "lost";
 
@@ -46,11 +49,6 @@ export function stage(l: Pick<Lead, Step | "status">): { key: string; label: str
   return { key: "new", label: "New" };
 }
 
-/** Last 9 digits: the same number written as 067…, +35567… or 0035567… matches. */
-export const phoneKey = (phone: string | null | undefined) => {
-  const digits = (phone ?? "").replace(/\D/g, "");
-  return digits.length >= 6 ? digits.slice(-9) : null;
-};
 
 /** WhatsApp needs the international number; Albanian 06x… numbers get 355. */
 export function whatsappNumber(phone: string | null): string | null {
@@ -166,20 +164,25 @@ export type LeadInput = {
 const INPUT_COLS = ["ref", "hotel", "contact", "phone", "email", "city", "property_type", "rooms", "current_system", "source", "due_date", "owner_id"] as const;
 
 export async function createLead(
-  input: LeadInput & Partial<Record<Step, boolean>> & { status?: LeadStatus; extra?: Record<string, string> },
+  input: LeadInput & Partial<Record<Step, boolean>> & {
+    status?: LeadStatus; extra?: Record<string, string>;
+    external_id?: string | null; // the row's id in the system it was imported from
+    created_at?: string | null; // when it was created there; now by default
+  },
   userId: string | null,
 ): Promise<string> {
   const id = randomUUID();
   const steps = Object.keys(STEPS) as Step[];
   await query(
-    `insert into sales_leads (id, ${INPUT_COLS.join(", ")}, phone_key, ${steps.join(", ")}, status, extra, created_by, closed_at)
+    `insert into sales_leads (id, ${INPUT_COLS.join(", ")}, phone_key, ${steps.join(", ")}, status, extra, created_by, closed_at, external_id, created_at)
      values ($1, ${INPUT_COLS.map((_, i) => `$${i + 2}`).join(", ")}, $${INPUT_COLS.length + 2},
              ${steps.map((_, i) => `$${INPUT_COLS.length + 3 + i}`).join(", ")},
              $${INPUT_COLS.length + 7}, $${INPUT_COLS.length + 8}::jsonb, $${INPUT_COLS.length + 9},
-             case when $${INPUT_COLS.length + 7} = 'open' then null else now() end)`,
+             case when $${INPUT_COLS.length + 7} = 'open' then null else now() end,
+             $${INPUT_COLS.length + 10}, coalesce($${INPUT_COLS.length + 11}::timestamptz, now()))`,
     [
       id, ...INPUT_COLS.map((c) => input[c] ?? null), phoneKey(input.phone), ...steps.map((s) => !!input[s]),
-      input.status ?? "open", JSON.stringify(input.extra ?? {}), userId,
+      input.status ?? "open", JSON.stringify(input.extra ?? {}), userId, input.external_id ?? null, input.created_at ?? null,
     ],
   );
   return id;

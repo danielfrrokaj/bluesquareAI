@@ -21,9 +21,12 @@ export const COMPANY = {
   // Palace of Culture, Skanderbeg Square
   geo: { lat: 41.3281, lng: 19.8207 },
   mapsUrl: "https://www.google.com/maps/search/?api=1&query=Pallati+i+Kultur%C3%ABs+Tirana",
+  // linkedin: the person's public profile URL (https://www.linkedin.com/in/…); null hides the icon.
   team: [
-    { name: "Danjel Frrokaj", slug: "danjel-frrokaj", image: "/images/danjel-frrokaj.jpg", founder: true },
-    { name: "Endi Cikalleshi", slug: "endi-cikalleshi", image: null, founder: true },
-    { name: "Antigona Llozhi", slug: "antigona-llozhi", image: null, founder: false },
+    { name: "Danjel Frrokaj", slug: "danjel-frrokaj", image: "/images/danjel-frrokaj.jpg", founder: true, linkedin: null },
+    { name: "Endi Cikalleshi", slug: "endi-cikalleshi", image: null, founder: true, linkedin: null },
+    { name: "Antigona Llozhi", slug: "antigona-llozhi", image: null, founder: false, linkedin: null },
+    { name: "Grisilda Qosja", slug: "grisilda-qosja", image: null, founder: false, linkedin: null },
+    { name: "Klevis Joanidhi", slug: "klevis-joanidhi", image: null, founder: false, linkedin: null },
   ],
 } as const;

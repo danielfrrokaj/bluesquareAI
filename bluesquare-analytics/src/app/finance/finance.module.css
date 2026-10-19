@@ -15,6 +15,7 @@
   padding: 17px 18px; border-color: var(--finance-edge); border-radius: 13px;
   background: linear-gradient(145deg, #ffffff 55%, #f8faff); box-shadow: var(--finance-shadow);
 }
+.finance :global(.panel:has(> .filters)) { padding: 14px 16px; }
 .finance :global(.panel__head) { margin-bottom: 12px; }
 .finance :global(.panel__head h2) { font-size: .9rem; }
 .finance :global(.panel__head > span) { font-size: .73rem; }

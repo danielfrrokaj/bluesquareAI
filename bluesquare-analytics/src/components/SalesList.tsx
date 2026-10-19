@@ -11,6 +11,8 @@ import { salesNav } from "./nav";
 import { ActionForm } from "./ActionForm";
 import { Modal } from "./Modal";
 import { LeadFields } from "./LeadFields";
+import { AiLeadImport, Sparkles } from "./AiLeadImport";
+import ai from "./AiLeadImport.module.css";
 import { LeadTable } from "./LeadTable";
 
 const PAGE = 100;
@@ -46,6 +48,8 @@ export async function SalesList({ view, sp }: { view: keyof typeof VIEWS; sp: Sa
     return `${v.base}?${p}`;
   };
   const filtered = !!(filter.q || filter.stage || filter.source || filter.owner || filter.due);
+  // Only what the owner pickers need goes to the browser (the AI import form is client-side).
+  const people = users.map((u) => ({ id: u.id, name: u.name, active: u.active }));
 
   return (
     <Shell department="sales" subnav={salesNav(view)}>
@@ -59,9 +63,12 @@ export async function SalesList({ view, sp }: { view: keyof typeof VIEWS; sp: Sa
         {view === "leads" && (
           <div className="btnrow">
             <Link href="/sales/import" className="btn">Import</Link>
+            <Modal trigger={<><Sparkles size={16} /> AI import</>} title="New lead with AI" triggerClassName={`btn ${ai.trigger}`}>
+              <AiLeadImport users={people} meId={me.id} />
+            </Modal>
             <Modal trigger="Add lead" title="New lead">
               <ActionForm action={addLead} submit="Add lead">
-                <LeadFields users={users} meId={me.id} note />
+                <LeadFields users={people} meId={me.id} note />
               </ActionForm>
             </Modal>
           </div>

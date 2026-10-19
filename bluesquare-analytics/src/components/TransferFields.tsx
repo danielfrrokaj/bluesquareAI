@@ -1,52 +1,36 @@
-import { BASE_CURRENCY, type Account, type Transaction } from "@/lib/finance";
+import { BASE_CURRENCY, type Account, type Rates, type Transaction } from "@/lib/finance";
+import { accountLogoUrl } from "./AccountMark";
+import { TransferInputs } from "./TransferInputs";
 
-/** Inputs for a transfer between two virtual accounts (new, or `tx` when editing one). */
-export function TransferFields({ accounts, currencies, tx, today }: {
+/**
+ * Inputs for a transfer between two virtual accounts (new, or `tx` when editing one). With `balances` (EUR, by account),
+ * each side shows its balance and what it becomes after the transfer.
+ */
+export function TransferFields({ accounts, currencies, tx, today, balances, rates }: {
   accounts: Account[];
   currencies: string[]; // those with a rate; EUR is always offered
   tx?: Transaction;
   today: string;
+  balances?: Record<string, number>;
+  rates?: Rates;
 }) {
   // Keep an archived account selectable when the transfer already uses it.
-  const options = accounts.filter((a) => !a.archived || a.id === tx?.account_id || a.id === tx?.to_account_id);
-  const select = (name: string, label: string, value: string) => (
-    <label className="field">
-      <span>{label}</span>
-      <select name={name} defaultValue={value} required>
-        {options.map((a) => (
-          <option key={a.id} value={a.id}>
-            {a.name}
-            {a.archived ? " (archived)" : ""}
-          </option>
-        ))}
-      </select>
-    </label>
-  );
+  const options = accounts
+    .filter((a) => !a.archived || a.id === tx?.account_id || a.id === tx?.to_account_id)
+    .map((a) => ({ id: a.id, name: a.name, archived: a.archived, logo: accountLogoUrl(a.id, a.logo_version), balance: balances?.[a.id] ?? null }));
   return (
-    <div className="formgrid">
-      {tx && <input type="hidden" name="id" value={tx.id} />}
-      {select("account_id", "From account", tx?.account_id ?? options[0]?.id ?? "")}
-      {select("to_account_id", "To account", tx?.to_account_id ?? options[1]?.id ?? "")}
-      <label className="field">
-        <span>Amount</span>
-        <input name="amount" inputMode="decimal" placeholder="1200" defaultValue={tx ? (tx.original_amount ?? tx.amount) : ""} required />
-      </label>
-      <label className="field">
-        <span>Currency</span>
-        <select name="currency" defaultValue={tx?.currency ?? BASE_CURRENCY}>
-          {[...new Set([BASE_CURRENCY, ...currencies, ...(tx ? [tx.currency] : [])])].map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
-      </label>
-      <label className="field">
-        <span>Date</span>
-        <input type="date" name="occurred_on" defaultValue={tx?.occurred_on ?? today} required />
-      </label>
-      <label className="field field--wide">
-        <span>Description</span>
-        <input name="description" maxLength={300} placeholder="Optional, e.g. Cash deposited at the bank" defaultValue={tx?.description ?? ""} />
-      </label>
-    </div>
+    <TransferInputs
+      id={tx?.id}
+      options={options}
+      from={tx?.account_id ?? options[0]?.id ?? ""}
+      to={tx?.to_account_id ?? options[1]?.id ?? ""}
+      amount={tx ? String(tx.original_amount ?? tx.amount) : ""}
+      currency={tx?.currency ?? BASE_CURRENCY}
+      currencies={[...new Set([BASE_CURRENCY, ...currencies, ...(tx ? [tx.currency] : [])])]}
+      base={BASE_CURRENCY}
+      rates={rates ?? null}
+      date={tx?.occurred_on ?? today}
+      description={tx?.description ?? ""}
+    />
   );
 }

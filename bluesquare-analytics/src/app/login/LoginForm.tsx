@@ -8,8 +8,8 @@ export function LoginForm() {
   return (
     <form action={action} className="form">
       <label className="field">
-        <span>Email</span>
-        <input name="email" autoComplete="username" required autoFocus />
+        <span>Username or phone</span>
+        <input name="login" autoComplete="username" autoCapitalize="none" autoCorrect="off" spellCheck={false} required autoFocus />
       </label>
       <label className="field">
         <span>Password</span>

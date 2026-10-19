@@ -23,6 +23,8 @@ export function aboutMetadata(lang: Locale): Metadata {
 export function AboutPage({ lang }: { lang: Locale }) {
   const t = getDictionary(lang);
   const a = t.about;
+  // Founders first and larger, then the rest of the team, each with its role and bio in this language.
+  const people = COMPANY.team.map((member, i) => ({ ...member, ...a.team[i] }));
 
   return (
     <>
@@ -42,7 +44,19 @@ export function AboutPage({ lang }: { lang: Locale }) {
 
       <PageHero lang={lang} title={a.title} lead={a.lead} crumbs={[{ name: t.nav.about, path: PATH }]} />
 
-      <section className="section" aria-labelledby="story-title">
+      <section className="section" aria-labelledby="team-title">
+        <div className="container">
+          <SectionHead id="team-title" title={a.teamTitle} />
+          <ul className="team__founders">
+            {people.filter((p) => p.founder).map((p) => <Person key={p.slug} person={p} size={208} />)}
+          </ul>
+          <ul className="team__members">
+            {people.filter((p) => !p.founder).map((p) => <Person key={p.slug} person={p} size={104} />)}
+          </ul>
+        </div>
+      </section>
+
+      <section className="section section--alt" aria-labelledby="story-title">
         <div className="container split">
           <div>
             <h2 id="story-title">{a.storyTitle}</h2>
@@ -59,30 +73,6 @@ export function AboutPage({ lang }: { lang: Locale }) {
                 <div>
                   <h3>{v.title}</h3>
                   <p>{v.text}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      <section className="section section--alt" aria-labelledby="team-title">
-        <div className="container">
-          <SectionHead id="team-title" title={a.teamTitle} />
-          <ul className="grid grid--3">
-            {COMPANY.team.map((member, i) => (
-              <li key={member.slug} className="card person" id={member.slug}>
-                {member.image ? (
-                  <Image src={member.image} alt={member.name} width={120} height={150} className="person__photo" sizes="120px" />
-                ) : (
-                  <div className="person__initials" aria-hidden="true">
-                    {member.name.split(" ").map((n) => n[0]).join("")}
-                  </div>
-                )}
-                <div>
-                  <h3 className="card__title">{member.name}</h3>
-                  <p className="person__role">{a.team[i].role}</p>
-                  <p className="muted">{a.team[i].bio}</p>
                 </div>
               </li>
             ))}
@@ -133,5 +123,38 @@ export function AboutPage({ lang }: { lang: Locale }) {
 
       <CtaBand lang={lang} />
     </>
+  );
+}
+
+type TeamMember = { name: string; slug: string; image: string | null; linkedin: string | null; role: string; bio: string };
+
+/** A square portrait (or initials) framed by the logo's two corner brackets, then name, role and bio. */
+function Person({ person, size }: { person: TeamMember; size: number }) {
+  return (
+    <li className="person" id={person.slug}>
+      <div className="person__frame">
+        {person.image ? (
+          <Image src={person.image} alt={person.name} width={size} height={size} sizes={`${size}px`} className="person__photo" />
+        ) : (
+          <span className="person__initials" aria-hidden="true">
+            {person.name.split(" ").map((n) => n[0]).join("")}
+          </span>
+        )}
+      </div>
+      <div>
+        <div className="person__name">
+          <h3>{person.name}</h3>
+          {person.linkedin && (
+            <a href={person.linkedin} className="person__linkedin" target="_blank" rel="noopener noreferrer" aria-label={`${person.name} on LinkedIn`}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z" />
+              </svg>
+            </a>
+          )}
+        </div>
+        <p className="person__role">{person.role}</p>
+        <p className="person__bio">{person.bio}</p>
+      </div>
+    </li>
   );
 }

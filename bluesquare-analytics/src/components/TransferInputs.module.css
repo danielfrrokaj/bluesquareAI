@@ -1,0 +1,58 @@
+/* From → To: two account cards joined by a round swap button. */
+.route { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: stretch; }
+.side {
+  --tone: var(--muted);
+  display: grid; align-content: start; gap: 10px; min-width: 0; padding: 14px 16px 15px; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 14px;
+  background:
+    linear-gradient(90deg, var(--tone), color-mix(in srgb, var(--tone) 0%, transparent) 70%) top / 100% 3px no-repeat,
+    linear-gradient(155deg, color-mix(in srgb, var(--tone) 9%, #fff), #fff 65%);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.side:hover { border-color: #cdd5e3; }
+.side:focus-within { border-color: var(--blue-500); box-shadow: 0 0 0 3px rgb(74 132 208 / 0.2); }
+.from { --tone: #c4362a; }
+.to { --tone: #1f8a4c; }
+.eyebrow { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.7rem; font-weight: 750; letter-spacing: 0.1em; text-transform: uppercase; }
+.eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 2px; background: var(--tone); }
+.pick { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.select {
+  flex: 1; min-width: 0; padding: 4px 24px 4px 0; border: 0; appearance: none; cursor: pointer; text-overflow: ellipsis;
+  font: inherit; font-size: 1.05rem; font-weight: 700; color: var(--ink); letter-spacing: -0.01em;
+  background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235f6984' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right center;
+}
+.select:focus { outline: none; }
+.balance { color: var(--muted); font-size: 0.78rem; font-variant-numeric: tabular-nums; }
+.balance strong { color: var(--ink); font-weight: 700; }
+.balance strong.positive { color: #1f8a4c; }
+.balance strong.negative { color: var(--danger); }
+
+.swap {
+  position: relative; z-index: 1; align-self: center; display: grid; place-items: center; width: 42px; height: 42px; margin: 0 -9px;
+  border: 1px solid var(--line); border-radius: 50%; background: #fff; color: var(--blue-600); cursor: pointer;
+  box-shadow: 0 0 0 5px #fff, 0 8px 18px -10px rgb(6 18 56 / 0.45);
+  transition: background 0.15s ease, color 0.15s ease, transform 0.25s ease;
+}
+.swap:hover { background: var(--blue-600); border-color: var(--blue-600); color: #fff; transform: rotate(180deg); }
+.swap:focus-visible { outline: 3px solid var(--blue-500); outline-offset: 2px; }
+
+/* Amount with its currency in one box. */
+/* Stretched to the row so the box matches the date input beside it, which some browsers draw a little taller. */
+.field { display: grid; grid-template-rows: auto 1fr; gap: 6px; min-width: 0; align-self: stretch; }
+.label { font-weight: 650; color: var(--ink); font-size: 0.88rem; }
+.amount { display: flex; min-height: 42px; border: 1px solid #cdd5e3; border-radius: 10px; background: #fff; overflow: hidden; }
+.amount:focus-within { border-color: var(--blue-500); box-shadow: 0 0 0 3px rgb(74 132 208 / 0.25); }
+.amountInput { flex: 1; min-width: 0; padding: 10px 12px; border: 0; background: transparent; font: inherit; font-weight: 650; color: var(--ink); font-variant-numeric: tabular-nums; }
+.currency {
+  flex: none; padding: 0 30px 0 12px; border: 0; border-left: 1px solid var(--line); appearance: none; cursor: pointer;
+  font: inherit; font-weight: 650; color: var(--ink);
+  background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235f6984' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center;
+}
+.amountInput:focus, .currency:focus { outline: none; }
+.converted { flex: none; align-self: center; padding: 0 10px; color: var(--muted); font-size: 0.8rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 560px) {
+  .route { grid-template-columns: minmax(0, 1fr); }
+  .swap { justify-self: center; margin: -9px 0; transform: rotate(90deg); }
+  .swap:hover { transform: rotate(270deg); }
+}

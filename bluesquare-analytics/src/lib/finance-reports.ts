@@ -12,7 +12,7 @@ export async function monthlyTotals(from: string, to: string): Promise<MonthRow[
     `select to_char(occurred_on, 'YYYY-MM') as month,
             coalesce(sum(amount) filter (where type = 'income'), 0)::float8 as income,
             coalesce(sum(amount) filter (where type = 'expense'), 0)::float8 as expense
-     from fin_transactions where occurred_on >= $1::date and occurred_on < ($2::date + interval '1 month')
+     from fin_transactions where status <> 'cancelled' and occurred_on >= $1::date and occurred_on < ($2::date + interval '1 month')
      group by 1`,
     [`${from}-01`, `${to}-01`],
   );
@@ -24,23 +24,27 @@ export type AccountReport = {
   id: string; name: string; description: string | null; group: AccountGroup; logo: number | null; archived: boolean; opening: number; balance: number;
   income: number; expense: number; count: number; // income and expense only
   transferIn: number; transferOut: number; // moved between accounts in the period
+  pending: number; // all time: pending income minus pending expense, still with people and so not in the balance yet
 };
 
 /** Balance of each virtual account (all time) plus its income, expense and transfers inside the period. */
 export async function accountReport(p: Period): Promise<AccountReport[]> {
-  // Each transfer also counts as an incoming movement ('transfer_in') of the account it went into.
+  // Each transfer also counts as an incoming movement ('transfer_in') of the account it went into. Only confirmed money
+  // is in the balance: pending income and expenses are still with the person who recorded them; cancelled ones count nowhere.
   return query<AccountReport>(
     `select a.id, a.name, a.description, a.account_group as "group", case when a.logo is null then null else a.logo_version end as logo, a.archived, a.opening_balance::float8 as opening,
-            (a.opening_balance + coalesce(sum(case when t.type in ('income', 'transfer_in') then t.amount else -t.amount end), 0))::float8 as balance,
+            (a.opening_balance + coalesce(sum(case when t.type in ('income', 'transfer_in') then t.amount else -t.amount end)
+              filter (where t.status = 'confirmed'), 0))::float8 as balance,
+            coalesce(sum(case when t.type = 'income' then t.amount else -t.amount end) filter (where t.status = 'pending'), 0)::float8 as pending,
             coalesce(sum(t.amount) filter (where t.type = 'income' and t.occurred_on between $1::date and $2::date), 0)::float8 as income,
             coalesce(sum(t.amount) filter (where t.type = 'expense' and t.occurred_on between $1::date and $2::date), 0)::float8 as expense,
             (count(t.id) filter (where t.type in ('income', 'expense') and t.occurred_on between $1::date and $2::date))::int as count,
             coalesce(sum(t.amount) filter (where t.type = 'transfer_in' and t.occurred_on between $1::date and $2::date), 0)::float8 as "transferIn",
             coalesce(sum(t.amount) filter (where t.type = 'transfer' and t.occurred_on between $1::date and $2::date), 0)::float8 as "transferOut"
      from fin_accounts a left join (
-       select id, account_id, type, amount, occurred_on from fin_transactions
+       select id, account_id, type, amount, occurred_on, status from fin_transactions where status <> 'cancelled'
        union all
-       select id, to_account_id, 'transfer_in', amount, occurred_on from fin_transactions where type = 'transfer'
+       select id, to_account_id, 'transfer_in', amount, occurred_on, status from fin_transactions where type = 'transfer'
      ) t on t.account_id = a.id
      group by a.id
      having not a.archived or count(t.id) > 0
@@ -54,7 +58,7 @@ export async function unassignedAccountTotals(p: Period): Promise<{ income: numb
   const [row] = await query<{ income: number; expense: number; count: number }>(
     `select coalesce(sum(amount) filter (where type = 'income'), 0)::float8 as income,
             coalesce(sum(amount) filter (where type = 'expense'), 0)::float8 as expense, count(*)::int as count
-     from fin_transactions where account_id is null and type <> 'transfer' and occurred_on between $1::date and $2::date`,
+     from fin_transactions where account_id is null and type <> 'transfer' and status <> 'cancelled' and occurred_on between $1::date and $2::date`,
     [p.from, p.to],
   );
   return row;
@@ -75,7 +79,7 @@ export async function categoryReport(type: TxType, p: Period): Promise<CategoryR
             coalesce(sum(x.amount) filter (where x.occurred_on between b.f - b.len and b.f - 1), 0)::float8 as previous,
             c.monthly_budget::float8 as budget
      from bounds b
-     join fin_transactions x on x.type = $1 and x.occurred_on between b.f - b.len and b.t
+     join fin_transactions x on x.type = $1 and x.status <> 'cancelled' and x.occurred_on between b.f - b.len and b.t
      left join fin_categories c on c.id = x.category_id
      group by c.id, c.name, c.monthly_budget
      having coalesce(sum(x.amount) filter (where x.occurred_on between b.f and b.t), 0) > 0
@@ -92,7 +96,7 @@ export async function userReport(p: Period): Promise<UserReport[]> {
             coalesce(sum(t.amount) filter (where t.type = 'income'), 0)::float8 as income,
             coalesce(sum(t.amount) filter (where t.type = 'expense'), 0)::float8 as expense, count(*)::int as count
      from fin_transactions t left join users u on u.id = t.user_id
-     where t.occurred_on between $1::date and $2::date
+     where t.status <> 'cancelled' and t.occurred_on between $1::date and $2::date
      group by u.id, u.name order by count desc`,
     [p.from, p.to],
   );
@@ -127,7 +131,7 @@ export async function projection(): Promise<Projection> {
       `select coalesce(sum(amount) filter (where type = 'income'), 0)::float8 as income,
               coalesce(sum(amount) filter (where type = 'expense'), 0)::float8 as expense
        from fin_transactions
-       where occurred_on >= $1::date and occurred_on < $2::date and extract(day from occurred_on) <= $3`,
+       where status <> 'cancelled' and occurred_on >= $1::date and occurred_on < $2::date and extract(day from occurred_on) <= $3`,
       [`${addMonths(month, -HISTORY_MONTHS)}-01`, `${month}-01`, day],
     ),
   ]);
@@ -176,7 +180,7 @@ export async function expenseOutlook(): Promise<CategoryOutlook[]> {
             sum(x.amount)::float8 as total, coalesce(sum(x.amount) filter (where extract(day from x.occurred_on) <= $2), 0)::float8 as early,
             c.monthly_budget::float8 as budget
      from fin_transactions x left join fin_categories c on c.id = x.category_id
-     where x.type = 'expense' and x.occurred_on >= $1::date
+     where x.type = 'expense' and x.status <> 'cancelled' and x.occurred_on >= $1::date
      group by c.id, c.name, 3, c.monthly_budget`,
     [`${first}-01`, day],
   );
@@ -210,7 +214,10 @@ export async function expenseOutlook(): Promise<CategoryOutlook[]> {
     .sort((a, b) => (b.projected ?? b.soFar) - (a.projected ?? a.soFar));
 }
 
-export type PeriodTotals = { income: number; expense: number; count: number; prevIncome: number; prevExpense: number; months: number };
+export type PeriodTotals = {
+  income: number; expense: number; count: number; prevIncome: number; prevExpense: number; months: number;
+  pendingIncome: number; pendingExpense: number; // the part of income and expense still with people, not confirmed yet
+};
 
 /**
  * Income and expense in the period and in the same-length period just before it, plus how many
@@ -224,12 +231,17 @@ export async function periodTotals(p: Period): Promise<PeriodTotals> {
             (count(*) filter (where x.occurred_on >= b.f))::int as count,
             coalesce(sum(x.amount) filter (where x.type = 'income' and x.occurred_on < b.f), 0)::float8 as "prevIncome",
             coalesce(sum(x.amount) filter (where x.type = 'expense' and x.occurred_on < b.f), 0)::float8 as "prevExpense",
+            coalesce(sum(x.amount) filter (where x.type = 'income' and x.status = 'pending' and x.occurred_on >= b.f), 0)::float8 as "pendingIncome",
+            coalesce(sum(x.amount) filter (where x.type = 'expense' and x.status = 'pending' and x.occurred_on >= b.f), 0)::float8 as "pendingExpense",
             to_char(min(x.occurred_on) filter (where x.occurred_on >= b.f), 'YYYY-MM-DD') as first
-     from b left join fin_transactions x on x.occurred_on between b.f - b.len and b.t
+     from b left join fin_transactions x on x.status <> 'cancelled' and x.occurred_on between b.f - b.len and b.t
      group by b.f`,
     [p.from, p.to],
   );
   const start = r.first && r.first > p.from ? r.first : p.from;
   const months = Math.max(1, monthRange(monthOf(start), monthOf(p.to)).length);
-  return { income: r.income, expense: r.expense, count: r.count, prevIncome: r.prevIncome, prevExpense: r.prevExpense, months };
+  return {
+    income: r.income, expense: r.expense, count: r.count, prevIncome: r.prevIncome, prevExpense: r.prevExpense, months,
+    pendingIncome: r.pendingIncome, pendingExpense: r.pendingExpense,
+  };
 }

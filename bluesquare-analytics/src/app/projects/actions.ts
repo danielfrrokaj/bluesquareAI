@@ -8,6 +8,7 @@ import {
   setProjectLogo, TASK_STATUSES, updateProject, updateTask, type TaskStatus,
 } from "@/lib/projects";
 import { removeMedia } from "@/lib/media-store";
+import { notifyTaskAssigned } from "@/lib/notifications";
 import { readLogo } from "@/lib/logo";
 import type { FormState } from "@/components/ActionForm";
 
@@ -60,17 +61,20 @@ export async function addTask(_: FormState, form: FormData): Promise<FormState> 
   const input = readTask(form, today());
   if (typeof input === "string") return { error: input };
   const id = await createTask(input, user.id);
+  await notifyTaskAssigned({ id, ...input }, user, false);
   refresh();
   return { ok: `Task #${id} added.` };
 }
 
 export async function saveTask(_: FormState, form: FormData): Promise<FormState> {
-  await requireAuth();
+  const user = await requireAuth();
   const task = await getTask(Number(form.get("id")));
   if (!task) return { error: "This task no longer exists." };
   const input = readTask(form, today());
   if (typeof input === "string") return { error: input };
   await updateTask(task.id, input);
+  // Only a change of assignee notifies (the new one), not every edit.
+  if (input.assigneeId !== task.assignee_id) await notifyTaskAssigned({ id: task.id, ...input }, user, true);
   refresh();
   return { ok: `Task #${task.id} saved.` };
 }

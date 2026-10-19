@@ -8,12 +8,12 @@ import { readLogo } from "@/lib/logo";
 import type { FormState } from "@/components/ActionForm";
 
 export async function login(_: string | null, form: FormData): Promise<string | null> {
-  const email = String(form.get("email") ?? "").slice(0, 200);
+  const account = String(form.get("login") ?? "").slice(0, 200); // username, phone or email
   const password = String(form.get("password") ?? "").slice(0, 200);
   // Small fixed delay slows down password guessing.
   await new Promise((r) => setTimeout(r, 400));
-  const user = await signIn(email, password);
-  if (!user) return "Wrong email or password.";
+  const user = await signIn(account, password);
+  if (!user) return "Wrong username, phone number or password.";
   await createSession(user.id);
   redirect("/");
 }

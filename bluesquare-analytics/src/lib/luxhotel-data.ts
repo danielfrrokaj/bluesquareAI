@@ -175,3 +175,109 @@ export function registrationMonths(hotels: Hotel[], now: number) {
       count: hotels.filter(h => Date.parse(h.registered_at) >= +start && Date.parse(h.registered_at) < +next && Date.parse(h.registered_at) <= now).length };
   });
 }
+
+// ---------- Record feeds: AI chats, website requests, technical issues ----------
+// Newest first and paginated (next_cursor), unlike /hotels. Screenshots in AI chats are only flagged, never linked.
+
+export type FeedKind = "ai-chats" | "web-requests" | "technical-issues";
+export const FEED_KINDS: FeedKind[] = ["ai-chats", "web-requests", "technical-issues"];
+export const isFeedKind = (v: unknown): v is FeedKind => typeof v === "string" && (FEED_KINDS as string[]).includes(v);
+
+export type AiChat = {
+  id: string;
+  vendor_id: string | null;
+  user: { email: string | null; role: string | null };
+  started_at: string | null;
+  updated_at: string | null;
+  messages: { question: string | null; answer: string | null; needs_human: boolean; has_screenshot: boolean; asked_at: string | null }[];
+  feedback: { vote: "up" | "down"; comment: string | null; at: string | null }[];
+};
+export type WebRequest = {
+  id: string; name: string | null; email: string | null; phone: string | null; property_name: string | null; message: string | null;
+  created_at: string | null;
+};
+export type TechnicalIssue = {
+  id: string; description: string | null; priority: string | null; due_date: string | null; reported_by: { email: string | null };
+  vendor_id: string | null; hotel_id: string | null; page_url: string | null; created_at: string | null;
+};
+export type FeedItem = { "ai-chats": AiChat; "web-requests": WebRequest; "technical-issues": TechnicalIssue };
+export type FeedPage<T> = { count: number; generated_at: string; next_cursor: string | null; items: T[] };
+
+const nullableDate = (value: unknown): string | null => (value === null ? null : date(value));
+const id = (value: unknown) => {
+  const result = str(value);
+  if (!result) throw new Error("invalid_response");
+  return result;
+};
+
+export function parseAiChat(value: unknown): AiChat {
+  const c = record(value), user = record(c.user);
+  return {
+    id: id(c.id), vendor_id: nullable(c.vendor_id), user: { email: nullable(user.email), role: nullable(user.role) },
+    started_at: nullableDate(c.started_at), updated_at: nullableDate(c.updated_at),
+    messages: array(c.messages).map((item) => {
+      const m = record(item);
+      return { question: nullable(m.question), answer: nullable(m.answer), needs_human: bool(m.needs_human), has_screenshot: bool(m.has_screenshot), asked_at: nullableDate(m.asked_at) };
+    }),
+    feedback: array(c.feedback).map((item) => {
+      const f = record(item);
+      if (f.vote !== "up" && f.vote !== "down") throw new Error("invalid_response");
+      return { vote: f.vote, comment: nullable(f.comment), at: nullableDate(f.at) };
+    }),
+  };
+}
+
+export function parseWebRequest(value: unknown): WebRequest {
+  const r = record(value);
+  return {
+    id: id(r.id), name: nullable(r.name), email: nullable(r.email), phone: nullable(r.phone), property_name: nullable(r.property_name),
+    message: nullable(r.message), created_at: nullableDate(r.created_at),
+  };
+}
+
+export function parseTechnicalIssue(value: unknown): TechnicalIssue {
+  const t = record(value), by = record(t.reported_by);
+  return {
+    id: id(t.id), description: nullable(t.description), priority: nullable(t.priority),
+    // Passed through from the ticket as stored, so anything but a string reads as no due date.
+    due_date: typeof t.due_date === "string" && t.due_date ? t.due_date : null,
+    reported_by: { email: nullable(by.email) }, vendor_id: nullable(t.vendor_id), hotel_id: nullable(t.hotel_id),
+    page_url: nullable(t.page_url), created_at: nullableDate(t.created_at),
+  };
+}
+
+const FEED_PARSERS: { [K in FeedKind]: { key: string; parse: (value: unknown) => FeedItem[K] } } = {
+  "ai-chats": { key: "ai_chats", parse: parseAiChat },
+  "web-requests": { key: "web_requests", parse: parseWebRequest },
+  "technical-issues": { key: "technical_issues", parse: parseTechnicalIssue },
+};
+
+
+export function parseFeedPage<K extends FeedKind>(kind: K, value: unknown): FeedPage<FeedItem[K]> {
+  const page = record(value);
+  const items = array(page[FEED_PARSERS[kind].key]).map(FEED_PARSERS[kind].parse);
+  if (count(page.count) !== items.length) throw new Error("invalid_response");
+  return { count: items.length, generated_at: date(page.generated_at), next_cursor: page.next_cursor === null ? null : id(page.next_cursor), items };
+}
+
+export const FEED_LABELS: Record<FeedKind, string> = { "ai-chats": "AI chat", "web-requests": "Website request", "technical-issues": "Technical issue" };
+
+/** A record's own page. */
+export const recordHref = (kind: FeedKind, id: string) => `/luxhotel/${kind}/${encodeURIComponent(id)}`;
+
+const clip = (text: string | null, max: number) => (text && text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text);
+
+/** One line to name a record in lists and notifications, and a second with who or what. */
+export function recordSummary(kind: FeedKind, item: FeedItem[FeedKind]): { title: string; detail: string | null } {
+  if (kind === "ai-chats") {
+    const c = item as AiChat;
+    return { title: clip(c.messages.find((m) => m.question)?.question ?? null, 140) ?? "(no question)", detail: c.user.email };
+  }
+  if (kind === "web-requests") {
+    const r = item as WebRequest;
+    return { title: `${r.name ?? "No name"}${r.property_name ? ` · ${r.property_name}` : ""}`, detail: clip(r.message, 140) };
+  }
+  const t = item as TechnicalIssue;
+  return { title: clip(t.description, 140) ?? "(no description)", detail: t.reported_by.email };
+}
+
