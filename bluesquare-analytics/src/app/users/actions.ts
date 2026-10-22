@@ -11,8 +11,9 @@ const str = (form: FormData, key: string, max = 200) => String(form.get(key) ?? 
 const isRole = (v: string): v is Role => v === "admin" || v === "member";
 
 /**
- * The sections a member may open in sidebar order, then their Finance and Archive tabs ("<section>:<tab>"); null for
- * admins (they open everything). An error message when nothing is picked, or Finance or Archive is on without a tab.
+ * The sections a member may open in sidebar order, then their Finance and Archive tabs ("<section>:<tab>") and their
+ * Inbox accounts ("inbox:<id>"; none stored: every account); null for admins (they open everything). An error message
+ * when nothing is picked, or a section is on without any of its tabs or accounts.
  */
 function readDepartments(form: FormData, role: Role): string[] | null | { error: string } {
   if (role === "admin") return null;
@@ -25,6 +26,10 @@ function readDepartments(form: FormData, role: Role): string[] | null | { error:
     const picked = all.map((t) => tabKey(department, t.key)).filter((key) => values.has(key));
     if (!picked.length) return { error: `Pick at least one ${label} tab, or turn ${label} off.` };
     tabs.push(...picked);
+  }
+  if (sections.includes("inbox")) {
+    if (values.has("inbox:none")) return { error: "Pick at least one Inbox account, or turn Inbox off." };
+    tabs.push(...[...values].filter((v) => /^inbox:\d{1,12}$/.test(v)));
   }
   return [...sections, ...tabs];
 }

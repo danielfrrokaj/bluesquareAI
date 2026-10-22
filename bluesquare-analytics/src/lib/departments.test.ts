@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { archiveHomeFor, canAccess, canOpenArchiveTab, canOpenFinanceTab, departmentHref, financeHomeFor, homeFor } from "./departments";
+import { allowedInboxIds, archiveHomeFor, canAccess, canOpenArchiveTab, canOpenFinanceTab, departmentHref, financeHomeFor, homeFor } from "./departments";
 
 const member = (departments: string[] | null) => ({ role: "member", departments });
 
@@ -66,4 +66,19 @@ test("Archive tabs: Files and Vault granted on their own, both without a choice"
   assert.ok(!canAccess(member(["archive", "archive:removed"]), "archive"));
   assert.ok(!canOpenArchiveTab(member(["finance", "finance:overview"]), "files"));
   assert.ok(canOpenArchiveTab({ role: "admin", departments: [] }, "vault"));
+});
+
+test("Inbox accounts: granted whole, or only certain Chatwoot inboxes", () => {
+  // Plain "inbox" (or an account from before permissions): every inbox, including ones connected later.
+  assert.equal(allowedInboxIds(member(["inbox"])), null);
+  assert.equal(allowedInboxIds(member(null)), null);
+  assert.equal(allowedInboxIds({ role: "admin", departments: ["inbox:149189"] }), null);
+  // Picked accounts: just those; the entries also open the Inbox section.
+  const whatsappOnly = member(["inbox", "inbox:149189"]);
+  assert.deepEqual(allowedInboxIds(whatsappOnly), [149189]);
+  assert.ok(canAccess(whatsappOnly, "inbox"));
+  assert.deepEqual(allowedInboxIds(member(["inbox", "inbox:149189", "inbox:149172"])), [149189, 149172]);
+  // Without the Inbox section (or without any grant) nothing opens; junk entries don't count.
+  assert.ok(!canAccess(member(["sales"]), "inbox"));
+  assert.equal(allowedInboxIds(member(["inbox", "inbox:none", "inbox:-4"])), null);
 });

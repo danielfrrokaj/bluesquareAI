@@ -1,22 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { GRANTABLE, GRANTABLE_TABS, tabKey, type TabbedDepartment } from "@/lib/departments";
+import { GRANTABLE, GRANTABLE_TABS, inboxKey, tabKey, type TabbedDepartment } from "@/lib/departments";
 import { NavIcon, type NavIconName } from "@/components/NavIcon";
 import s from "./users.module.css";
 
 type Role = "admin" | "member";
 const ALL = GRANTABLE.map((d) => d.key as string);
 const TABBED = Object.keys(GRANTABLE_TABS) as TabbedDepartment[];
-const hasTabs = (keys: Set<string>, department: TabbedDepartment) => [...keys].some((k) => k.startsWith(`${department}:`));
+const hasTabs = (keys: Set<string>, department: string) => [...keys].some((k) => k.startsWith(`${department}:`));
 // Supplier tabs show their own logo, as in Finance's tab bar.
 const TAB_LOGOS: Record<string, string> = { "finance:gcloud": "/icons/google.png", "finance:channex": "/icons/channex.webp" };
 const TAB_ICONS: Record<string, NavIconName> = { "finance:accounts": "wallet" };
 const TAB_NOTES: Record<TabbedDepartment, string> = { finance: "Finance settings stay with admins", archive: "The vault holds passwords and API keys" };
 
-/** A department turned on without a choice of tabs gets its default tabs. */
-function withDefaultTabs(keys: Set<string>) {
+type InboxAccount = { id: number; name: string; channel: string };
+
+/** A department turned on without a choice of tabs gets its default tabs; Inbox without a choice gets every account. */
+function withDefaultTabs(keys: Set<string>, inboxes: InboxAccount[] = []) {
   for (const d of TABBED) if (keys.has(d) && !hasTabs(keys, d)) GRANTABLE_TABS[d].defaults.forEach((tab) => keys.add(tabKey(d, tab)));
+  if (keys.has("inbox") && !hasTabs(keys, "inbox")) inboxes.forEach((i) => keys.add(inboxKey(i.id)));
   return keys;
 }
 
@@ -26,20 +29,25 @@ function withDefaultTabs(keys: Set<string>) {
  * no picker (a member's picks are kept while switching). Without a choice of tabs (as stored before tabs existed), a
  * section shows its default tabs.
  */
-export function PermissionPicker({ role: initialRole, departments }: { role: Role; departments: string[] | null }) {
+export function PermissionPicker({ role: initialRole, departments, inboxes = [] }: {
+  role: Role; departments: string[] | null; inboxes?: InboxAccount[];
+}) {
   const [role, setRole] = useState<Role>(initialRole);
-  const [picked, setPicked] = useState(() => withDefaultTabs(new Set(departments ?? ALL)));
+  const [picked, setPicked] = useState(() => withDefaultTabs(new Set(departments ?? ALL), inboxes));
   const admin = role === "admin";
   const sections = ALL.filter((k) => picked.has(k)).length;
+  // Every account checked is stored as plain "inbox": inboxes connected later are then included on their own.
+  const pickedInboxes = inboxes.filter((i) => picked.has(inboxKey(i.id)));
+  const allInboxes = pickedInboxes.length === inboxes.length;
 
   const toggle = (key: string) => setPicked((prev) => {
     const next = new Set(prev);
     if (next.has(key)) next.delete(key);
-    // Turning Finance on starts from its default tabs (no supplier costs); Archive from both of its tabs.
-    else withDefaultTabs(next.add(key));
+    // Turning Finance on starts from its default tabs (no supplier costs); Archive from both tabs; Inbox from every account.
+    else withDefaultTabs(next.add(key), inboxes);
     return next;
   });
-  const selectAll = () => setPicked((prev) => withDefaultTabs(new Set([...prev, ...ALL])));
+  const selectAll = () => setPicked((prev) => withDefaultTabs(new Set([...prev, ...ALL]), inboxes));
 
   return (
     <>
@@ -102,6 +110,34 @@ export function PermissionPicker({ role: initialRole, departments }: { role: Rol
             </div>
           </div>
         ))}
+
+        {picked.has("inbox") && inboxes.length > 0 && (
+          <div className={s.tabs} role="group" aria-labelledby="inbox-tabs-label">
+            <p className={s.tabsHead} id="inbox-tabs-label">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/icons/inbox.png" alt="" width={22} height={22} />
+              Inbox accounts
+              <small>{allInboxes ? "All accounts, including ones connected later" : "Only the picked accounts"}</small>
+            </p>
+            <div className={s.chips}>
+              {inboxes.map((i) => {
+                const key = inboxKey(i.id);
+                const on = picked.has(key);
+                return (
+                  <label key={key} className={`${s.chip} ${on ? s.on : ""}`}>
+                    {/* All checked is stored as plain "inbox" (no names submitted = every account). */}
+                    <input type="checkbox" name={allInboxes ? undefined : "departments"} value={key} checked={on} onChange={() => toggle(key)} />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={`/icons/channels/${i.channel}.svg`} alt="" width={16} height={16} />
+                    {i.name}
+                  </label>
+                );
+              })}
+            </div>
+            {/* Nothing picked while Inbox is on: the server answers with an error instead of guessing. */}
+            {pickedInboxes.length === 0 && <input type="hidden" name="departments" value="inbox:none" />}
+          </div>
+        )}
       </fieldset>}
     </>
   );

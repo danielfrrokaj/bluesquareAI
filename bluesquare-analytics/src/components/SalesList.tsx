@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { requireAuth } from "@/lib/auth";
-import { countLeads, leadSources, listLeads, salesStats, type LeadFilter, type LeadStatus } from "@/lib/sales";
+import { countLeads, isLeadSort, leadSources, listLeads, salesStats, type LeadFilter, type LeadStatus } from "@/lib/sales";
 import { STEPS } from "@/lib/sales-fields";
 import { listUsers } from "@/lib/users";
 import { today as todayFn } from "@/lib/period";
@@ -16,7 +16,7 @@ import ai from "./AiLeadImport.module.css";
 import { LeadTable } from "./LeadTable";
 
 const PAGE = 100;
-export type SalesSearch = { q?: string; stage?: string; source?: string; owner?: string; due?: string; sort?: string; page?: string };
+export type SalesSearch = { q?: string; stage?: string; source?: string; owner?: string; due?: string; sort?: string; dir?: string; page?: string };
 const VIEWS = {
   leads: { status: "open", title: "Leads", base: "/sales" },
   customers: { status: "won", title: "Customers", base: "/sales/customers" },
@@ -35,7 +35,9 @@ export async function SalesList({ view, sp }: { view: keyof typeof VIEWS; sp: Sa
     source: sp.source || undefined,
     owner: sp.owner || undefined,
     due: (["overdue", "today", "week", "none"] as const).find((d) => d === sp.due),
-    sort: (["followup", "newest", "rooms", "closed"] as const).find((s) => s === sp.sort) ?? (view === "leads" ? "followup" : "closed"),
+    // Sorted by a column header ("newest" is from links made before there were headers).
+    sort: sp.sort === "newest" ? "added" : isLeadSort(sp.sort) ? sp.sort : view === "leads" ? "followup" : "closed",
+    dir: sp.dir === "asc" || sp.dir === "desc" ? sp.dir : undefined,
   };
   const page = Math.max(1, Number.parseInt(sp.page ?? "1", 10) || 1);
   const [rows, total, stats, users, sources] = await Promise.all([
@@ -138,15 +140,9 @@ export async function SalesList({ view, sp }: { view: keyof typeof VIEWS; sp: Sa
               <option value="none">Nobody</option>
             </select>
           </label>
-          <label className="field">
-            <span>Sort</span>
-            <select name="sort" defaultValue={filter.sort}>
-              {view === "leads" && <option value="followup">Follow-up date</option>}
-              {view !== "leads" && <option value="closed">Most recent</option>}
-              <option value="newest">Newest first</option>
-              <option value="rooms">Most rooms</option>
-            </select>
-          </label>
+          {/* Filtering keeps the order picked in the table's headers. */}
+          {sp.sort && <input type="hidden" name="sort" value={filter.sort} />}
+          {filter.dir && <input type="hidden" name="dir" value={filter.dir} />}
           <div className="btnrow">
             <button className="btn btn--primary btn--small">Filter</button>
             {filtered && <Link href={v.base} className="btn btn--small">Reset</Link>}
@@ -159,7 +155,7 @@ export async function SalesList({ view, sp }: { view: keyof typeof VIEWS; sp: Sa
           <h2>{num(total)} {view === "leads" ? `lead${total === 1 ? "" : "s"}` : view === "customers" ? `customer${total === 1 ? "" : "s"}` : "archived"}</h2>
           {view === "leads" && stats.overdue > 0 && filter.due !== "overdue" && <Link href={link({ due: "overdue" })} className="btn btn--small">Show {stats.overdue} overdue</Link>}
         </header>
-        <LeadTable rows={rows} view={view} today={today} />
+        <LeadTable rows={rows} view={view} today={today} sort={{ key: filter.sort!, dir: filter.dir }} sortHref={(sort, dir) => link({ sort, dir })} />
         {pages > 1 && (
           <nav className="pager" aria-label="Pages">
             {page > 1 && <Link href={link({ page: String(page - 1) })} className="btn btn--small">Previous</Link>}

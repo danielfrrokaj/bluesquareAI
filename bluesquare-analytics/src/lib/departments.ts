@@ -1,6 +1,6 @@
 // The sidebar's departments, and which of them a user may open. Pure: shared by the server and the permission picker.
 
-export type Department = "overview" | "finance" | "analytics" | "luxhotel" | "marketing" | "archive" | "sales" | "projects" | "users" | "settings";
+export type Department = "overview" | "finance" | "analytics" | "luxhotel" | "marketing" | "archive" | "sales" | "inbox" | "projects" | "users" | "settings";
 
 /** Sidebar order. Icons in public/icons/<key>.png, generated with Gemini in the website's 3D style (see bluesquare-next/tools). */
 export const DEPARTMENTS: { key: Department; href: string; label: string }[] = [
@@ -11,6 +11,7 @@ export const DEPARTMENTS: { key: Department; href: string; label: string }[] = [
   { key: "marketing", href: "/marketing", label: "Marketing & Ads" },
   { key: "archive", href: "/archive", label: "Archive" },
   { key: "sales", href: "/sales", label: "Sales" },
+  { key: "inbox", href: "/inbox", label: "Inbox" },
   { key: "projects", href: "/projects", label: "Projects & Tasks" },
   { key: "users", href: "/users", label: "Users" },
 ];
@@ -52,6 +53,9 @@ export const GRANTABLE_TABS: Record<TabbedDepartment, { label: string; tabs: { k
 export const tabKey = (department: TabbedDepartment, tab: string) => `${department}:${tab}`;
 export const financeKey = (tab: FinanceTab) => tabKey("finance", tab);
 
+/** A single Chatwoot inbox granted on its own, as "inbox:<its id>". Plain "inbox" with no picks: every inbox. */
+export const inboxKey = (inboxId: number) => `inbox:${inboxId}`;
+
 /** `departments` null: every grantable department (accounts from before permissions existed). */
 type Access = { role: string; departments: string[] | null };
 
@@ -78,7 +82,15 @@ export function canAccess(user: Access | null, department: Department): boolean 
   // Finance and Archive are open while at least one of their tabs is.
   if (department === "finance") return FINANCE_TABS.some((t) => canOpenFinanceTab(user, t.key));
   if (department === "archive") return ARCHIVE_TABS.some((t) => canOpenArchiveTab(user, t.key));
+  if (department === "inbox") return user.departments === null || user.departments.some((d) => d === "inbox" || d.startsWith("inbox:"));
   return user.departments === null || user.departments.includes(department);
+}
+
+/** The Chatwoot inboxes this user may see: their ids, or null for all of them (admins, or Inbox granted whole). */
+export function allowedInboxIds(user: Access | null): number[] | null {
+  if (!user || user.role === "admin" || user.departments === null) return null;
+  const picked = user.departments.filter((d) => d.startsWith("inbox:")).map((d) => Number(d.slice(6))).filter((n) => Number.isInteger(n) && n > 0);
+  return picked.length ? picked : null;
 }
 
 /**

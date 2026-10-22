@@ -69,8 +69,9 @@ function Bell({ unread }: { unread: number }) {
  * A user who may not open `department` is sent to the first one they may; without `department` (e.g. the
  * no-access page) nothing is highlighted or checked.
  */
-export async function Shell({ department, subnav, current, children }: {
+export async function Shell({ department, subnav, current, full, children }: {
   department?: Department; subnav?: SubLink[]; current?: string; children: React.ReactNode;
+  full?: boolean; // the page fills the window edge to edge (an app view, like Inbox)
 }) {
   const user = await currentUser();
   if (user && department && !canAccess(user, department)) redirect(homeFor(user));
@@ -219,7 +220,7 @@ export async function Shell({ department, subnav, current, children }: {
             </nav>
           </div>
         )}
-        <main className="wrap main">{children}</main>
+        <main className={full ? s.full : "wrap main"}>{children}</main>
       </div>
     </div>
   );

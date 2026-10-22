@@ -5,20 +5,15 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { countUsers, createUser, findByLogin, getUser, USERNAME, type Role, type User } from "./users";
 import { archiveHomeFor, canOpenArchiveTab, canOpenFinanceTab, financeHomeFor, type ArchiveTab, type FinanceTab } from "./departments";
+import { secret } from "./secret";
+
+export { secret };
 
 // Users sign in with their username or phone number and a password; the session is a signed, httpOnly cookie
 // holding the user id. The very first sign-in uses ADMIN_USERNAME / ADMIN_PASSWORD and creates that admin account.
 
 const COOKIE = "bsa_session";
 const MAX_AGE = 60 * 60 * 24 * 14; // 14 days
-
-// Values are trimmed: secrets created from files often end with a stray newline.
-export function secret(): string {
-  const s = process.env.SESSION_SECRET?.trim();
-  if (s && s.length >= 32) return s;
-  if (process.env.NODE_ENV === "production") throw new Error("SESSION_SECRET must be set (32+ characters).");
-  return "dev-only-secret-dev-only-secret-dev-only";
-}
 
 function adminPassword(): string {
   const p = process.env.ADMIN_PASSWORD?.trim();

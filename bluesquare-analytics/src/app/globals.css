@@ -519,7 +519,7 @@ details.danger > summary { cursor: pointer; color: var(--muted); font-weight: 60
 .field textarea { font: inherit; color: var(--ink); border: 1px solid #cdd5e3; border-radius: 10px; padding: 10px 12px; background: #fff; width: 100%; resize: vertical; }
 .field textarea:focus { outline: none; border-color: var(--blue-500); box-shadow: 0 0 0 3px rgb(74 132 208 / 0.25); }
 .field--full { grid-column: 1 / -1; }
-.filters--sales { grid-template-columns: 2fr repeat(5, 1fr) auto; }
+.filters--sales { grid-template-columns: 2fr repeat(4, 1fr) auto; }
 @media (max-width: 1100px) { .filters--sales { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 640px) { .filters--sales { grid-template-columns: 1fr; } }
 .due-today { color: var(--warn); font-weight: 650; }
@@ -529,6 +529,15 @@ details.danger > summary { cursor: pointer; color: var(--muted); font-weight: 60
 .leadtable tbody tr { position: relative; }
 .leadtable th:not(:first-child), .leadtable td:not(:first-child) { text-align: left; }
 .leadtable td small { display: block; color: var(--muted); font-size: 0.78rem; }
+/* Sortable headers: click to sort, again to reverse; the arrow shows the current order. */
+.sorter { display: inline-flex; align-items: center; gap: 4px; color: inherit; border-radius: 6px; margin: -2px -4px; padding: 2px 4px; }
+.sorter:hover { color: var(--ink); background: var(--bg); text-decoration: none; }
+.sorter svg { flex: none; opacity: 0.35; transition: opacity 0.15s, transform 0.15s; }
+.sorter:hover svg { opacity: 0.7; }
+.sorter.is-active { color: var(--ink); }
+.sorter.is-active svg { opacity: 1; color: var(--blue-600); }
+.sorter.is-asc svg { transform: rotate(180deg); }
+.leadtable td.leadtable__num, .leadtable th.leadtable__num { text-align: right; }
 .leadtable__main { max-width: 420px; white-space: normal !important; }
 .leadtable__main a { color: var(--ink); font-weight: 650; }
 .leadtable__main small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

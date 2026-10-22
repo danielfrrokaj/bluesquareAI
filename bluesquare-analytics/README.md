@@ -61,6 +61,33 @@ Content-Type: application/json
 
 Checks: `npm run test:leads-api`.
 
+## Inbox (Chatwoot)
+
+Inbox shows the company's shared Chatwoot inboxes — WhatsApp, Instagram, Messenger, website chat and the rest — inside the
+CRM. An admin connects it on the Inbox page (Chatwoot address, account ID, and an access token from Chatwoot → Profile
+settings); the token is stored encrypted, and everything is sent as that agent. Locally, `CHATWOOT_URL`,
+`CHATWOOT_ACCOUNT_ID` and `CHATWOOT_API_TOKEN` in `.env.local` stand in for that.
+
+- The sidebar lists All conversations and each admin-made **group** (several inboxes as one list, e.g. every channel of
+  one brand), with unread counts; single inboxes are picked from the conversation list's title menu, so many or
+  long-named inboxes don't crowd the sidebar. Conversations filter by status and assignee, search, and refresh themselves.
+- A conversation shows the full history with pictures (lightbox), videos, voice messages (custom player), files and
+  locations. Replies support attachments (pick, paste or drop), saved replies ("/"), private team notes, delivery/read
+  ticks, and recorded voice messages — re-encoded in the browser to a format the channel accepts (WhatsApp: Ogg/MP3/AAC,
+  Instagram: AAC/WAV). The customer sees "typing…" while a reply is written. Outside WhatsApp's 24-hour window the
+  composer explains that only a template can be sent (from Chatwoot).
+- Conversations can be resolved, reopened, snoozed, muted, prioritised and labelled (labels via a dropdown); the contact
+  can be edited; a chat becomes a Sales lead in one click (matched by phone/email so nobody is added twice).
+- Assignment and authorship use the **CRM's own users**, not Chatwoot agents: Chatwoot credits every API message to the
+  one connected agent, so the CRM keeps its own record (`inbox_assignments`, `inbox_senders`) of who handles a
+  conversation and who wrote each message sent from here. "Mine"/"Unassigned" filter by these.
+- Access is granted **per inbox account** in Users: turning Inbox on shows a chip per connected inbox (stored as
+  `inbox:<id>` in `users.departments`; all of them checked stores plain `inbox` = every account, including ones
+  connected later). Members see only their inboxes — in the sidebar, the picker, groups, unread counts and every API
+  route; conversations in other inboxes answer 404.
+- Checks: `npm run test:inbox`. The Chatwoot calls live in `src/lib/chatwoot.ts`; groups and the Sales link in
+  `src/lib/inbox.ts`.
+
 ## Notifications
 
 The bell in the sidebar (and `/notifications`) collects, per person:

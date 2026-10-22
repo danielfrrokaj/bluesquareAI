@@ -75,8 +75,28 @@ export type LeadFilter = {
   source?: string;
   owner?: string;
   due?: "overdue" | "today" | "week" | "none";
-  sort?: "followup" | "newest" | "rooms" | "closed";
+  sort?: LeadSort;
+  dir?: SortDir; // the column's own direction when left out
 };
+
+/** What the lead lists can be sorted by (their column headers), and the direction each starts in when clicked. */
+export const LEAD_SORTS = {
+  property: { sql: "lower(coalesce(nullif(l.hotel, ''), nullif(l.contact, ''), l.phone))", dir: "asc" },
+  city: { sql: "lower(nullif(l.city, ''))", dir: "asc" },
+  rooms: { sql: "l.rooms", dir: "desc" },
+  // The furthest checklist step reached, as `stage` names it.
+  progress: { sql: "case when l.lr_sent then 4 when l.demo_sent then 3 when l.interested then 2 when l.called then 1 else 0 end", dir: "desc" },
+  followup: { sql: "l.due_date", dir: "asc" },
+  source: { sql: "lower(nullif(l.source, ''))", dir: "asc" },
+  added: { sql: "l.created_at", dir: "desc" },
+  value: { sql: "l.monthly_value", dir: "desc" },
+  reason: { sql: "lower(nullif(l.lost_reason, ''))", dir: "asc" },
+  closed: { sql: "l.closed_at", dir: "desc" },
+  owner: { sql: "lower(u.name)", dir: "asc" },
+} as const;
+export type LeadSort = keyof typeof LEAD_SORTS;
+export type SortDir = "asc" | "desc";
+export const isLeadSort = (v: unknown): v is LeadSort => typeof v === "string" && v in LEAD_SORTS;
 
 function where(f: LeadFilter, today: string) {
   const parts = ["l.status = $1"];
@@ -101,16 +121,15 @@ function where(f: LeadFilter, today: string) {
   return { sql: `where ${parts.join(" and ")}`, params };
 }
 
-const ORDER = {
-  followup: "l.due_date asc nulls last, l.created_at desc",
-  newest: "l.created_at desc",
-  rooms: "l.rooms desc nulls last, l.created_at desc",
-  closed: "l.closed_at desc nulls last",
-};
+/** Empty values last in either direction; ties newest first, then by id so pages never overlap. */
+function orderBy(f: LeadFilter) {
+  const sort = LEAD_SORTS[f.sort ?? "followup"];
+  return `${sort.sql} ${f.dir === "asc" || f.dir === "desc" ? f.dir : sort.dir} nulls last, l.created_at desc, l.id`;
+}
 
 export async function listLeads(f: LeadFilter, today: string, limit = 100, offset = 0): Promise<Lead[]> {
   const w = where(f, today);
-  return query<Lead>(`${SELECT} ${w.sql} order by ${ORDER[f.sort ?? "followup"]} limit ${Math.floor(limit)} offset ${Math.floor(offset)}`, w.params);
+  return query<Lead>(`${SELECT} ${w.sql} order by ${orderBy(f)} limit ${Math.floor(limit)} offset ${Math.floor(offset)}`, w.params);
 }
 
 export async function countLeads(f: LeadFilter, today: string): Promise<number> {

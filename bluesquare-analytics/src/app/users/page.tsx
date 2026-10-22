@@ -1,6 +1,7 @@
 import { requireRole } from "@/lib/auth";
-import { ARCHIVE_TABS, canAccess, canOpenArchiveTab, canOpenFinanceTab, FINANCE_TABS, GRANTABLE } from "@/lib/departments";
+import { allowedInboxIds, ARCHIVE_TABS, canAccess, canOpenArchiveTab, canOpenFinanceTab, FINANCE_TABS, GRANTABLE } from "@/lib/departments";
 import { avatarUrl, listUsers, ROLES } from "@/lib/users";
+import { listInboxes } from "@/lib/chatwoot";
 import { API_SCOPES, listApiKeys } from "@/lib/api-keys";
 import { publicUrl } from "@/lib/public-url";
 import { LogoMark } from "@/components/AccountMark";
@@ -20,7 +21,11 @@ const when = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", 
 
 export default async function UsersPage() {
   const me = await requireRole("admin");
-  const [users, keys, base] = await Promise.all([listUsers(), listApiKeys(), publicUrl()]);
+  // Inbox access is granted per Chatwoot inbox account; without a connection there's nothing to pick from.
+  const [users, keys, base, inboxes] = await Promise.all([
+    listUsers(), listApiKeys(), publicUrl(),
+    listInboxes().then((all) => all.map((i) => ({ id: i.id, name: i.name, channel: i.channel as string }))).catch(() => []),
+  ]);
 
   return (
     <Shell department="users">
@@ -34,7 +39,7 @@ export default async function UsersPage() {
             <label className="field"><span>Name</span><input name="name" required maxLength={80} /></label>
             <SignInFields />
             <label className="field"><span>Password</span><input name="password" type="password" autoComplete="new-password" required minLength={10} /></label>
-            <PermissionPicker role="member" departments={[]} />
+            <PermissionPicker role="member" departments={[]} inboxes={inboxes} />
           </ActionForm>
         </Modal>
       </div>
@@ -55,6 +60,7 @@ export default async function UsersPage() {
                       <span className={s.access} title={`Opens ${GRANTABLE.filter((d) => canAccess(u, d.key)).map((d) => d.key === "finance"
                         ? `Finance (${FINANCE_TABS.filter((tab) => canOpenFinanceTab(u, tab.key)).map((tab) => tab.label).join(", ")})`
                         : d.key === "archive" ? `Archive (${ARCHIVE_TABS.filter((tab) => canOpenArchiveTab(u, tab.key)).map((tab) => tab.label).join(", ")})`
+                        : d.key === "inbox" && allowedInboxIds(u) ? `Inbox (${inboxes.filter((i) => allowedInboxIds(u)!.includes(i.id)).map((i) => i.name).join(", ") || "accounts no longer connected"})`
                         : d.label).join(", ")}`}>
                         {GRANTABLE.filter((d) => canAccess(u, d.key)).map((d) => (
                           // eslint-disable-next-line @next/next/no-img-element
@@ -71,7 +77,7 @@ export default async function UsersPage() {
                   <SignInFields user={u} />
                   <label className="field"><span>New password</span><input name="password" type="password" autoComplete="new-password" placeholder="Leave empty to keep" /></label>
                   <label className="check"><input type="checkbox" name="active" defaultChecked={u.active} /> Active (can sign in)</label>
-                  <PermissionPicker role={u.role} departments={u.departments} />
+                  <PermissionPicker role={u.role} departments={u.departments} inboxes={inboxes} />
                 </ActionForm>
               </details>
             </li>

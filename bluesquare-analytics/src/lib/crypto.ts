@@ -1,6 +1,6 @@
 import "server-only";
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:crypto";
-import { secret } from "./auth";
+import { secret } from "./secret";
 
 // AES-256-GCM for secrets stored in the database (e.g. API tokens). The key is derived from
 // SESSION_SECRET, so rotating that secret means re-entering stored tokens.

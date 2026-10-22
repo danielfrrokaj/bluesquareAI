@@ -13,12 +13,14 @@
     "test:departments": "tsx --test src/lib/departments.test.ts",
     "test:recurring": "node --conditions=react-server --import tsx --test src/lib/finance-recurring.test.ts",
     "test:leads-api": "node --conditions=react-server --import tsx --test src/lib/lead-intake.test.ts",
+    "test:inbox": "node --conditions=react-server --import tsx --test src/lib/inbox.test.ts",
     "test:notifications": "node --conditions=react-server --import tsx --test src/lib/notifications.test.ts",
     "test:lead-ai": "node --conditions=react-server --import tsx --test src/lib/lead-ai.test.ts",
     "reset-password": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx tools/reset-password.ts",
     "test:lux-feeds": "node --conditions=react-server --import tsx --test src/lib/lux-feeds.test.ts"
   },
   "dependencies": {
+    "@breezystack/lamejs": "1.2.7",
     "@electric-sql/pglite": "0.5.8",
     "@google-cloud/bigquery": "^9.2.0",
     "@google/genai": "2.24.0",

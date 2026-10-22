@@ -278,6 +278,33 @@ create table if not exists sales_imports (
 
 -- Keys for programs (e.g. a Claude automation) to call the API without signing in, each limited to one scope
 -- ('leads': add sales leads). Only a hash is kept: the key itself is shown once, when it's created.
+-- Inbox: Chatwoot inboxes shown together under one name (e.g. every channel of one hotel), arranged by admins.
+create table if not exists inbox_groups (
+  id          text primary key,
+  name        text not null,
+  color       text not null default 'blue',
+  inbox_ids   integer[] not null default '{}',
+  position    integer not null default 0,
+  created_at  timestamptz not null default now()
+);
+
+-- Who in the CRM handles a Chatwoot conversation, and which CRM user wrote each message sent from here.
+-- Chatwoot itself attributes everything to the one connected agent, so the CRM keeps its own record.
+create table if not exists inbox_assignments (
+  conversation_id  bigint primary key,
+  user_id          text not null references users(id) on delete cascade,
+  assigned_by      text,
+  at               timestamptz not null default now()
+);
+
+create table if not exists inbox_senders (
+  message_id       bigint primary key,
+  conversation_id  bigint not null,
+  user_id          text references users(id) on delete set null,
+  name             text not null,                 -- kept as written, in case the user is later removed
+  at               timestamptz not null default now()
+);
+
 create table if not exists api_keys (
   id            text primary key,
   name          text not null,
