@@ -407,13 +407,13 @@ const sq: Dictionary = {
   careers: {
     metaTitle: "Karriera në Blue Square AI",
     metaDescription:
-      "Bashkohuni me Blue Square AI në Tiranë dhe ndërtoni të ardhmen e teknologjisë AI me ne. Dërgoni CV-në ose portofolin në info@bluesquare.ai.",
+      "Bashkohuni me Blue Square AI në Tiranë dhe ndërtoni të ardhmen e teknologjisë AI me ne. Dërgoni CV-në ose portofolin në info@bluesquareai.com.",
     eyebrow: "Karriera",
     title: "Ndërtoni të ardhmen e teknologjisë AI me ne",
     lead: "Bashkohuni me ekipin tonë dhe eksploroni mundësitë tuaja në Blue Square AI.",
     emptyTitle: "Nuk ka pozicione të hapura për momentin",
     emptyText: "Në këtë moment nuk kemi pozicione të lira, por jemi gjithmonë të interesuar të njohim njerëz të talentuar.",
-    applyText: "Na dërgoni CV-në ose portofolin në info@bluesquare.ai dhe do t'ju kontaktojmë kur të hapet një pozicion që ju përshtatet.",
+    applyText: "Na dërgoni CV-në ose portofolin në info@bluesquareai.com dhe do t'ju kontaktojmë kur të hapet një pozicion që ju përshtatet.",
     applyButton: "Dërgoni CV-në",
     lookTitle: "Çfarë vlerësojmë",
     look: [
@@ -425,7 +425,7 @@ const sq: Dictionary = {
   contact: {
     metaTitle: "Kontaktoni Blue Square AI në Tiranë",
     metaDescription:
-      "Kontaktoni Blue Square AI në Pallatin e Kulturës, Tiranë. Shkruani në info@bluesquare.ai ose telefononi +355 69 381 5070 për një konsultim falas.",
+      "Kontaktoni Blue Square AI në Pallatin e Kulturës, Tiranë. Shkruani në info@bluesquareai.com ose telefononi +355 69 381 5070 për një konsultim falas.",
     eyebrow: "Kontakti",
     title: "Le të flasim për projektin tuaj",
     lead: "Keni një pyetje apo dëshironi të bashkëpunojmë? Ekipi ynë është këtu për t'ju ndihmuar të rritni biznesin tuaj.",
@@ -438,7 +438,7 @@ const sq: Dictionary = {
     topicOther: "Diçka tjetër",
     message: "Mesazhi",
     submit: "Dërgo mesazhin",
-    note: "Dërgimi hap aplikacionin tuaj të email-it me mesazhin gati për t'u dërguar te info@bluesquare.ai.",
+    note: "Dërgimi hap aplikacionin tuaj të email-it me mesazhin gati për t'u dërguar te info@bluesquareai.com.",
     detailsTitle: "Të dhënat e kontaktit",
     office: "Zyra qendrore e Blue Square AI",
     directions: "Merrni udhëzimet",
@@ -453,7 +453,7 @@ const sq: Dictionary = {
     sections: [
       {
         title: "Kush jemi",
-        text: "Kjo faqe menaxhohet nga Blue Square AI (NUIS M61711043K), Pallati i Kulturës, Tiranë, Shqipëri. Për çdo pyetje mbi privatësinë, shkruani në info@bluesquare.ai.",
+        text: "Kjo faqe menaxhohet nga Blue Square AI (NUIS M61711043K), Pallati i Kulturës, Tiranë, Shqipëri. Për çdo pyetje mbi privatësinë, shkruani në info@bluesquareai.com.",
       },
       {
         title: "Çfarë të dhënash mbledhim",
@@ -469,7 +469,7 @@ const sq: Dictionary = {
       },
       {
         title: "Të drejtat tuaja",
-        text: "Mund të kërkoni në çdo kohë akses, korrigjim ose fshirje të të dhënave personale që mbajmë për ju, duke shkruar në info@bluesquare.ai. Kërkesat trajtohen në përputhje me legjislacionin shqiptar për mbrojtjen e të dhënave.",
+        text: "Mund të kërkoni në çdo kohë akses, korrigjim ose fshirje të të dhënave personale që mbajmë për ju, duke shkruar në info@bluesquareai.com. Kërkesat trajtohen në përputhje me legjislacionin shqiptar për mbrojtjen e të dhënave.",
       },
     ],
   },
@@ -479,6 +479,23 @@ const sq: Dictionary = {
     accept: "Pranoj",
     decline: "Refuzoj",
     learnMore: "Politika e privatësisë",
+  },
+  chat: {
+    label: "Bisedo me ne",
+    title: "Asistenti BlueSquare",
+    subtitle: "Asistent me AI · përgjigjet në sekonda",
+    greeting: "Përshëndetje! Jam asistenti i Blue Square AI. Më pyet për produktet dhe shërbimet tona — ose lër një mesazh dhe ekipi të përgjigjet.",
+    suggestions: ["Çfarë bën LuxHotel System?", "Çfarë mund të ndërtoni për biznesin tim?", "Dua të flas me një person"],
+    humanNote: "Ekipi ynë e ka marrë bisedën — përgjigjet vijnë këtu.",
+    aiFailed: "Ia kalova ekipit — do të të përgjigjen këtu së shpejti.",
+    placeholder: "Shkruaj një mesazh…",
+    send: "Dërgo",
+    retry: "Nuk u dërgua — provo përsëri.",
+    offline: "Biseda nuk është e disponueshme tani. Na shkruaj te info@bluesquareai.com dhe të kthehemi shpejt.",
+    restart: "Nis një bisedë të re",
+    close: "Mbyll bisedën",
+    open: "Hap bisedën",
+    disclaimer: "Përgjigjet e AI mund të gabojnë — kërko një person kurdo.",
   },
   notFound: {
     title: "Faqja nuk u gjet",

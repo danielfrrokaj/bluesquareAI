@@ -401,6 +401,15 @@ create table if not exists pm_tasks (
 );
 create index if not exists pm_tasks_board on pm_tasks (status, position);
 create index if not exists pm_tasks_project on pm_tasks (project_id);
+-- Comments on a task, oldest first; the assignee and whoever created the task hear about new ones.
+create table if not exists pm_task_comments (
+  id          text primary key,
+  task_id     bigint not null references pm_tasks(id) on delete cascade,
+  user_id     text references users(id) on delete set null,
+  body        text not null,
+  created_at  timestamptz not null default now()
+);
+create index if not exists pm_task_comments_task on pm_task_comments (task_id, created_at);
 -- Project logos, like account and site logos: the image, its type, and a version for its URL.
 alter table pm_projects add column if not exists logo bytea;
 alter table pm_projects add column if not exists logo_type text;

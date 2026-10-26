@@ -441,13 +441,13 @@ const en = {
   careers: {
     metaTitle: "Careers at Blue Square AI",
     metaDescription:
-      "Join Blue Square AI in Tirana and build the future of AI technology with us. Send your CV or portfolio to info@bluesquare.ai.",
+      "Join Blue Square AI in Tirana and build the future of AI technology with us. Send your CV or portfolio to info@bluesquareai.com.",
     eyebrow: "Careers",
     title: "Build the future of AI technology with us",
     lead: "Join our team and explore your opportunities at Blue Square AI.",
     emptyTitle: "No open positions at the moment",
     emptyText: "We do not have any open vacancies right now, but we are always interested in meeting talented people.",
-    applyText: "Send your CV or portfolio to info@bluesquare.ai and we will contact you when a suitable position opens.",
+    applyText: "Send your CV or portfolio to info@bluesquareai.com and we will contact you when a suitable position opens.",
     applyButton: "Send your CV",
     lookTitle: "What we value",
     look: [
@@ -459,7 +459,7 @@ const en = {
   contact: {
     metaTitle: "Contact Blue Square AI in Tirana",
     metaDescription:
-      "Contact Blue Square AI at Pallati i Kulturës, Tirana. Email info@bluesquare.ai or call +355 69 381 5070 for a free consultation on your software project.",
+      "Contact Blue Square AI at Pallati i Kulturës, Tirana. Email info@bluesquareai.com or call +355 69 381 5070 for a free consultation on your software project.",
     eyebrow: "Contact",
     title: "Let's talk about your project",
     lead: "Have a question or want to work together? Our team is here to help you grow your business.",
@@ -472,7 +472,7 @@ const en = {
     topicOther: "Something else",
     message: "Message",
     submit: "Send message",
-    note: "Sending opens your email app with the message ready to send to info@bluesquare.ai.",
+    note: "Sending opens your email app with the message ready to send to info@bluesquareai.com.",
     detailsTitle: "Contact details",
     office: "Blue Square AI headquarters",
     directions: "Get directions",
@@ -487,7 +487,7 @@ const en = {
     sections: [
       {
         title: "Who we are",
-        text: "This website is operated by Blue Square AI (NUIS M61711043K), Pallati i Kulturës, Tirana, Albania. For any privacy question, contact info@bluesquare.ai.",
+        text: "This website is operated by Blue Square AI (NUIS M61711043K), Pallati i Kulturës, Tirana, Albania. For any privacy question, contact info@bluesquareai.com.",
       },
       {
         title: "What data we collect",
@@ -503,7 +503,7 @@ const en = {
       },
       {
         title: "Your rights",
-        text: "You can ask to access, correct or delete the personal data we hold about you at any time by writing to info@bluesquare.ai. We handle requests in line with applicable Albanian data protection law.",
+        text: "You can ask to access, correct or delete the personal data we hold about you at any time by writing to info@bluesquareai.com. We handle requests in line with applicable Albanian data protection law.",
       },
     ],
   },
@@ -513,6 +513,23 @@ const en = {
     accept: "Accept",
     decline: "Decline",
     learnMore: "Privacy policy",
+  },
+  chat: {
+    label: "Chat with us",
+    title: "BlueSquare Assistant",
+    subtitle: "AI assistant · answers in seconds",
+    greeting: "Hi! I'm Blue Square AI's assistant. Ask me anything about our products and services — or leave a message and the team picks it up.",
+    suggestions: ["What does LuxHotel System do?", "What can you build for my business?", "I'd like to talk to a person"],
+    humanNote: "Our team has taken over — replies land right here.",
+    aiFailed: "I've passed this to the team — they'll answer you here shortly.",
+    placeholder: "Write a message…",
+    send: "Send",
+    retry: "That didn't go through — try again.",
+    offline: "The chat is resting right now. Write to us at info@bluesquareai.com and we'll get back to you.",
+    restart: "Start a new chat",
+    close: "Close chat",
+    open: "Open chat",
+    disclaimer: "AI answers can slip up — ask for a person any time.",
   },
   notFound: {
     title: "Page not found",

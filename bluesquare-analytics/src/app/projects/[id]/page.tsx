@@ -17,7 +17,7 @@ import s from "../projects.module.css";
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ view?: string }> };
+type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ view?: string; task?: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: (await getProject((await params).id))?.name ?? "Project" };
@@ -31,7 +31,9 @@ export default async function ProjectPage({ params, searchParams }: Props) {
   const [tasks, { projects, users }] = await Promise.all([listTasks({ projectId: id }), pickLists()]);
   const now = today();
   const p = project;
-  const view = (await searchParams).view === "list" ? "list" : "board";
+  const sp = await searchParams;
+  const view = sp.view === "list" ? "list" : "board";
+  const openTask = Number(sp.task) || undefined;
 
   return (
     <Shell department="projects" subnav={projectsNav(null)} current={p.id}>
@@ -90,8 +92,8 @@ export default async function ProjectPage({ params, searchParams }: Props) {
           <ViewToggle view={view} href={(v) => `/projects/${p.id}${v === "list" ? "?view=list" : ""}`} />
         </div>
         {view === "list"
-          ? <TaskList tasks={tasks} projects={projects} users={users} today={now} showProject={false} />
-          : <Board tasks={tasks} projects={projects} users={users} today={now} showProject={false} />}
+          ? <TaskList tasks={tasks} projects={projects} users={users} today={now} showProject={false} openTask={openTask} />
+          : <Board tasks={tasks} projects={projects} users={users} today={now} showProject={false} openTask={openTask} />}
       </div>
     </Shell>
   );

@@ -7,7 +7,7 @@ import { PRIORITY_LABEL, TASK_STATUSES, TASK_STATUS_LABEL, type TaskStatus } fro
 import type { Task } from "@/lib/projects";
 import { moveTask } from "./actions";
 import type { Option } from "./TaskFields";
-import { TaskEditor } from "./TaskEditor";
+import { TaskView } from "./TaskView";
 import s from "./projects.module.css";
 
 type SortKey = "id" | "title" | "project" | "assignee" | "priority" | "status" | "due" | "added";
@@ -34,8 +34,9 @@ function compare(a: Task, b: Task, key: SortKey, dir: 1 | -1): number {
 }
 
 /** Table of tasks: sort by any column, tick to complete, change status inline, click a row to edit. */
-export function TaskList({ tasks, projects, users, today, showProject = true }: {
+export function TaskList({ tasks, projects, users, today, showProject = true, openTask }: {
   tasks: Task[]; projects: Option[]; users: Option[]; today: string; showProject?: boolean;
+  openTask?: number; // opened on arrival, e.g. from a notification's link
 }) {
   const router = useRouter();
   const [items, setItems] = useState(tasks);
@@ -92,7 +93,7 @@ export function TaskList({ tasks, projects, users, today, showProject = true }: 
               </td>
               <td className={s.cardid}>{t.id}</td>
               <td className={s.titlecell}>
-                <Modal title={`Task #${t.id}`} triggerClassName={s.rowbtn} trigger={
+                <Modal defaultOpen={t.id === openTask} title={`Task #${t.id}`} triggerClassName={s.rowbtn} trigger={
                   <>
                     {t.title}
                     {(t.notes || t.screenshot) && (
@@ -100,7 +101,7 @@ export function TaskList({ tasks, projects, users, today, showProject = true }: 
                     )}
                   </>
                 }>
-                  <TaskEditor task={t} projects={projects} users={users} today={today} />
+                  <TaskView task={t} projects={projects} users={users} today={today} />
                 </Modal>
               </td>
               {showProject && <td>{t.project_name ? <span className={s.cardproject}>{t.project_name}</span> : <span className="muted">—</span>}</td>}

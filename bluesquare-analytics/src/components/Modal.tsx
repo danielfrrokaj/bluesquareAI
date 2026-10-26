@@ -12,15 +12,16 @@ export const useModalClose = () => useContext(CloseContext);
  * Button that opens a native <dialog> (focus trap, Esc to close, backdrop). The content is
  * mounted fresh on every open, so old errors and inputs don't linger.
  */
-export function Modal({ trigger, title, triggerClassName = "btn btn--primary", children }: {
+export function Modal({ trigger, title, triggerClassName = "btn btn--primary", defaultOpen = false, children }: {
   trigger: React.ReactNode;
   title: string;
   triggerClassName?: string;
+  defaultOpen?: boolean; // open as soon as it's shown (e.g. a task opened from a notification's link)
   children: React.ReactNode;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
-  const [open, setOpen] = useState(0); // increments per open; 0 = never opened
+  const [open, setOpen] = useState(defaultOpen ? 1 : 0); // increments per open; 0 = never opened
 
   const close = useCallback((message?: string) => {
     ref.current?.close();

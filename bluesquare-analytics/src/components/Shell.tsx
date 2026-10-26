@@ -195,7 +195,7 @@ export async function Shell({ department, subnav, current, full, children }: {
         </div>
       </aside>
 
-      <div className={s.content}>
+      <div className={full ? `${s.content} ${s.contentFull}` : s.content}>
         {subnav && subnav.length > 0 && (
           <div className={s.subnav}>
             <nav className="wrap" aria-label="Section">

@@ -7,7 +7,7 @@ RUN npm ci
 FROM node:22-slim AS build
 WORKDIR /app
 # NEXT_PUBLIC_* values are inlined into the pages at build time.
-ARG NEXT_PUBLIC_SITE_URL=https://bluesquare.ai
+ARG NEXT_PUBLIC_SITE_URL=https://bluesquareai.com
 ARG NEXT_PUBLIC_ANALYTICS_URL=
 ARG NEXT_PUBLIC_ANALYTICS_SITE_ID=
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL \

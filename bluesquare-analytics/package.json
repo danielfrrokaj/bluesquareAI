@@ -16,6 +16,7 @@
     "test:inbox": "node --conditions=react-server --import tsx --test src/lib/inbox.test.ts",
     "test:notifications": "node --conditions=react-server --import tsx --test src/lib/notifications.test.ts",
     "test:lead-ai": "node --conditions=react-server --import tsx --test src/lib/lead-ai.test.ts",
+    "test:task-comments": "node --conditions=react-server --import tsx --test src/lib/task-comments.test.ts",
     "reset-password": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx tools/reset-password.ts",
     "test:lux-feeds": "node --conditions=react-server --import tsx --test src/lib/lux-feeds.test.ts"
   },
@@ -26,7 +27,7 @@
     "@google/genai": "2.24.0",
     "@ip-location-db/dbip-country-mmdb": "2.3.2026060120",
     "maxmind": "5.0.7",
-    "next": "16.4.0",
+    "next": "16.4.3",
     "pg": "8.23.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",

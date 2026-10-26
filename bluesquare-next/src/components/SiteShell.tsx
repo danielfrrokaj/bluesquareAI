@@ -7,6 +7,7 @@ import { Footer } from "./Footer";
 import { JsonLd } from "./JsonLd";
 import { Reveal } from "./Reveal";
 import { CookieBanner } from "./CookieBanner";
+import { ChatWidget } from "./chat/ChatWidget";
 import "@/app/globals.css";
 
 // Blue Square Analytics (cookie-free), loaded on every page.
@@ -36,6 +37,7 @@ export function SiteShell({ lang, children }: { lang: Locale; children: React.Re
         <Footer lang={lang} />
         <Reveal />
         <CookieBanner labels={t.cookies} privacyHref={localePath(lang, "/privacy")} />
+        <ChatWidget lang={lang} t={t.chat} />
         <JsonLd data={graph(organizationSchema(lang), websiteSchema())} />
       </body>
     </html>

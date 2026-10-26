@@ -1,14 +1,14 @@
 // Company facts used across the UI, metadata and structured data.
 // Keep these in one place so the NUIS, address and contacts never drift apart.
 
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://bluesquare.ai").replace(/\/$/, "");
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://bluesquareai.com").replace(/\/$/, "");
 
 export const COMPANY = {
   name: "Blue Square AI",
   shortName: "BlueSquare",
   nuis: "M61711043K",
   foundingYear: "2025",
-  email: "info@bluesquare.ai",
+  email: "info@bluesquareai.com",
   phone: "+355 69 381 5070",
   phoneHref: "tel:+355693815070",
   address: {

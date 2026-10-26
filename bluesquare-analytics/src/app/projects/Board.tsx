@@ -7,16 +7,17 @@ import { PRIORITY_LABEL, TASK_STATUSES, TASK_STATUS_LABEL, type TaskStatus } fro
 import type { Task } from "@/lib/projects";
 import { moveTask } from "./actions";
 import type { Option } from "./TaskFields";
-import { TaskEditor } from "./TaskEditor";
+import { TaskView } from "./TaskView";
 import s from "./projects.module.css";
 
 const COLUMN_HINT: Record<TaskStatus, string> = { pending: "Nothing waiting", in_progress: "Nothing in progress", done: "Nothing finished yet" };
 const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]!.toUpperCase()).join("");
 const shortDate = (d: string) => new Date(`${d}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
 
-/** Kanban board: drag cards between columns (or within one to reorder); click a card to edit it. */
-export function Board({ tasks, projects, users, today, showProject = true }: {
+/** Kanban board: drag cards between columns (or within one to reorder); click a card to see it, comment or edit. */
+export function Board({ tasks, projects, users, today, showProject = true, openTask }: {
   tasks: Task[]; projects: Option[]; users: Option[]; today: string; showProject?: boolean;
+  openTask?: number; // opened on arrival, e.g. from a notification's link
 }) {
   const router = useRouter();
   const [items, setItems] = useState(tasks);
@@ -110,8 +111,8 @@ export function Board({ tasks, projects, users, today, showProject = true }: {
                     setDrop(null);
                   }}
                 >
-                  <Modal title={`Task #${t.id}`} triggerClassName={s.cardbtn} trigger={<CardBody task={t} showProject={showProject} />}>
-                    <TaskEditor task={t} projects={projects} users={users} today={today} />
+                  <Modal defaultOpen={t.id === openTask} title={`Task #${t.id}`} triggerClassName={s.cardbtn} trigger={<CardBody task={t} showProject={showProject} />}>
+                    <TaskView task={t} projects={projects} users={users} today={today} />
                   </Modal>
                   {status !== "done" && (
                     <button type="button" className={s.quickdone} title="Mark as done" aria-label={`Mark task #${t.id} as done`}
@@ -152,6 +153,7 @@ function CardBody({ task: t, showProject }: { task: Task; showProject: boolean }
           </span>
         )}
         {t.notes && <span className={s.hasnotes} title="Has notes">≡</span>}
+        {t.comments > 0 && <span className={s.hasnotes} title={`${t.comments} comment${t.comments === 1 ? "" : "s"}`}>💬 {t.comments}</span>}
         <span className={s.spacer} />
         {t.assignee_name ? (
           <span className={s.avatar} title={t.assignee_name}>{initials(t.assignee_name)}</span>

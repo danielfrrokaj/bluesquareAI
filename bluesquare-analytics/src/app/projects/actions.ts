@@ -6,9 +6,10 @@ import { isAdmin, requireAuth } from "@/lib/auth";
 import {
   createProject, createTask, deleteProject, deleteTask, getProject, getTask, moveTask as move, readProject, readTask,
   setProjectLogo, TASK_STATUSES, updateProject, updateTask, type TaskStatus,
+  addTaskComment, deleteTaskComment, getTaskComment, listTaskComments, type TaskComment,
 } from "@/lib/projects";
 import { removeMedia } from "@/lib/media-store";
-import { notifyTaskAssigned } from "@/lib/notifications";
+import { notifyTaskAssigned, notifyTaskComment } from "@/lib/notifications";
 import { readLogo } from "@/lib/logo";
 import type { FormState } from "@/components/ActionForm";
 
@@ -96,4 +97,43 @@ export async function moveTask(id: number, status: TaskStatus, beforeId: number 
   if (!TASK_STATUSES.includes(status) || !Number.isSafeInteger(id)) return;
   await move(id, status, beforeId && Number.isSafeInteger(beforeId) ? beforeId : null);
   refresh();
+}
+
+// ---------- Task comments ----------
+
+export type CommentView = TaskComment & { canDelete: boolean };
+type Comments = { comments: CommentView[] } | { error: string };
+
+async function commentsFor(taskId: number, user: { id: string; role: string }): Promise<CommentView[]> {
+  return (await listTaskComments(taskId)).map((c) => ({ ...c, canDelete: c.user_id === user.id || user.role === "admin" }));
+}
+
+/** A task's comments, oldest first; each says whether this person may delete it (their own, or any for admins). */
+export async function taskComments(taskId: number): Promise<Comments> {
+  const user = await requireAuth();
+  if (!(await getTask(taskId))) return { error: "This task no longer exists." };
+  return { comments: await commentsFor(taskId, user) };
+}
+
+/** Adds a comment and tells the task's assignee and creator (not the commenter). Returns the updated thread. */
+export async function commentOnTask(taskId: number, text: string): Promise<Comments> {
+  const user = await requireAuth();
+  const task = await getTask(taskId);
+  if (!task) return { error: "This task no longer exists." };
+  const body = String(text ?? "").trim().slice(0, 4000);
+  if (!body) return { error: "Write a comment first." };
+  await addTaskComment(task.id, user.id, body);
+  await notifyTaskComment(task, user, body);
+  refresh();
+  return { comments: await commentsFor(task.id, user) };
+}
+
+export async function removeTaskComment(id: string): Promise<Comments> {
+  const user = await requireAuth();
+  const comment = await getTaskComment(String(id));
+  if (!comment) return { error: "This comment is already gone." };
+  if (comment.user_id !== user.id && !isAdmin(user)) return { error: "Only whoever wrote it or an admin can delete a comment." };
+  await deleteTaskComment(comment.id);
+  refresh();
+  return { comments: await commentsFor(comment.task_id, user) };
 }

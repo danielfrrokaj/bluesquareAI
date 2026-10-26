@@ -11,7 +11,7 @@ import s from "./projects.module.css";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Tasks" };
 
-type SP = { project?: string; who?: string; priority?: string; view?: string };
+type SP = { project?: string; who?: string; priority?: string; view?: string; task?: string };
 
 export default async function TasksBoard({ searchParams }: { searchParams: Promise<SP> }) {
   const user = await requireAuth();
@@ -42,8 +42,8 @@ export default async function TasksBoard({ searchParams }: { searchParams: Promi
             <h1>Tasks</h1>
             <p className="muted">
               {view === "board"
-                ? "Drag cards between columns to change their status. Click a card to edit it."
-                : "Click a column to sort, tick a task to complete it, or click it to edit."}
+                ? "Drag cards between columns to change their status. Click a card to see it, comment or edit."
+                : "Click a column to sort, tick a task to complete it, or click it to see it, comment or edit."}
             </p>
           </div>
           <NewTaskButton projects={projects} users={users} />
@@ -77,8 +77,8 @@ export default async function TasksBoard({ searchParams }: { searchParams: Promi
         </form>
 
         {view === "list"
-          ? <TaskList tasks={tasks} projects={projects} users={users} today={today()} />
-          : <Board tasks={tasks} projects={projects} users={users} today={today()} />}
+          ? <TaskList tasks={tasks} projects={projects} users={users} today={today()} openTask={Number(sp.task) || undefined} />
+          : <Board tasks={tasks} projects={projects} users={users} today={today()} openTask={Number(sp.task) || undefined} />}
       </div>
     </Shell>
   );

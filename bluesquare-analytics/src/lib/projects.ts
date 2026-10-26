@@ -115,14 +115,17 @@ export type Task = {
   assignee_id: string | null; assignee_name: string | null;
   added_on: string; due_date: string | null; overdue: boolean; done_at: string | null;
   screenshot: boolean; screenshot_version: number;
+  created_by: string | null; creator_name: string | null; comments: number;
 };
 
 const TASK_SELECT = `
   select t.id::int as id, t.title, t.notes, t.status, t.priority, t.project_id, p.name as project_name,
          t.assignee_id, u.name as assignee_name, to_char(t.added_on, 'YYYY-MM-DD') as added_on, to_char(t.due_date, 'YYYY-MM-DD') as due_date,
          (t.status <> 'done' and t.due_date < (now() at time zone $1)::date) as overdue, to_char(t.done_at at time zone $1, 'YYYY-MM-DD') as done_at,
-         (t.screenshot_key is not null) as screenshot, t.screenshot_version
-  from pm_tasks t left join pm_projects p on p.id = t.project_id left join users u on u.id = t.assignee_id`;
+         (t.screenshot_key is not null) as screenshot, t.screenshot_version, t.created_by, cu.name as creator_name,
+         (select count(*)::int from pm_task_comments c where c.task_id = t.id) as comments
+  from pm_tasks t left join pm_projects p on p.id = t.project_id left join users u on u.id = t.assignee_id
+       left join users cu on cu.id = t.created_by`;
 
 export type TaskFilter = { projectId?: string; assigneeId?: string; priority?: Priority };
 
@@ -140,10 +143,10 @@ export async function listTasks(f: TaskFilter = {}): Promise<Task[]> {
   );
 }
 
-export async function getTask(id: number): Promise<(Task & { created_by: string | null; screenshot_key: string | null; screenshot_mime: string | null }) | null> {
+export async function getTask(id: number): Promise<(Task & { screenshot_key: string | null; screenshot_mime: string | null }) | null> {
   if (!Number.isSafeInteger(id)) return null;
-  const [row] = await query<Task & { created_by: string | null; screenshot_key: string | null; screenshot_mime: string | null }>(
-    `${TASK_SELECT.replace("t.screenshot_version", "t.screenshot_version, t.created_by, t.screenshot_key, t.screenshot_mime")} where t.id = $2`,
+  const [row] = await query<Task & { screenshot_key: string | null; screenshot_mime: string | null }>(
+    `${TASK_SELECT.replace("t.screenshot_version,", "t.screenshot_version, t.screenshot_key, t.screenshot_mime,")} where t.id = $2`,
     [TZ(), id],
   );
   return row ?? null;
@@ -218,3 +221,22 @@ export const setTaskScreenshot = (id: number, s: { key: string; mime: string } |
   query("update pm_tasks set screenshot_key = $2, screenshot_mime = $3, screenshot_version = screenshot_version + 1 where id = $1", [
     id, s?.key ?? null, s?.mime ?? null,
   ]);
+
+// ---------- Task comments ----------
+
+export type TaskComment = { id: string; body: string; user_id: string | null; user_name: string | null; created_at: string };
+
+export const listTaskComments = (taskId: number) =>
+  query<TaskComment>(
+    `select c.id, c.body, c.user_id, u.name as user_name, to_char(c.created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at
+     from pm_task_comments c left join users u on u.id = c.user_id where c.task_id = $1 order by c.created_at, c.id`,
+    [taskId],
+  );
+
+export const addTaskComment = (taskId: number, userId: string, body: string) =>
+  query("insert into pm_task_comments (id, task_id, user_id, body) values ($1, $2, $3, $4)", [randomUUID(), taskId, userId, body]);
+
+export const getTaskComment = async (id: string) =>
+  (await query<{ id: string; task_id: number; user_id: string | null }>("select id, task_id::int as task_id, user_id from pm_task_comments where id = $1", [id]))[0] ?? null;
+
+export const deleteTaskComment = (id: string) => query("delete from pm_task_comments where id = $1", [id]);

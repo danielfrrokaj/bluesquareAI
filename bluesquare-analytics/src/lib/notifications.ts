@@ -120,7 +120,16 @@ export const notifyTaskAssigned = (task: { id: number; title: string; dueDate: s
     kind: "task",
     title: `${actor.name} ${reassigned ? "assigned you" : "gave you"} task #${task.id}`,
     body: task.title + (task.dueDate ? ` · due ${dayLabel(task.dueDate)}` : ""),
-    href: "/projects?who=me",
+    href: `/projects?task=${task.id}`,
+  }, actor.id);
+
+/** A comment on a task: its assignee and whoever created it hear about it, never the person who wrote it. */
+export const notifyTaskComment = (task: { id: number; title: string; assignee_id: string | null; created_by: string | null }, actor: { id: string; name: string }, comment: string) =>
+  notify([task.assignee_id, task.created_by], "projects", {
+    kind: "task",
+    title: `${actor.name} commented on task #${task.id}`,
+    body: `${task.title}: “${comment.length > 140 ? `${comment.slice(0, 139).trimEnd()}…` : comment}”`,
+    href: `/projects?task=${task.id}`,
   }, actor.id);
 
 // ---------- Reminders for the day ----------

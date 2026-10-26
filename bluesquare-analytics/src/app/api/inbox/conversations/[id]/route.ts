@@ -4,6 +4,9 @@ import { chatwootFailure, conversationFor, inboxUser } from "@/lib/inbox-access"
 
 export const dynamic = "force-dynamic";
 
+// How many messages a conversation opens with; "Show earlier messages" loads older pages.
+const INITIAL = 10;
+
 /** Outgoing messages sent from the CRM get the CRM user who wrote them as the sender. */
 async function named(messages: Message[]): Promise<Message[]> {
   const senders = await sendersFor(messages.map((m) => m.id));
@@ -29,11 +32,14 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       await conversationFor(user, id); // the inbox grants must reach it
       return Response.json({ messages: await named(await listMessages(id, before)) });
     }
-    const [conversation, messages] = await Promise.all([conversationFor(user, id).then((c) => withAssignees([c])).then(([c]) => c), listMessages(id)]);
+    const [conversation, recent] = await Promise.all([conversationFor(user, id).then((c) => withAssignees([c])).then(([c]) => c), listMessages(id)]);
     if (sp.get("read") === "1" && conversation.unread > 0) await markRead(id).catch(() => null);
+    // A conversation opens on its last few messages; earlier ones load on demand. No need to carry a long history.
+    const messages = recent.slice(-INITIAL);
     return Response.json({
       conversation: { ...conversation, unread: sp.get("read") === "1" ? 0 : conversation.unread },
       messages: await named(messages),
+      hasOlder: recent.length > messages.length,
       lead: await leadFor(conversation.contact),
     });
   } catch (err) {

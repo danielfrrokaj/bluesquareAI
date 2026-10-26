@@ -51,7 +51,7 @@ export function Thread({ id, summary, directory, onChange, onClose }: {
       setLead(data.lead);
       merge(data.messages);
       setLoaded((was) => {
-        if (!was) setHasOlder(data.messages.length >= 20);
+        if (!was) setHasOlder(data.hasOlder ?? data.messages.length >= 20);
         return true;
       });
       setError(null);
