@@ -1,0 +1,94 @@
+/* LuxHotel Payments: KPI cards, the status board of hotels, the invoices table and the invoice detail. */
+
+/* ---------- KPI cards ---------- */
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 18px; }
+.kpi { padding: 16px 18px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; display: grid; gap: 4px; }
+.kpi span { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+.kpi strong { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); line-height: 1.1; }
+.kpiWarn strong { color: var(--warn); }
+
+/* ---------- Toolbar: view toggle + fx rate ---------- */
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.segments { display: inline-flex; gap: 4px; padding: 4px; border-radius: 12px; background: var(--bg); border: 1px solid var(--line); }
+.segment { display: inline-flex; align-items: center; gap: 7px; padding: 6px 16px; border-radius: 9px; font-size: 0.88rem; font-weight: 650; color: var(--muted); }
+.segment:hover { color: var(--ink); text-decoration: none; }
+.segmentOn { background: #fff; color: var(--ink); box-shadow: var(--shadow-sm); }
+.segBadge { min-width: 18px; padding: 0 6px; border-radius: 999px; background: var(--blue-100); color: var(--blue-700); font-size: 0.72rem; font-weight: 800; line-height: 18px; text-align: center; }
+.fx { font-size: 0.82rem; color: var(--muted); font-weight: 600; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; }
+
+.notice { margin: 0 0 16px; padding: 14px 16px; border: 1px solid #f1d9a8; border-radius: 12px; background: #fff9ec; }
+.notice p { margin: 0; color: var(--body); font-size: 0.88rem; }
+
+/* ---------- Board ---------- */
+.search { display: flex; align-items: center; gap: 8px; max-width: 380px; margin-bottom: 16px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--muted); }
+.search input { flex: 1; border: 0; outline: none; font: inherit; font-size: 0.9rem; color: var(--ink); background: none; }
+
+.board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; align-items: start; }
+.column { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-alt); padding: 12px; min-height: 120px; }
+.col_unpaid { background: #fdf5f4; border-color: #f3dedb; }
+.col_active { background: #f3faf5; border-color: #d7ecdd; }
+.col_expiring { background: #fef9ee; border-color: #f2e2bf; }
+.col_expired { background: var(--surface-alt); }
+.colHead { display: flex; align-items: center; gap: 8px; font-size: 0.86rem; font-weight: 750; color: var(--ink); margin: 2px 2px 12px; }
+.colHead b { margin-left: auto; font-size: 0.78rem; font-weight: 800; color: var(--muted); }
+.dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+.dot_bad { background: #e5484d; }
+.dot_ok { background: #30a46c; }
+.dot_warn { background: #e0a000; }
+.dot_muted { background: #9aa4bf; }
+/* The single track is capped at the column width (minmax floor 0), so a long unbreakable hotel name
+   wraps inside the card instead of widening every card past the column. */
+.cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.colEmpty { margin: 6px 2px; color: var(--muted); font-size: 0.82rem; }
+
+.card { min-width: 0; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 13px; box-shadow: var(--shadow-sm); display: grid; gap: 9px; }
+.cardTop { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.cardName { color: var(--ink); font-weight: 700; font-size: 0.92rem; line-height: 1.3; min-width: 0; overflow-wrap: anywhere; }
+.cardName:hover { color: var(--blue-600); }
+.rooms { flex: none; font-size: 0.74rem; font-weight: 650; color: var(--muted); background: var(--bg); border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+.cardRows { display: grid; gap: 5px; margin: 0; }
+.cardRows div { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 0.82rem; }
+.cardRows dt { color: var(--muted); flex: none; white-space: nowrap; }
+.cardRows dd { margin: 0; color: var(--ink); font-weight: 600; text-align: right; min-width: 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.daysWarn { color: var(--warn); font-weight: 700; }
+.daysBad { color: var(--danger); font-weight: 700; }
+.suspended { justify-self: start; font-size: 0.72rem; font-weight: 700; color: #a8261b; background: #fde8e6; border: 1px solid #f4c7c2; border-radius: 999px; padding: 2px 10px; }
+
+.pending { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 2px; padding: 9px 11px; border-radius: 10px; background: #fff7ed; border: 1px solid #f3dcc0; }
+.pendingInfo { display: grid; gap: 1px; min-width: 0; }
+.pendingInfo a { font-size: 0.8rem; font-weight: 700; color: #9a4d08; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pendingInfo span { font-size: 0.78rem; color: var(--body); font-variant-numeric: tabular-nums; }
+
+/* ---------- Invoices table ---------- */
+.billing th:nth-child(2), .billing td:nth-child(2) { text-align: left; }
+.billing td:first-child a { color: var(--ink); font-weight: 650; }
+.billing td:first-child a:hover { color: var(--blue-600); }
+.removed { opacity: 0.55; }
+.rowActions { display: flex; gap: 6px; justify-content: flex-end; }
+
+/* ---------- Issue-invoice form ---------- */
+.formRow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.lines { display: grid; gap: 10px; margin: 2px 0; padding: 14px; border: 1px solid var(--line); border-radius: 12px; }
+.lines legend { padding: 0 6px; font-size: 0.8rem; font-weight: 700; color: var(--muted); }
+.hint { margin: 2px 0 0; font-size: 0.8rem; color: var(--muted); }
+
+/* ---------- Invoice detail ---------- */
+.detail { display: grid; gap: 20px; }
+.detailHead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px; }
+.detailHead h1 { margin: 0; }
+.detailActions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px 24px; margin: 0; }
+.meta div { display: grid; gap: 2px; }
+.meta dt { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; font-size: 0.92rem; color: var(--ink); }
+.back { margin: 0 0 10px; font-size: 0.86rem; }
+.totals td { font-weight: 700; color: var(--ink); border-bottom: 0; }
+
+@media (max-width: 1100px) {
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  .board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .board { grid-template-columns: 1fr; }
+  .formRow { grid-template-columns: 1fr; }
+}

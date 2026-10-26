@@ -281,3 +281,178 @@ export function recordSummary(kind: FeedKind, item: FeedItem[FeedKind]): { title
   return { title: clip(t.description, 140) ?? "(no description)", detail: t.reported_by.email };
 }
 
+
+// ---------- Subscription invoices and payments ----------
+// Each property pays a subscription; LuxHotel bills it with invoices, each paid through a POK link or recorded as
+// cash/bank. These parse the billing endpoints; the authenticated calls live in lib/lux-billing.ts.
+
+export type InvoiceStatus = "sent" | "paid" | "void";
+export type PaymentStatus = "pending" | "completed" | "failed" | "refunded";
+export type PaymentMethod = "pok" | "cash" | "bank_transfer";
+export type Currency = "EUR" | "ALL";
+
+export type LineItem = { key: string; label: string; description: string | null; amount: number };
+export type Payment = {
+  id: string; invoice_id: string; hotel_id: string; vendor_id: string;
+  amount: number; currency: string; status: PaymentStatus; method: PaymentMethod;
+  payment_url: string | null; failure_reason: string | null; note: string | null;
+  created_at: string; updated_at: string;
+};
+export type Invoice = {
+  id: string; number: string; hotel_id: string; vendor_id: string;
+  billed_to: { hotel_name: string | null; legal_name: string | null; tax_id: string | null; email: string | null };
+  status: InvoiceStatus; removed: boolean; includes_base_plan: boolean; plan: string;
+  period: { start: string; end: string }; room_count: number | null;
+  line_items: LineItem[]; subtotal: number; tax: number; total: number; currency: string;
+  paid_at: string | null; payment_method: PaymentMethod | null; payment_url: string | null;
+  fiscal_status: string | null; pdf_url: string | null; notes: string | null;
+  created_at: string; updated_at: string;
+  payments?: Payment[]; // present on GET /invoices/{id}, GET /hotels/{id}/invoices and POST responses
+};
+export type InvoicePage = { count: number; generated_at: string; next_cursor: string | null; invoices: Invoice[] };
+export type PaymentPage = { count: number; generated_at: string; next_cursor: string | null; payments: Payment[] };
+
+const num = (value: unknown): number => {
+  if (typeof value !== "number" || !Number.isFinite(value)) throw new Error("invalid_response");
+  return value;
+};
+const oneOf = <T extends string>(value: unknown, allowed: readonly T[]): T => {
+  const s = str(value);
+  if (!(allowed as readonly string[]).includes(s)) throw new Error("invalid_response");
+  return s as T;
+};
+
+export function parsePayment(value: unknown): Payment {
+  const p = record(value);
+  return {
+    id: id(p.id), invoice_id: id(p.invoice_id), hotel_id: str(p.hotel_id), vendor_id: str(p.vendor_id),
+    amount: num(p.amount), currency: str(p.currency),
+    status: oneOf(p.status, ["pending", "completed", "failed", "refunded"] as const),
+    method: oneOf(p.method, ["pok", "cash", "bank_transfer"] as const),
+    payment_url: nullable(p.payment_url), failure_reason: nullable(p.failure_reason), note: nullable(p.note),
+    created_at: date(p.created_at), updated_at: date(p.updated_at),
+  };
+}
+
+export function parseInvoice(value: unknown): Invoice {
+  const v = record(value), to = record(v.billed_to), period = record(v.period);
+  return {
+    id: id(v.id), number: str(v.number), hotel_id: str(v.hotel_id), vendor_id: str(v.vendor_id),
+    billed_to: { hotel_name: nullable(to.hotel_name), legal_name: nullable(to.legal_name), tax_id: nullable(to.tax_id), email: nullable(to.email) },
+    status: oneOf(v.status, ["sent", "paid", "void"] as const), removed: bool(v.removed),
+    includes_base_plan: bool(v.includes_base_plan), plan: str(v.plan),
+    period: { start: date(period.start), end: date(period.end) }, room_count: v.room_count === null ? null : count(v.room_count),
+    line_items: array(v.line_items).map((item) => {
+      const l = record(item);
+      return { key: str(l.key), label: str(l.label), description: nullable(l.description), amount: num(l.amount) };
+    }),
+    subtotal: num(v.subtotal), tax: num(v.tax), total: num(v.total), currency: str(v.currency),
+    paid_at: nullableDate(v.paid_at),
+    payment_method: v.payment_method === null ? null : oneOf(v.payment_method, ["pok", "cash", "bank_transfer"] as const),
+    payment_url: nullable(v.payment_url), fiscal_status: nullable(v.fiscal_status), pdf_url: nullable(v.pdf_url), notes: nullable(v.notes),
+    created_at: date(v.created_at), updated_at: date(v.updated_at),
+    payments: v.payments === undefined ? undefined : array(v.payments).map(parsePayment),
+  };
+}
+
+export function parseInvoicePage(value: unknown): InvoicePage {
+  const page = record(value), invoices = array(page.invoices).map(parseInvoice);
+  if (count(page.count) !== invoices.length) throw new Error("invalid_response");
+  return { count: invoices.length, generated_at: date(page.generated_at), next_cursor: page.next_cursor === null ? null : id(page.next_cursor), invoices };
+}
+
+export function parsePaymentPage(value: unknown): PaymentPage {
+  const page = record(value), payments = array(page.payments).map(parsePayment);
+  if (count(page.count) !== payments.length) throw new Error("invalid_response");
+  return { count: payments.length, generated_at: date(page.generated_at), next_cursor: page.next_cursor === null ? null : id(page.next_cursor), payments };
+}
+
+/** GET /hotels/{id}/invoices: one hotel's invoices, each with its payments, not paged. */
+export function parseHotelInvoices(value: unknown): Invoice[] {
+  const page = record(value);
+  return array(page.invoices).map(parseInvoice);
+}
+
+// ---------- Billing labels and formatting ----------
+
+/** An amount with its currency, e.g. "44.00 EUR". Amounts aren't converted, only labelled. */
+export const money = (amount: number, currency: string) =>
+  `${new Intl.NumberFormat("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount)} ${currency}`;
+
+export const invoiceStatusLabel: Record<InvoiceStatus, string> = { sent: "Awaiting payment", paid: "Paid", void: "Void" };
+export const paymentStatusLabel: Record<PaymentStatus, string> = { pending: "Pending", completed: "Completed", failed: "Failed", refunded: "Refunded" };
+export const methodLabel: Record<PaymentMethod, string> = { pok: "POK link", cash: "Cash", bank_transfer: "Bank transfer" };
+export const fiscalLabel = (value: string | null) =>
+  value === null ? "—" : ({ fiscalized: "Fiscalized", draft: "Draft", processing: "Processing", error: "Failed" }[value] ?? value);
+
+/** The status tone used for the shared .status--ok/warn/bad classes. */
+export const invoiceTone = (s: InvoiceStatus): "ok" | "warn" | "muted" => (s === "paid" ? "ok" : s === "void" ? "muted" : "warn");
+export const paymentTone = (s: PaymentStatus): "ok" | "warn" | "bad" | "muted" =>
+  s === "completed" ? "ok" : s === "failed" ? "bad" : s === "refunded" ? "muted" : "warn";
+
+export const periodLabel = (period: { start: string; end: string }) => `${dateLabel(period.start)} – ${dateLabel(period.end)}`;
+
+// ---------- Billing board: hotels grouped by how their subscription stands ----------
+
+export type BillingColumn = "unpaid" | "active" | "expiring" | "expired";
+export type HotelBilling = {
+  hotel: Hotel;
+  column: BillingColumn;
+  daysLeft: number | null;
+  lastPayment: { at: string; amount: number; currency: string } | null;
+  pending: { id: string; number: string; total: number; currency: string } | null;
+};
+export type BillingKpis = { invoices: number; unpaid: number; paid: number; revenueEur: number };
+export type BillingSummary = { kpis: BillingKpis; hotels: HotelBilling[] };
+
+/** The board columns, in display order, with the dot colour each uses. */
+export const BILLING_COLUMNS: { key: BillingColumn; label: string; tone: "bad" | "ok" | "warn" | "muted" }[] = [
+  { key: "unpaid", label: "Unpaid", tone: "bad" },
+  { key: "active", label: "Active", tone: "ok" },
+  { key: "expiring", label: "Expiring soon", tone: "warn" },
+  { key: "expired", label: "Expired", tone: "muted" },
+];
+
+const EXPIRING_DAYS = 7;
+
+/**
+ * Places every hotel in one column and totals the invoices. `allPerEur` (ALL per 1 EUR) converts ALL invoices so the
+ * paid-revenue total is in one currency; without it, ALL invoices are summed at face value.
+ */
+export function summarizeBilling(hotels: Hotel[], invoices: Invoice[], now: number, allPerEur: number | null): BillingSummary {
+  const live = invoices.filter((i) => !i.removed);
+  const byHotel = new Map<string, Invoice[]>();
+  for (const invoice of live) byHotel.set(invoice.hotel_id, [...(byHotel.get(invoice.hotel_id) ?? []), invoice]);
+  const toEur = (amount: number, currency: string) => (currency === "ALL" && allPerEur ? amount / allPerEur : amount);
+
+  const billed = hotels.map((hotel): HotelBilling => {
+    const list = byHotel.get(hotel.id) ?? [];
+    const paid = list.filter((i) => i.status === "paid" && i.paid_at).sort((a, b) => Date.parse(b.paid_at!) - Date.parse(a.paid_at!));
+    const pendingInvoice = list.filter((i) => i.status === "sent").sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))[0];
+    const subscription = hotel.subscription;
+    const daysLeft = subscription.expires_at ? Math.ceil((Date.parse(subscription.expires_at) - now) / 86_400_000) : null;
+    const column: BillingColumn =
+      subscription.suspended || pendingInvoice || subscription.status === "none" ? "unpaid"
+      : subscription.status === "expired" || (daysLeft !== null && daysLeft < 0) ? "expired"
+      : daysLeft !== null && daysLeft <= EXPIRING_DAYS ? "expiring"
+      : "active";
+    return {
+      hotel, column, daysLeft,
+      lastPayment: paid[0] ? { at: paid[0].paid_at!, amount: paid[0].total, currency: paid[0].currency } : null,
+      pending: pendingInvoice ? { id: pendingInvoice.id, number: pendingInvoice.number, total: pendingInvoice.total, currency: pendingInvoice.currency } : null,
+    };
+  });
+
+  return {
+    kpis: {
+      invoices: live.length,
+      unpaid: live.filter((i) => i.status === "sent").length,
+      paid: live.filter((i) => i.status === "paid").length,
+      revenueEur: live.filter((i) => i.status === "paid").reduce((sum, i) => sum + toEur(i.total, i.currency), 0),
+    },
+    hotels: billed,
+  };
+}
+
+/** A whole-euro total like "€4,163.24", for the paid-revenue card. */
+export const eur = (amount: number) => new Intl.NumberFormat("en-GB", { style: "currency", currency: "EUR" }).format(amount);

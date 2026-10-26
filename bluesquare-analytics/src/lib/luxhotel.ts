@@ -2,7 +2,7 @@ import "server-only";
 import { createHash } from "node:crypto";
 import { parseFeedPage, parseHotelDetail, parseHotelList, type FeedItem, type FeedKind, type FeedPage, type HotelDetail, type HotelList, type LuxRead } from "./luxhotel-data";
 
-const BASE_URL = "https://us-central1-pms-channex-2030.cloudfunctions.net/hotelsApi";
+export const BASE_URL = "https://us-central1-pms-channex-2030.cloudfunctions.net/hotelsApi";
 const CACHE_MS = 60_000;
 type Entry = { until: number; result: Promise<LuxRead<unknown>>; lastData: unknown };
 const shared = globalThis as typeof globalThis & { __luxhotelCache?: Map<string, Entry> };

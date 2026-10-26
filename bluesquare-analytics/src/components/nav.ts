@@ -23,13 +23,14 @@ export const financeNav = (current: FinanceTab, user: Parameters<typeof canOpenF
       : { href, label, icon: (key === "accounts" ? "wallet" : key) as NavIconName, current: key === current },
   );
 
-export type LuxHotelTab = "properties" | "ai-chats" | "web-requests" | "technical-issues";
+export type LuxHotelTab = "properties" | "payments" | "ai-chats" | "web-requests" | "technical-issues";
 
 /** LuxHotel's tabs; `unread` adds each feed's count of records this person hasn't read. */
 export const luxhotelNav = (current: LuxHotelTab, unread?: Partial<Record<LuxHotelTab, number>>): SubLink[] =>
   (
     [
       ["properties", "/luxhotel", "Properties", "hotel"],
+      ["payments", "/luxhotel/payments", "Payments", "invoices"],
       ["ai-chats", "/luxhotel/ai-chats", "AI chats", "chat"],
       ["web-requests", "/luxhotel/web-requests", "Website requests", "inbox"],
       ["technical-issues", "/luxhotel/technical-issues", "Technical issues", "issue"],
